@@ -1,5 +1,5 @@
 from flask import Flask
-from view.project_view import init_project_views
+from views.project_view import init_project_views
 
 app = Flask(__name__)
 
