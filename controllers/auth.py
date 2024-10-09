@@ -115,7 +115,7 @@ def callback():
     # 사용자 생성 및 로그인
     user = User(id_=unique_id, name=users_name, email=users_email, profile_pic=picture)
     login_user(user)
-    
+        
     return redirect(url_for("index"))  # 로그인 후 인덱스 페이지로 리다이렉트
 
 @auth_bp.route("/logout")
