@@ -1,0 +1,6 @@
+#.env 파일 무시
+.env
+# readme.md 파일 무시
+readme.md
+# vscode 설정 파일 무시
+controllers/__pycache__
