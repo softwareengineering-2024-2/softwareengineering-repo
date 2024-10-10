@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로젝트 참여</title>
+    <link rel="stylesheet" href="/static/style.css"> <!-- 필요한 스타일 파일을 참조 -->
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>프로젝트 참여</h1>
+        </header>
+
+        <main class="main-content">
+            <form action="{{ url_for('manage_project.join_project_view') }}" method="POST">
+                <label for="project-link">프로젝트 링크를 입력하세요:</label>
+                <input type="text" id="project-link" name="project_link" placeholder="프로젝트 링크 입력" required>
+                <button type="submit" class="action-button">프로젝트 참여하기</button>
+            </form>
+        </main>
+    </div>
+</body>
+</html>

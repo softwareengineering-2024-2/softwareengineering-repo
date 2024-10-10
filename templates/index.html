@@ -17,6 +17,8 @@
 
         <a href="{{ url_for('profile.profile', first_time=False) }}">프로필 수정</a>
 
+        <a href="{{ url_for('manage_project.manage_project_view', first_time=True) }}">프로젝트 관리</a>
+
         <!-- 프로젝트 생성 일단 1개만 허용해둠 나중에 DB연결해서 여러개 생성할수있게 하면될듯? -->
         {% if not session.project_name %}
             <a href="{{ url_for('profile.profile', first_time=True) }}">프로젝트 생성</a>
