@@ -4,3 +4,5 @@
 readme.md
 # vscode 설정 파일 무시
 controllers/__pycache__
+# mac os에서 자동 생성되는 속성 파일 무시
+*.DS_Store
