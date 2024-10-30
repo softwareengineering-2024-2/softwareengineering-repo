@@ -16,7 +16,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 
 # MySQL 데이터베이스 연결 설정
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:1234@127.0.0.1/swe_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("SQLALCHEMY_DATABASE_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # 모델 초기화 함수 호출
