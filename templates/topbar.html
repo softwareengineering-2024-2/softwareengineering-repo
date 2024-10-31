@@ -16,10 +16,28 @@
             </a>
         </li>
         <li>
-            <img src="{{ url_for('static', filename='icons/alarm.svg') }}" alt="알림 아이콘"> 알림
+            <div class="notification-dropdown">
+                <a href="#" onclick="toggleNotificationDropdown(event)">
+                    <img src="{{ url_for('static', filename='icons/alarm.svg') }}" alt="알림 아이콘"> 알림
+                </a>
+                <div class="notification-content">
+                    <h3>알림</h3>
+                    <ul>
+                        {% for i in range(5) %}
+                        <li>
+                            <span class="project-name">프로젝트 명</span>
+                            <span class="task">프로덕트 백로그 할 일 추가</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
         </li>
         <li>
             <img src="{{ url_for('static', filename='icons/mypage.svg') }}" alt="마이페이지 아이콘"> 마이페이지
         </li>
     </ul>
 </div>
+
+<!-- JavaScript 파일 추가 -->
+<script src="{{ url_for('static', filename='js/topbar.js') }}"></script>

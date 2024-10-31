@@ -31,3 +31,65 @@
     align-items: center;
     gap: 6px; /* 아이콘과 텍스트 간 간격 */
 }
+
+.notification-content {
+    display: none;
+    position: absolute;
+    top: 30px;
+    right: 0;
+    background-color: white;
+    width: 250px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notification-content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-black);
+    text-align: center;
+    margin: 0 0 10px 0;
+}
+
+.notification-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column; /* 리스트를 세로로 쌓기 */
+    gap: 8px; /* 각 항목 간 간격 추가 */
+}
+
+.notification-content li {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    text-align: left; /* 텍스트 왼쪽 정렬 */
+}
+
+.notification-content .project-name {
+    font-size: 10px; /* 프로젝트 명 크기 */
+    font-weight: 600;
+    color: var(--color-green-700);
+    margin-right: 4px; /* 작업 설명과의 간격 */
+    text-align: left; /* 텍스트 왼쪽 정렬 */
+}
+
+.notification-content .task {
+    font-size: 14px;
+    color: var(--color-grey-900);
+    text-align: left; /* 텍스트 왼쪽 정렬 */
+    flex-grow: 1;
+}
+
+.notification-content li:last-child {
+    border-bottom: none;
+}
+
+/* 스크롤바 숨기기 */
+.notification-content::-webkit-scrollbar {
+    display: none;
+}
