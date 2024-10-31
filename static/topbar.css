@@ -21,5 +21,13 @@
     align-items: center;
     cursor: pointer;
     color: var(--color-grey-900);
-    gap: 8px; /* 아이콘과 텍스트 간 간격 */
+    gap: 6px; /* 아이콘과 텍스트 간 간격 */
+}
+
+.topbar ul li a {
+    text-decoration: none; /* 링크 밑줄 제거 */
+    color: var(--color-black); /* 항상 검정색으로 표시 */
+    display: flex;
+    align-items: center;
+    gap: 6px; /* 아이콘과 텍스트 간 간격 */
 }
