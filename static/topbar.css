@@ -1,0 +1,25 @@
+.topbar {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-white);
+    padding: 10px;
+    justify-content: flex-end;
+    font-size: var(--font-size-b2);
+    font-weight: var(--font-weight-regular);
+}
+
+.topbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 15px; /* 아이콘 간격 */
+}
+
+.topbar ul li {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: var(--color-grey-900);
+    gap: 8px; /* 아이콘과 텍스트 간 간격 */
+}
