@@ -44,19 +44,25 @@ class UserProject(db.Model):
         self.user_name = user_name
         self.user_role = user_role
 
+    # UserProject 테이블에 데이터를 저장하는 메서드
     def save_to_db(self):
         db.session.add(self)
+        db.session.commit()
+
+    # UserProject 테이블에서 해당 데이터를 삭제하는 메서드
+    def delete_from_db(self):
+        db.session.delete(self)
         db.session.commit()
 
     # 프로젝트 ID를 기준으로 UserProject를 검색하는 메서드
     @classmethod
     def find_by_project(cls, project_id):
         return cls.query.filter_by(project_id=project_id).first()
-
-    # UserProject 테이블에서 해당 데이터 삭제하는 메서드
-    def delete_from_db(self):
-        db.session.delete(self)
-        db.session.commit()
+    
+    # 사용자 ID와 프로젝트 ID를 기준으로 UserProject를 검색하는 메서드
+    @classmethod
+    def find_by_user_and_project(cls, user_id, project_id):
+        return cls.query.filter_by(user_id=user_id, project_id=project_id).first()
     
     # 사용자 ID를 기준으로 프로젝트 ID 목록을 반환하는 메서드
     @classmethod
@@ -64,3 +70,11 @@ class UserProject(db.Model):
         user_projects = cls.query.filter_by(user_id=user_id).all()
         project_list = [Project.find_by_id(up.project_id) for up in user_projects if Project.find_by_id(up.project_id)]
         return project_list
+    
+    # 사용자 ID와 프로젝트 ID를 기준으로 사용자의 프로필 정보를 저장하는 메서드
+    @classmethod
+    def set_user_profile(cls, user_id, project_id, user_name, user_role):
+        user_project = cls.query.filter_by(user_id=user_id, project_id=project_id).first()
+        user_project.user_name = user_name
+        user_project.user_role = user_role
+        user_project.save_to_db()

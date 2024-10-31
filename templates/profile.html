@@ -9,16 +9,15 @@
     <h1>사용자 프로필 설정</h1>
     <form method="POST" enctype="multipart/form-data">
         <label for="name">이름</label>
-        <input type="text" id="name" name="name" value="{{ current_user.name }}"><br>
+        <input type="text" id="name" name="name" value="{{ userproject.user_name }}">
+        <br>
 
         <label for="role">역할</label>
         <select id="role" name="role">
-            <option value="PM" {% if current_user.role == 'PM' %}selected{% endif %}>PM</option>
-            <option value="member" {% if current_user.role == 'member' %}selected{% endif %}>Member</option>
-        </select><br>
-
-        <label for="picture">프로필 사진</label>
-        <input type="file" id="picture" name="picture"><br>
+            <option value="PM" {% if userproject.user_role == 'PM' %}selected{% endif %}>PM</option>
+            <option value="Member" {% if userproject.user_role == 'Member' %}selected{% endif %}>Member</option>
+        </select>
+        <br>
 
         <input type="submit" value="확인">
     </form>

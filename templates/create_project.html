@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>새 프로젝트 생성</h1>
-    <form method="POST">
+    <form action="{{ url_for('manage_project.create_project_view') }}" method="POST">
         <label for="project_name">프로젝트 이름</label>
         <input type="text" id="project_name" name="project_name" required><br>
 

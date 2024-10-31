@@ -34,7 +34,7 @@
                             <form action="{{ url_for('manage_project.delete_project_view', project_id=userproject.project_id) }}" method="POST" style="display:inline;">
                                 <button type="submit" class="delete-button">링크 복사</button>
                             </form>
-                            <a href="{{ url_for('manage_project.manage_project_view', project_id=userproject.project_id) }}" class="project-link">프로필 수정</a>
+                            <a href="{{ url_for('manage_project.set_profile_view', project_id=userproject.project_id) }}" class="project-link">프로필 수정</a>
                             <form action="{{ url_for('manage_project.delete_project_view', project_id=userproject.project_id) }}" method="POST" style="display:inline;">
                                 <button type="submit" class="delete-button">나가기</button>
                             </form>

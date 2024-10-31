@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로젝트 생성 완료</title>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>프로젝트 생성 완료</h1>
+        </header>
+
+        <main class="main-content">
+            <p>"{{ project.project_name }}" 프로젝트가 생성되었습니다.</p>
+            <p>프로젝트 참여코드: {{ project.project_link }}</p>
+            <a href="{{ url_for('manage_project.set_profile_view', project_id=project.project_id) }}">확인</a>
+        </main>
+    </div>
+</body>
+</html>
