@@ -62,6 +62,18 @@ def board():
 @app.route("/review")
 def review():
     return render_template("review.html")
+
+@app.route('/project')
+def project():
+    return render_template('manage_project.html')
+
+@app.route('/calendar')
+def calendar():
+    return render_template('calendar.html')
+
+@app.route('/guide')
+def guide():
+    return render_template('guide.html')
 #-------------------------------------------------
 
 if __name__ == "__main__":
