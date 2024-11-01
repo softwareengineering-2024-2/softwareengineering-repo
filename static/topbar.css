@@ -33,11 +33,16 @@
     gap: 6px; /* 아이콘과 텍스트 간 간격 */
 }
 
+.my-page {
+    margin-left: 20px; /* 필요한 만큼 간격 조정 */
+    margin-right: 20px;
+}
+
 .notification-content {
     display: none;
     position: absolute;
     top: 50px;
-    right: 25px;
+    right: 65px;
     background-color: white;
     width: 250px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
