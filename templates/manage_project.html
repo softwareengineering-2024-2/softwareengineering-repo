@@ -15,12 +15,12 @@
             <div class="action-buttons">
                 <div class="button-wrapper">
                     <a href="{{ url_for('manage_project.create_project_view') }}" class="action-button create-project">
-                        <span>프로젝트 생성</span>
+                        <span>프로젝트 생성하기</span>
                     </a>
                 </div>
                 <div class="button-wrapper">
                     <a href="{{ url_for('manage_project.join_project_view') }}" class="action-button join-project">
-                        <span>프로젝트 참여</span>
+                        <span>프로젝트 참여하기</span>
                     </a>
                 </div>
             </div>
@@ -28,11 +28,13 @@
             <section class="project-list">
                 <h2>프로젝트 목록</h2>
                 <ul>
-                    {% for project in projects %}
+                    {% for userproject in userprojects %}
                         <li class="project-item">
-                            <a href="{{ url_for('manage_project.manage_project_view', project_id=project.project_id) }}" class="project-link">{{ project.project_name }}</a>
-                            <form action="{{ url_for('manage_project.delete_project_view', project_id=project.project_id) }}" method="POST" style="display:inline;">
-                                <button type="submit" class="delete-button">삭제</button>
+                            <a href="{{ url_for('project_main.project_main_view', project_id=userproject.project_id) }}" class="project-link">{{ userproject.project_name }}</a>
+                            <button onclick="copyToClipboard('{{ userproject.project_link }}')" class="copy-button">링크 복사</button>
+                            <a href="{{ url_for('manage_project.set_profile_view', project_id=userproject.project_id) }}" class="project-link">프로필 수정</a>
+                            <form action="{{ url_for('manage_project.delete_project_view', project_id=userproject.project_id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="delete-button">나가기</button>
                             </form>
                         </li>
                     {% else %}
@@ -57,6 +59,15 @@
             $('.toast').toast({ autohide: true, delay: 1000 });
             $('.toast').toast('show');
         });
+    </script>
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('링크가 클립보드에 복사되었습니다.');
+            }, function(err) {
+                alert('링크 복사에 실패했습니다.');
+            });
+        }
     </script>
 </body>
 </html>
