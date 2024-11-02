@@ -1,3 +1,5 @@
+{% set role = "PM" %}
+{% set username = "이서준" %}
 <div class="topbar">
     <ul>
         <li>
@@ -15,7 +17,7 @@
                 <img src="{{ url_for('static', filename='icons/guide.svg') }}" alt="가이드 페이지 아이콘"> 가이드페이지
             </a>
         </li>
-        <li>
+        <li class="notification-dropdown">
             <div class="notification-dropdown">
                 <a href="#" onclick="toggleNotificationDropdown(event)">
                     <img src="{{ url_for('static', filename='icons/alarm.svg') }}" alt="알림 아이콘"> 알림
@@ -33,8 +35,22 @@
                 </div>
             </div>
         </li>
-        <li>
-            <img src="{{ url_for('static', filename='icons/mypage.svg') }}" alt="마이페이지 아이콘"> 마이페이지
+        <li class="my-page-dropdown">
+            <a href="#" onclick="toggleMyPageDropdown(event)">
+                <img src="{{ url_for('static', filename='icons/mypage.svg') }}" alt="마이페이지 아이콘"> 마이페이지
+            </a>
+            <div class="mypage-content">
+                <h3>마이페이지</h3>
+                <!-- 프로필 사진 -->
+                <div class="profile-picture">
+                    <img src="{{ profile_picture or url_for('static', filename='icons/mypage_default.svg') }}" alt="프로필 사진" />
+                </div>
+                <!-- 역할과 사용자 이름 -->
+                <p>{{ role }} {{ username }}</p>
+                <!-- 버튼들 -->
+                <button class="btn btn-edit-profile">프로필 변경하기</button>
+                <button class="btn btn-logout">로그아웃 하기</button>
+            </div>
         </li>
     </ul>
 </div>
