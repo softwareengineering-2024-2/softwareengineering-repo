@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ project_name }} - 프로젝트 메인 페이지</title>
+    <title>{{ userproject.project_name }} - 프로젝트 메인 페이지</title>
 </head>
 <body>
     <a href="{{ url_for('index') }}">홈으로 돌아가기</a>
-    <h1>{{ project_name }} 프로젝트 관리</h1>
-    <p>여기서 프로젝트 관리 수행</p>
-    <p>링크 공유해서 팀원 추가하기</p>
-
+    <a href="{{ url_for('manage_project.manage_project_view') }}">프로젝트 관리 페이지로 돌아가기</a>
+    <h1>{{ userproject.project_name }} 프로젝트 메인</h1>
+    <p>프로젝트 진행률</p>
+    <p>내 작업</p>
+    <p>Todo List</p>
+    <p>2주 캘린더</p>
 </body>
 </html>
