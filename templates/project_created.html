@@ -13,9 +13,19 @@
 
         <main class="main-content">
             <p>"{{ project.project_name }}" 프로젝트가 생성되었습니다.</p>
-            <p>프로젝트 참여코드: {{ project.project_link }}</p>
-            <a href="{{ url_for('manage_project.set_profile_view', project_id=project.project_id) }}">확인</a>
+            <p>프로젝트 참여코드: {{ project.project_link }} <button onclick="copyToClipboard('{{ project.project_link }}')" class="copy-button">링크 복사</button></p>
+            <a href="{{ url_for('manage_project.set_profile_view', project_id=project.project_id) }}">프로필 설정하기</a>
         </main>
     </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('링크가 클립보드에 복사되었습니다.');
+            }, function(err) {
+                alert('링크 복사에 실패했습니다.');
+            });
+        }
+    </script>
 </body>
 </html>

@@ -1,9 +1,8 @@
 import os
 from flask import Flask, render_template
 from controllers.auth import auth_bp, init_login_manager
-from controllers.create_project import create_project_bp
-from controllers.project_main import project_main_bp
-from views.project_view import project_bp
+from views.project_main_view import project_main_bp
+from views.manage_project_view import manage_project_bp
 from dotenv import load_dotenv
 from models import init_db
 
@@ -27,7 +26,7 @@ init_login_manager(app)
 # Register the authentication blueprint
 app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(project_main_bp, url_prefix='/project_main')
-app.register_blueprint(project_bp, url_prefix='/manage_project')
+app.register_blueprint(manage_project_bp, url_prefix='/manage_project')
 
 @app.route("/")
 def index():
