@@ -36,6 +36,49 @@ app.register_blueprint(project_bp, url_prefix='/manage_project')
 def index():
     return render_template("index.html")
 
+#------------------------------------------------
+#view로 이동 요청
+@app.route("/main")
+def main():
+    return render_template("base.html")
+
+@app.route("/milestone")
+def milestone():
+    return render_template("milestone.html")
+
+@app.route("/userstory")
+def userstory():
+    return render_template("userstory.html")
+
+@app.route("/backlog")
+def backlog():
+    return render_template("backlog.html")
+
+@app.route("/sprint")
+def sprint():
+    return render_template("sprint.html")
+
+@app.route("/board")
+def board():
+    return render_template("board.html")
+
+@app.route("/review")
+def review():
+    return render_template("review.html")
+
+@app.route('/project')
+def project():
+    return render_template('manage_project.html')
+
+@app.route('/calendar')
+def calendar():
+    return render_template('calendar.html')
+
+@app.route('/guide')
+def guide():
+    return render_template('guide.html')
+#-------------------------------------------------
+
 if __name__ == "__main__":
     with app.app_context():
         from models.project_model import db  # 데이터베이스 테이블 생성하기 위해 가져오기
