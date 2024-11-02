@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마일스톤 페이지</title>
+</head>
+<body>
+
+<div class="milestone-container">
+    <!-- 마일스톤 목록 -->
+    <div class="milestone-list">
+        <h3>마일스톤 목록</h3>
+        <ul>
+            {% for milestone in milestones %}
+                <li class="milestone-item">
+                    <span id="milestone_content" name="milestone_content">{{ milestone.milestone_content }}</span>
+                    <span class="milestone-date-text" id="due_date" name="due_date">{{ milestone.due_date }}</span>
+                    <div class="milestone-actions" style="display: inline;">
+                        <a href="{{ url_for('milestone.update_milestone_view', project_id=project_id, milestone_id=milestone.milestone_id) }}">수정</a>
+                        <form action="{{ url_for('milestone.delete_milestone_view', project_id=project_id, milestone_id=milestone.milestone_id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="delete-button">삭제</button>
+                        </form>
+                    </div>
+                </li>
+            {% else %}
+                <li class="milestone-item">마일스톤이 없습니다.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- 마일스톤 추가 버튼 -->
+    <a href="{{ url_for('milestone.create_milestone_view', project_id=project_id) }}" class="add-milestone">마일스톤 추가하기</a>
+</div>
+
+</body>
+</html>

@@ -42,6 +42,7 @@ def delete_project(project_id):
 
 # 사용자의 프로필 정보를 설정하는 로직
 def set_profile(project_id, user_name, user_role):
-    UserProject.set_user_profile(current_user.id, project_id, user_name=user_name, user_role=user_role)
-    
-    return f"프로필이 설정되었습니다."
+    userproject = UserProject.find_by_user_and_project(current_user.id, project_id)
+    if userproject:
+        userproject.set_user_profile(current_user.id, project_id, user_name=user_name, user_role=user_role)
+        return f"프로필이 설정되었습니다."
