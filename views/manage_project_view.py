@@ -11,7 +11,7 @@ manage_project_bp = Blueprint('manage_project', __name__)
 @login_required
 def manage_project_view():
     userprojects = get_user_projects()
-    return render_template('manage_project.html', userprojects=userprojects)
+    return render_template('manage_project_back.html', userprojects=userprojects)
 
 # 프로젝트 생성 로직
 @manage_project_bp.route('/create', methods=['GET', 'POST'])
@@ -21,14 +21,14 @@ def create_project_view():
         project_name = request.form.get('project_name')
         new_project = create_project(project_name)
         return redirect(url_for('manage_project.project_created_view', project_id=new_project.project_id))
-    return render_template('create_project.html')
+    return render_template('create_project_back.html')
 
 # 프로젝트 생성 완료 로직
 @manage_project_bp.route('/project_created', methods=['GET'])
 @login_required
 def project_created_view():
     project_id = request.args.get('project_id')
-    return render_template('project_created.html', project=Project.find_by_id(project_id))
+    return render_template('project_created_back.html', project=Project.find_by_id(project_id))
 
 # 프로젝트 참여 로직
 @manage_project_bp.route('/join', methods=['GET', 'POST'])
@@ -39,7 +39,7 @@ def join_project_view():
         message = join_project_by_link(project_link)
         flash(message)
         return redirect(url_for('manage_project.set_profile_view', project_id=Project.find_by_link(project_link).project_id))
-    return render_template('join_project.html')
+    return render_template('join_project_back.html')
 
 # 프로젝트 삭제 로직
 @manage_project_bp.route('/<int:project_id>/delete', methods=['POST'])
@@ -59,4 +59,4 @@ def set_profile_view(project_id):
         message = set_profile(project_id, user_name, user_role)
         flash(message)
         return redirect(url_for('project_main.project_main_view', project_id=project_id))
-    return render_template('profile.html', userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
+    return render_template('profile_back.html', userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
