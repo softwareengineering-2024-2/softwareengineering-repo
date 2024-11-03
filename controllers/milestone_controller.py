@@ -3,7 +3,8 @@ from flask_login import current_user
 
 # 모든 마일스톤을 가져오는 로직
 def get_milestones(project_id):
-    return Milestone.find_by_project(project_id)
+    Milestone.update_check_status(project_id)
+    return Milestone.find_by_project_ordered_by_due_date(project_id)
 
 # 새로운 마일스톤을 생성하고 저장하는 로직
 def create_milestone(project_id, milestone_content, due_date):

@@ -21,6 +21,7 @@
                         <form action="{{ url_for('milestone.delete_milestone_view', project_id=project_id, milestone_id=milestone.milestone_id) }}" method="POST" style="display:inline;">
                             <button type="submit" class="delete-button">삭제</button>
                         </form>
+                        <span id="check" name="check" style="display: inline;">{{ milestone.check }}</span>
                     </div>
                 </li>
             {% else %}

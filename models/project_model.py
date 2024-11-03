@@ -1,4 +1,4 @@
-from models import db
+from database import db
 
 # Project 모델
 class Project(db.Model):

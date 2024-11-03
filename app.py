@@ -5,7 +5,8 @@ from views.project_main_view import project_main_bp
 from views.manage_project_view import manage_project_bp
 from views.milestone_view import milestone_bp
 from dotenv import load_dotenv
-from models import init_db
+#from models import init_db
+from database import init_db
 
 # .env 파일 로드
 load_dotenv()

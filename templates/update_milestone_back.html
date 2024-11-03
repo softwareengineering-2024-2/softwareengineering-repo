@@ -9,7 +9,7 @@
     <h1>마일스톤 수정</h1>
     <form method="POST" enctype="multipart/form-data">
         <label for="milestone-name">마일스톤 이름</label>
-        <input type="text" id="milestone-name" name="milestone_content" placeholder="{{ milestone.milestone_content }}">
+        <input type="text" id="milestone-name" name="milestone_content" value="{{ milestone.milestone_content }}">
 
         <label for="deadline">마감 기한</label>
         <input type="date" id="deadline" name="due_date" value="{{ milestone.due_date }}">
