@@ -4,6 +4,7 @@ from controllers.auth import auth_bp, init_login_manager
 from views.project_main_view import project_main_bp
 from views.manage_project_view import manage_project_bp
 from views.milestone_view import milestone_bp
+from views.productbacklog_view import productbacklog_bp
 from dotenv import load_dotenv
 #from models import init_db
 from database import init_db
@@ -30,6 +31,8 @@ app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(project_main_bp, url_prefix='/project_main')
 app.register_blueprint(manage_project_bp, url_prefix='/manage_project')
 app.register_blueprint(milestone_bp, url_prefix='/milestone')
+app.register_blueprint(productbacklog_bp, url_prefix='/backlog')  # /backlog 경로에 등록
+
 
 @app.route("/")
 def index():
