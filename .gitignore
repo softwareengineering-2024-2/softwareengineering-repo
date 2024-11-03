@@ -1,6 +1,11 @@
-#.env 파일 무시
+# .env 파일 무시
 .env
 # readme.md 파일 무시
 readme.md
 # vscode 설정 파일 무시
+__pycache__
 controllers/__pycache__
+models/__pycache__
+views/__pycache__
+# mac os에서 자동 생성되는 속성 파일 무시
+*.DS_Store

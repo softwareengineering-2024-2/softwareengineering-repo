@@ -11,11 +11,37 @@
         <p>{{ current_user.name }}님 어서오세요! 로그인 되었습니다.</p>
         <div>
             <p>당신의 구글 프로필 사진:</p>
-            <img src="{{ current_user.profile_pic }}" alt="Google profile pic">
+            <img src="{{ current_user.profile_pic }}" alt="Google profile pic" style="width: 100px; height: 100px;">
         </div>
         <a href="{{ url_for('auth.logout') }}">로그아웃하기</a>
+
+        <a href="{{ url_for('manage_project.manage_project_view') }}">프로젝트 관리</a>
+
+        {% if session.project_name %}
+            <h2>진행중인 프로젝트: <a href="{{ url_for('project_main.project_main') }}">{{ session.project_name }}</a></h2>
+        {% else %}
+        <h2>진행중인 프로젝트가 없습니다.</h2>
+        {% endif %}
+
     {% else %}
         <a href="{{ url_for('auth.login') }}">클릭해서 구글 로그인하기</a>
     {% endif %}
+
+    <!-- 프로필 수정 완료 팝업 띄우는 코드 (나중에 부트스트랩 사용해서 이것보다 보기좋게 수정해도 좋을듯 아니면 수정 알림 안 뜨게 해도 되고)-->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <script>
+            alert("{{ messages[0] }}");
+        </script>
+      {% endif %}
+    {% endwith %}
+
+    <script>
+        $(document).ready(function(){
+            $('.toast').toast({ autohide: true, delay: 1000 });
+            $('.toast').toast('show');
+        });
+    </script>
+
 </body>
 </html>
