@@ -1,7 +1,7 @@
 # productbacklog_view.py
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
-from controllers.productbacklog_controller import get_user_stories, update_product_backlog, create_product_backlog_group, delete_product_backlog, save_backlog_order
+from controllers.productbacklog_controller import get_user_stories, update_product_backlog, create_product_backlog_group, save_all_backlog_groups, delete_product_backlog, save_backlog_order
 from models.productbacklog_model import ProductBacklog
 from models.userstory_model import UserStory
 from database import db
@@ -30,6 +30,7 @@ def create_backlog_group():
     product_backlog_id = create_product_backlog_group(group_name, story_ids)
     return jsonify({"success": True, "product_backlog_id": product_backlog_id})
 
+# 유저스토리 이동
 @productbacklog_bp.route('/product_backlog/move', methods=['POST'])
 def move_user_story():
     story_id = request.form.get('story_id')
@@ -37,28 +38,22 @@ def move_user_story():
     success = update_product_backlog(story_id, backlog_id)
     return jsonify({"success": success})
 
+# 백로그 저장
 @productbacklog_bp.route('/product_backlog/save_groups', methods=['POST'])
 def save_backlog_groups():
     data = request.get_json()
-    success = True
-
-    for group in data:
-        group_name = group['backlogName']
-        story_ids = group['storyIds']
-
-        # ProductBacklog 그룹 생성
-        backlog_id = create_product_backlog_group(group_name, story_ids)
-        if backlog_id is None:
-            success = False
-
+    backlog_groups = data.get('backlogGroups', [])
+    unassigned_story_ids = data.get('unassignedStoryIds', [])
+    success = save_all_backlog_groups(backlog_groups, unassigned_story_ids)
     return jsonify({"success": success})
 
+# 백로그 삭제
 @productbacklog_bp.route('/product_backlog/delete/<int:backlog_id>', methods=['DELETE'])
 def delete_backlog_view(backlog_id):
     success = delete_product_backlog(backlog_id)
     return jsonify({"success": success})
 
-# 백로그 박스 순서를 저장
+# 백로그 박스 순서를 저장 (아직 적용 안 함)
 @productbacklog_bp.route('/product_backlog/save_order', methods=['POST'])
 def save_backlog_order_view():
     backlog_order_list = request.get_json().get('backlogOrderList', [])

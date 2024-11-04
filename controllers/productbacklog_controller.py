@@ -76,18 +76,85 @@ def create_product_backlog_group(group_name, story_ids):
         return None
     
 # 전달된 모든 백로그 그룹 데이터를 저장하는 함수
-def save_all_backlog_groups(backlog_groups):
-    success = True
-    for group in backlog_groups:
-        group_name = group['backlogName']
-        story_ids = group['storyIds']
+# def save_all_backlog_groups(backlog_groups, unassigned_story_ids):
+#     try:
+#         success = True
+#         for group in backlog_groups:
+#             group_name = group['backlogName']
+#             story_ids = group['storyIds']
 
-        backlog_id = create_product_backlog_group(group_name, story_ids)
-        if backlog_id is None:
-            success = False
+#             backlog_id = create_product_backlog_group(group_name, story_ids)
+#             if backlog_id is None:
+#                 success = False
 
-    return success
+#         # 백로그에 속하지 않는 유저 스토리의 product_backlog_id를 None으로 업데이트
+#         for story_id in unassigned_story_ids:
+#             user_story = UserStory.query.get(story_id)
+#             if user_story:
+#                 user_story.product_backlog_id = None
+#                 db.session.add(user_story)
+#         db.session.commit()
+#         return success
+#     except Exception as e:
+#         print(f"Error saving backlog groups: {e}")
+#         db.session.rollback()
+#         return False
+def save_all_backlog_groups(backlog_groups, unassigned_story_ids):
+    try:
+        success = True
+        for group in backlog_groups:
+            group_name = group['backlogName']
+            story_ids = group['storyIds']
+            backlog_id = group.get('backlogId')
 
+            if backlog_id:
+                # 이미 존재하는 백로그 그룹의 이름 업데이트
+                existing_backlog = ProductBacklog.query.get(backlog_id)
+                if existing_backlog:
+                    existing_backlog.product_backlog_content = group_name
+                    db.session.add(existing_backlog)
+
+                    # 유저스토리들을 해당 백로그에 업데이트
+                    for story_id in story_ids:
+                        user_story = UserStory.query.get(story_id)
+                        if user_story:
+                            user_story.product_backlog_id = backlog_id
+                            db.session.add(user_story)
+            else:
+                # 새로운 백로그 생성이 필요한 경우에만 생성
+                if story_ids:
+                    first_story = UserStory.query.get(story_ids[0])
+                    if first_story:
+                        project_id = first_story.project_id
+                        new_backlog = ProductBacklog(
+                            story_id=first_story.story_id,
+                            project_id=project_id,
+                            product_backlog_content=group_name
+                        )
+                        db.session.add(new_backlog)
+                        db.session.commit()
+
+                        # 새로운 백로그와 유저스토리들을 연결
+                        for story_id in story_ids:
+                            user_story = UserStory.query.get(story_id)
+                            if user_story:
+                                user_story.product_backlog_id = new_backlog.product_backlog_id
+                                db.session.add(user_story)
+
+        # 백로그에 속하지 않는 유저스토리들을 업데이트
+        for story_id in unassigned_story_ids:
+            user_story = UserStory.query.get(story_id)
+            if user_story:
+                user_story.product_backlog_id = None
+                db.session.add(user_story)
+
+        db.session.commit()
+        return True
+    except Exception as e:
+        print(f"Error saving backlog groups: {e}")
+        db.session.rollback()
+        return False
+    
 # 백로그와 해당 백로그에 포함된 유저스토리의 참조를 삭제하는 함수
 def delete_product_backlog(backlog_id):
     try:
