@@ -34,7 +34,10 @@
                     </div>
                     <div class="todo-box">
                         <h3>TODO LIST</h3>
-                        <p>+ 할 일 추가하기</p>
+                        <ul id="todo-list">
+                            <!-- 할 일이 추가되면 여기에 항목이 표시됨 -->
+                        </ul>
+                        <p id="add-todo" onclick="addNewTodoInput()">+ 할 일 추가하기</p>
                     </div>
                 </div>
                 
@@ -45,5 +48,7 @@
             </div>
         </div>
     </div>
+    <!-- JavaScript 파일 추가 -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

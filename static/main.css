@@ -44,13 +44,13 @@
     color: var(--color-grey-800)
 }
 
-/* 작업 목록과 TODO LIST 섹션 */
+/* 작업 목록 */
 .task-sections {
     display: flex;
     gap: 20px;
 }
 
-.task-box, .todo-box {
+.task-box, .todo-box{
     flex: 1;
     background-color: var(--color-grey-50);
     padding: 15px;
@@ -58,10 +58,58 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.task-box h3, .todo-box h3 {
+.task-box h3{
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 8px;
+}
+/* TODO LIST 설정 */
+#todo-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.todo-text {
+    flex-grow: 1;
+}
+
+.todo-input {
+    width: 100%;
+    padding: 5px;
+    font-size: 14px;
+}
+
+button.todo-complete, button.todo-edit, button.todo-delete {
+    white-space: nowrap; /* 줄바꿈 방지 */
+    background-color: #ddd;
+    border: none;
+    padding: 5px 8px;
+    cursor: pointer;
+    font-size: 12px;
+    border-radius: 4px;
+}
+
+button.todo-complete:hover {
+    background-color: #a0d683;
+    color: white;
+}
+
+button.todo-edit:hover {
+    background-color: #ffde59;
+    color: white;
+}
+
+button.todo-delete:hover {
+    background-color: #ff5252;
+    color: white;
 }
 
 /* 2주 캘린더 섹션 */
