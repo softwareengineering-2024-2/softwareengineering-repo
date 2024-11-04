@@ -36,7 +36,7 @@ def index():
 #view로 이동 요청
 @app.route("/main")
 def main():
-    return render_template("base.html")
+    return render_template("main.html")
 
 @app.route("/milestone")
 def milestone():
