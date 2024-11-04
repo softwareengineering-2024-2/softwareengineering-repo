@@ -100,3 +100,7 @@ function addTodoItem(text) {
     todoItem.appendChild(deleteButton);
     todoList.appendChild(todoItem);
 }
+
+document.getElementById("two-week-calendar").addEventListener("click", function() {
+    window.location.href = "calendar";
+});

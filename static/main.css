@@ -118,6 +118,7 @@ button.todo-delete:hover {
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer; /* 클릭 가능한 상태를 시각적으로 표시 */
 }
 
 .calendar-box h3 {
