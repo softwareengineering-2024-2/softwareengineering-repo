@@ -76,7 +76,7 @@ def review():
 
 @app.route('/project')
 def project():
-    return render_template('manage_project.html')
+    return render_template('manage_project_back.html')
 
 @app.route('/calendar')
 def calendar():
