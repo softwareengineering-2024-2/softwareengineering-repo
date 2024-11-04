@@ -1,5 +1,5 @@
 .content {
-    margin-top: 7vh; /* 탑바 높이만큼 위 여백 추가 */
+    margin-top: 2vh; /* 탑바 밑 여백 추가 */
     margin-left: 25vh; /* 사이드바 너비만큼 왼쪽 여백 추가 */
 }
 /* 전체 대시보드 스타일 */
@@ -18,28 +18,30 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.progress-bar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .progress-bar {
-    position: relative;
+    width: 97%;
     height: 20px;
     background-color: var(--color-grey-200);
     border-radius: 10px;
     overflow: hidden;
-    margin-top: 8px;
+    margin-right: 10px;
 }
 
 .progress {
     height: 100%;
     background-color: var(--color-green-400);
-    border-radius: 10px;
+    transition: width 0.3s ease;
 }
 
-.progress-text {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    color: var(--color-grey-800);
+.progress-percentage {
     font-weight: bold;
+    color: var(--color-grey-800)
 }
 
 /* 작업 목록과 TODO LIST 섹션 */

@@ -19,12 +19,13 @@
                 <!-- 우리팀의 프로덕트 백로그 달성률 -->
                 <div class="progress-section">
                     <h2>우리팀의 프로덕트 백로그 달성률</h2>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 45%;"></div>
-                        <span class="progress-text">45%</span>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress" style="width: {{ progress_percentage }}%;"></div>
+                        </div>
+                        <div class="progress-percentage">{{ progress_percentage | round(1) }}%</div>
                     </div>
                 </div>
-                
                 <!-- 내가 담당받은 작업 목록과 TODO LIST -->
                 <div class="task-sections">
                     <div class="task-box">

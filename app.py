@@ -36,7 +36,11 @@ def index():
 #view로 이동 요청
 @app.route("/main")
 def main():
-    return render_template("main.html")
+    total_tasks = 100  # 전체 작업 수 (예시)
+    completed_tasks = 25  # 완료된 작업 수 (예시)
+    # 달성률 계산
+    progress_percentage = (completed_tasks / total_tasks) * 100 if total_tasks > 0 else 0
+    return render_template('main.html', progress_percentage=progress_percentage)
 
 @app.route("/milestone")
 def milestone():
