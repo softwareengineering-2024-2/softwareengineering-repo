@@ -1,0 +1,79 @@
+@import url("global.css");
+
+.main-container {
+  display: flex; /* 수평으로 정렬 */
+  height: calc(100vh - 60px); /* 탑바 높이를 제외한 높이 */
+}
+
+.projects-content {
+  flex: 1;
+  margin-left: 250px;
+  padding: 20px;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+}
+
+.info-text {
+  color: var(--Grey-grey-600, #666);
+  margin-top: 1vh;
+}
+
+.project-buttons {
+  margin-top: 6vh;
+  margin-bottom: 6vh;
+  display: flex;
+  gap: 3vh;
+  align-items: center; /* 수직 가운데 정렬 */
+  justify-content: center; /* 수평 가운데 정렬 */
+}
+
+.project-button {
+  border-radius: 20px;
+  background: var(--color-white);
+  box-shadow: 0px 0px 20px 12px rgba(0, 0, 0, 0.05);
+  padding-top: 4vh;
+  padding-bottom: 4vh;
+  padding-left: 6vh;
+  padding-right: 6vh;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  border: none;
+}
+
+.project-lists {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 4vh;
+  align-items: center;
+}
+
+.project-list {
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.05);
+  display: flex;
+  padding: 2vh;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1vh;
+  width: 100vh;
+}
+
+.project-list button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 10px 20px;
+  font-size: var(--font-size-b1);
+}
+
+.normal-button {
+  color: #000; /* 일반 버튼 텍스트 색상 */
+}
+
+.exit-button {
+  color: var(--color-red); /* 일반 버튼 텍스트 색상 */
+}
