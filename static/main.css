@@ -1,0 +1,76 @@
+.content {
+    margin-top: 7vh; /* 탑바 높이만큼 위 여백 추가 */
+    margin-left: 25vh; /* 사이드바 너비만큼 왼쪽 여백 추가 */
+}
+/* 전체 대시보드 스타일 */
+.dashboard {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 프로덕트 백로그 달성률 섹션 */
+.progress-section {
+    background-color: var(--color-grey-50);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar {
+    position: relative;
+    height: 20px;
+    background-color: var(--color-grey-200);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.progress {
+    height: 100%;
+    background-color: var(--color-green-400);
+    border-radius: 10px;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    color: var(--color-grey-800);
+    font-weight: bold;
+}
+
+/* 작업 목록과 TODO LIST 섹션 */
+.task-sections {
+    display: flex;
+    gap: 20px;
+}
+
+.task-box, .todo-box {
+    flex: 1;
+    background-color: var(--color-grey-50);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.task-box h3, .todo-box h3 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+/* 2주 캘린더 섹션 */
+.calendar-box {
+    background-color: var(--color-grey-50);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-box h3 {
+    font-size: 16px;
+    font-weight: bold;
+}

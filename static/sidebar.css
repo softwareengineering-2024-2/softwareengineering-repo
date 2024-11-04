@@ -1,6 +1,6 @@
 .sidebar {
     background-color: var(--color-green-500);
-    width: 250px;
+    width: 25vh;
     height: 100vh;
     padding-top: 20px;
     position: fixed;
