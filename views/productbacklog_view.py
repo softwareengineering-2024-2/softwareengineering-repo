@@ -3,6 +3,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from controllers.productbacklog_controller import get_user_stories, update_product_backlog, create_product_backlog_group, delete_product_backlog, save_backlog_order
 from models.productbacklog_model import ProductBacklog
+from models.userstory_model import UserStory
+from database import db
 
 # Blueprint 객체 생성
 productbacklog_bp = Blueprint('productbacklog', __name__)

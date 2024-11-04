@@ -41,7 +41,19 @@ def create_product_backlog_group(group_name, story_ids):
             return None
         project_id = first_story.project_id
 
-        # 새로운 ProductBacklog 레코드 생성 (project_id와 story_id가 필수라면 여기서 설정)
+        # 동일한 이름의 ProductBacklog 그룹이 있는지 확인
+        existing_backlog = ProductBacklog.query.filter_by(project_id=project_id, product_backlog_content=group_name).first()
+
+        if existing_backlog:
+            # 이미 존재하는 백로그에 유저스토리 업데이트
+            for story_id in story_ids:
+                user_story = UserStory.query.get(story_id)
+                if user_story:
+                    user_story.product_backlog_id = existing_backlog.product_backlog_id
+            db.session.commit()
+            return existing_backlog.product_backlog_id
+
+        # 동일한 이름의 백로그가 없으면 새로운 ProductBacklog 레코드 생성
         new_backlog = ProductBacklog(
             story_id=first_story.story_id,  # 첫 번째 story_id 임시 설정 (필수 항목 채우기 위해)
             project_id=project_id,

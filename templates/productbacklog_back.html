@@ -52,7 +52,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 </head>
 
-
 <body>
     <h2>프로덕트 백로그</h2>
     <div id="userStories" class="backlog">
@@ -73,7 +72,7 @@
         </form>
         {% for backlog in product_backlog_groups %}
             <div class="backlog-box" data-backlog-id="{{ backlog.product_backlog_id }}">
-                <input type="text" value="{{ backlog.product_backlog_content }}" readonly>
+                <input type="text" value="{{ backlog.product_backlog_content }}">
                 <button onclick="deleteBacklog('{{ backlog.product_backlog_id }}')">x</button>
                 {% for story in user_stories if story.product_backlog_id == backlog.product_backlog_id %}
                     <div class="user-story" draggable="true" data-story-id="{{ story.story_id }}">
