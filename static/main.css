@@ -50,7 +50,7 @@
     gap: 20px;
 }
 
-.task-box, .todo-box{
+.task-box, .todo-box, .calendar-box {
     flex: 1;
     background-color: var(--color-grey-50);
     padding: 15px;
@@ -58,10 +58,11 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.task-box h3{
-    font-size: 16px;
+.task-box h2, .todo-box h2, .calendar-box h2 {
+    font-size: 18px;
     font-weight: bold;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    color: var(--color-grey-900);
 }
 /* TODO LIST 설정 */
 #todo-list {
@@ -119,9 +120,4 @@ button.todo-delete:hover {
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     cursor: pointer; /* 클릭 가능한 상태를 시각적으로 표시 */
-}
-
-.calendar-box h3 {
-    font-size: 16px;
-    font-weight: bold;
 }
