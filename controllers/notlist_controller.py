@@ -27,7 +27,7 @@ def delete_keyword(not_list_id,project_id, user_id):
         not_list_item = NotList.query.filter_by(not_list_id=not_list_id).first()
         not_list_item.delete_from_db()
     else:
-        return "You are not a PM", 400
+        return "Not list 키워드는 PM만 삭제할 수 있습니다."
     
     return not_list_item
 

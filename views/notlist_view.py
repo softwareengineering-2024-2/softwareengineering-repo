@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for,flash
 from controllers.notlist_controller import create_keywords, delete_keyword, show_notlist, get_user_role
 from flask_login import current_user
 
@@ -29,6 +29,5 @@ def create_keywords_route(project_id):
 def delete_keyword_route(project_id, not_list_id):
     user_id = current_user.id
     result = delete_keyword(not_list_id, project_id, user_id)
-    if isinstance(result, tuple):
-        return jsonify({"error": result[0]}), result[1]
+    flash(result)
     return redirect(url_for('notlist_view.notlist_back', project_id=project_id))

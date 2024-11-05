@@ -24,7 +24,7 @@
                         <li class="notlist-item">
                             {{ item.keyword }}
                             
-                                <form action="{{ url_for('notlist_view.delete_keyword_route', project_id=project_id, not_list_id=item.not_list_id) }}" method="POST" style="display:inline;" onsubmit="return confirmDelete();">
+                                <form action="{{ url_for('notlist_view.delete_keyword_route', project_id=project_id, not_list_id=item.not_list_id) }}" method="POST" style="display:inline;" onsubmit=" return confirmDelete();">
                                     
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button type="submit">삭제</button>

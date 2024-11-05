@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for,flash
-from controllers.userstory_controller import show_stories, create_story, update_story, delete_story
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, session
+from controllers.userstory_controller import show_stories, create_story, update_story, delete_story, check_keyword
 from controllers.notlist_controller import show_notlist
+
 userstory_bp = Blueprint('userstory_view', __name__)
 
 # 유저스토리 목록 보기
@@ -17,8 +18,15 @@ def view_stories_route(project_id):
 def create_story_route(project_id):
     content = request.form.get('content')
     result = create_story(content, project_id)
-    if isinstance(result, tuple):
-        return jsonify({"error": result[0]}), result[1]
+    
+    if result == "키워드 감지":
+        session['pending_user_story'] = {
+            'content': content,
+            'project_id': project_id,
+            'story_id': None  # 새 유저스토리이므로 story_id는 None
+        }
+        return render_template('keyword_check_back.html', project_id=project_id, user_story_content=content)
+    
     return redirect(url_for('userstory_view.view_stories_route', project_id=project_id))
 
 # 유저스토리 수정
@@ -26,14 +34,40 @@ def create_story_route(project_id):
 def update_story_route(project_id, story_id):
     content = request.form.get('content')
     result = update_story(story_id, content, project_id)
-    if isinstance(result, tuple):
-        return jsonify({"error": result[0]}), result[1]
+   
+    if result == "키워드 감지":
+        session['pending_user_story'] = {
+            'content': content,
+            'project_id': project_id,
+            'story_id': story_id
+        }
+        return render_template('keyword_check_back.html', project_id=project_id, story_id=story_id, user_story_content=content)
+   
     return redirect(url_for('userstory_view.view_stories_route', project_id=project_id))
 
 # 유저스토리 삭제
-@userstory_bp.route('/userstory/<int:project_id>/<int:story_id>', methods=['POST'])
+@userstory_bp.route('/userstory/<int:project_id>/<int:story_id>/delete', methods=['POST'])
 def delete_story_route(project_id, story_id):
+    delete_story(story_id)
+    return redirect(url_for('userstory_view.view_stories_route', project_id=project_id))
+
+# 유저스토리 키워드 검사
+@userstory_bp.route('/userstory/check/<int:project_id>', methods=['POST'])
+def check_keyword_route(project_id):
+    check_or_not = request.form.get('check_or_not')
+    pending_user_story = session.get('pending_user_story')
+    if not pending_user_story:
+        flash("세션에 유저스토리 데이터가 없습니다.", "error")
+        return redirect(url_for('userstory_view.view_stories_route', project_id=project_id))
     
-    result=delete_story(story_id)
-    flash(result)
+    user_story_content = pending_user_story['content']
+    story_id = pending_user_story['story_id']
+    result = check_keyword(check_or_not, user_story_content, project_id, story_id)
+    
+    if result == "check":
+        flash("유저스토리가 성공적으로 저장되었습니다.", "success")
+    elif result == "not":
+        flash("유저스토리 저장이 취소되었습니다.", "info")
+    
+    session.pop('pending_user_story', None)  # 세션에서 데이터 제거
     return redirect(url_for('userstory_view.view_stories_route', project_id=project_id))
