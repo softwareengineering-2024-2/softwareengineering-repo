@@ -1,8 +1,8 @@
 @import url("global.css");
 
 .main-container {
-  display: flex; /* 수평으로 정렬 */
-  height: calc(100vh - 60px); /* 탑바 높이를 제외한 높이 */
+  margin-top: 2vh; /* 탑바 밑 여백 추가 */
+  margin-left: 25vh; /* 사이드바 너비만큼 왼쪽 여백 추가 */
 }
 
 .b2-regular {
@@ -10,8 +10,6 @@
 }
 
 .content {
-  flex: 1;
-  margin-left: 250px;
   padding: 20px;
   flex-direction: column;
   text-align: center;
@@ -31,7 +29,7 @@
   left: 50%;
   top: 50%;
   width: 30%;
-  transform: translate(-50%, -50%);
+  transform: translate(-30%, -50%);
   position: fixed;
 }
 
