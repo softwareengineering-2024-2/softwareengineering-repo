@@ -1,0 +1,47 @@
+<!-- templates/keyword_check_back.html -->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>키워드 확인</title>
+    <style>
+        .flash-message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+        }
+        .flash-message.warning { background-color: #ffdddd; }
+    </style>
+</head>
+<body>
+    <h1>키워드 확인</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <p>해당 유저스토리에 Not List 키워드가 포함되었습니다. 확인을 누를 시 PM에게 알림이 갑니다.</p>
+    <p>다음 키워드가 포함되어 있습니다:</p>
+    <ul>
+        {% for keyword in not_list %}
+            <li>{{ keyword.keyword }}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- 확인 버튼 -->
+    <form action="{{ url_for('userstory_view.check_keyword_route', project_id=project_id) }}" method="POST" style="display:inline;">
+        <input type="hidden" name="check_or_not" value="check">
+        <button type="submit">확인</button>
+    </form>
+
+    <!-- 취소 버튼 -->
+    <form action="{{ url_for('userstory_view.check_keyword_route', project_id=project_id) }}" method="POST" style="display:inline;">
+        <input type="hidden" name="check_or_not" value="not">
+        <button type="submit">취소</button>
+    </form>
+</body>
+</html>
