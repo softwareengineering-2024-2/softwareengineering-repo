@@ -6,8 +6,9 @@
     <title>{{ userproject.project_name }} - 프로젝트 메인 페이지</title>
 </head>
 <body>
-    <a href="{{ url_for('index') }}">홈으로 돌아가기</a>
+    <a href="{{ url_for('index') }}project_name">홈으로 돌아가기</a>
     <a href="{{ url_for('manage_project.manage_project_view') }}">프로젝트 관리 페이지로 돌아가기</a>
+    <a href="{{ url_for('userstory_view.view_stories_route', project_id=userproject.project_id)}}">유저스토리</a>
     <h1>{{ userproject.project_name }} 프로젝트 메인</h1>
     <p>프로젝트 진행률</p>
     <p>내 작업</p>

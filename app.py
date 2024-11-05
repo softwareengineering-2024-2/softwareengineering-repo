@@ -3,8 +3,10 @@ from flask import Flask, render_template
 from controllers.auth import auth_bp, init_login_manager
 from views.project_main_view import project_main_bp
 from views.manage_project_view import manage_project_bp
+from views.userstory_view import userstory_bp
+from views.notlist_view import notlist_bp
 from dotenv import load_dotenv
-from models import init_db
+from database import init_db
 
 # .env 파일 로드
 load_dotenv()
@@ -27,7 +29,8 @@ init_login_manager(app)
 app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(project_main_bp, url_prefix='/project_main')
 app.register_blueprint(manage_project_bp, url_prefix='/manage_project')
-
+app.register_blueprint(userstory_bp, url_prefix='/userstory_view')
+app.register_blueprint(notlist_bp, url_prefix='/notlist_view')
 @app.route("/")
 def index():
     return render_template("index.html")

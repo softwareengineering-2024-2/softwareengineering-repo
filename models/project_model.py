@@ -1,5 +1,4 @@
-from models import db
-
+from database import db
 # Project 모델
 class Project(db.Model):
     # Project 테이블 생성
