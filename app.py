@@ -9,7 +9,7 @@ from views.milestone_view import milestone_bp
 from views.productbacklog_view import productbacklog_bp
 from views.sprint_view import sprint_bp
 from dotenv import load_dotenv
-from models import init_db
+from database import init_db
 
 # .env 파일 로드
 load_dotenv()
