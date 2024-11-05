@@ -1,0 +1,176 @@
+@import url("global.css");
+
+.main-container {
+  margin-top: 2vh; /* 탑바 밑 여백 추가 */
+  margin-left: 25vh; /* 사이드바 너비만큼 왼쪽 여백 추가 */
+}
+
+.projects-content {
+  padding: 20px;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+}
+
+.info-text {
+  color: var(--Grey-grey-600, #666);
+  margin-top: 1vh;
+}
+
+.project-buttons-wrapper {
+  margin-top: 6vh;
+  margin-bottom: 6vh;
+  display: flex;
+  gap: 3vh;
+  align-items: center; /* 수직 가운데 정렬 */
+  justify-content: center; /* 수평 가운데 정렬 */
+}
+
+.project-buttons-wrapper button {
+  border-radius: 20px;
+  background: var(--color-white);
+  box-shadow: 0px 0px 20px 12px rgba(0, 0, 0, 0.05);
+  padding: 4vh 6vh;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+}
+
+.project-lists {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 4vh;
+  align-items: center;
+}
+
+.project-list {
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.05);
+  display: flex;
+  padding: 2vh;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1vh;
+  width: 80%;
+}
+
+.project-list button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 10px 20px;
+  font-size: var(--font-size-b1);
+}
+
+.normal-button {
+  color: #000; /* 일반 버튼 텍스트 색상 */
+}
+
+.exit-button {
+  color: var(--color-red); /* 일반 버튼 텍스트 색상 */
+}
+
+.modal-background {
+  display: none; /* 기본적으로 숨김 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* 어두운 배경 */
+  z-index: 999;
+}
+
+.project-modal {
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  width: 500px;
+  background-color: var(--color-white);
+  border-radius: 10px;
+  height: fit-content;
+  padding: 4vh 6vh;
+  top: 50%;
+  left: 50%;
+  display: none;
+  transform: translate(-50%, -50%);
+  position: fixed;
+  z-index: 1000;
+}
+
+.modal-buttons-wrapper {
+  display: flex;
+  gap: 1vh;
+  align-items: center; /* 수직 가운데 정렬 */
+  justify-content: center; /* 수평 가운데 정렬 */
+}
+
+/* 추가적인 스타일 */
+.project-modal h1,
+.project-modal p {
+  text-align: center; /* 중앙 정렬 */
+  margin: 0; /* 기본 마진 제거 */
+}
+
+.project-input-wrapper {
+  margin: 2vh;
+}
+
+.project-input-wrapper .b2-regular {
+  margin-bottom: 1vh;
+}
+
+.project-modal input {
+  margin: 0; /* 기본 마진 제거 */
+  padding: 12px; /* 필요시 패딩 추가 */
+
+  border-radius: 10px;
+  background: var(--color-grey-50);
+  display: flex;
+  align-self: stretch;
+  border: none;
+  width: 100%;
+}
+
+.modal-buttons-wrapper button {
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  padding: 8px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.create-button {
+  background-color: var(--color-green-500);
+}
+
+.cancel-button {
+  background-color: var(--color-grey-100);
+}
+
+.code-check-input-wrapper {
+  display: flex;
+  gap: 1vh;
+  width: 100%;
+  max-height: 39px;
+}
+.code-check-input-wrapper input {
+  width: 75%;
+  height: 100%;
+}
+.code-check-button {
+  background-color: var(--color-green-200);
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  padding: 0px 12px;
+  align-items: center;
+  cursor: pointer;
+}
