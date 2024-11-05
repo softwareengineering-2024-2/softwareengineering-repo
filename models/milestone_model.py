@@ -37,7 +37,7 @@ class Milestone(db.Model):
     def find_by_project_ordered_by_due_date(cls, project_id):
         return cls.query.filter_by(project_id=project_id).order_by(cls.due_date).all()
     
-    # 사용자 ID와 프로젝트 ID를 기준으로 사용자의 프로필 정보를 저장하는 메서드
+    # milstone_id에 해당하는 마일스톤의 데이터를 수정하는 메서드
     @classmethod
     def update_milestone(cls, milestone_id, milestone_content, due_date):
         milestone = cls.query.filter_by(milestone_id=milestone_id).first()

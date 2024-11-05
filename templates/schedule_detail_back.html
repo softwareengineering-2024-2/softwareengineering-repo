@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>일정 상세 정보</title>
+</head>
+<body>
+
+<div class="schedule-form">
+    <h2>일정 상세 정보</h2>
+
+    <div style="display: inline;">
+        <div class="form-group">
+            <label for="title">제목</label>
+            <input type="text" id="title" name="title" placeholder="일정을 입력하세요">
+        </div>
+    
+        <div class="form-group">
+            <input type="checkbox" id="important" name="important">
+            <label for="important"></label>
+        </div>    
+    </div>
+    
+    <div class="form-group">
+        <label for="location">장소</label>
+        <input type="text" id="location" name="location" placeholder="장소를 입력하세요">
+    </div>
+
+    <div class="form-group">
+        <label for="date">일시</label>
+        <input type="date" id="start_date" name="start_date" placeholder="시작일을 입력하세요">
+        <input type="date" id="due_date" name="due_date" placeholder="종료일을 입력하세요">
+    </div>
+
+    <div class="form-group">
+        <label for="category">분류</label>
+        <input type="radio" id="team" name="category" value="team">
+        <label for="team">팀 일정</label>
+        <input type="radio" id="individual" name="category" value="individual">
+        <label for="team">개인 일정</label>
+    </div>
+
+    <div class="form-group">
+        <label for="color">범주</label>
+        <select id="color" name="color" placeholder="색상 선택">
+            <option value="1">빨강</option>
+            <option value="2">주황</option>
+            <option value="3">노랑</option>
+            <option value="4">초록</option>
+            <option value="5">파랑</option>
+            <option value="6">남색</option>
+            <option value="7">보라</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="description">설명</label>
+        <input type="text" id="description" name="description" placeholder="설명을 입력하세요">
+    </div>
+
+    <div class="form-buttons">
+        <form action="{{ url_for('calendar.create_schedule_view', project_id=project.project_id) }}" method="POST">
+            <button type="submit" class="add-button">일정 추가</button>
+        </form>
+        <form action="{{ url_for('calendar.calendar_view', project_id=project.project_id) }}" method="GET">
+            <button type="submit" class="cancel-button">취소하기</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

@@ -19,9 +19,7 @@ def update_milestone(milestone_id, milestone_content, due_date):
     
     milestone = Milestone.find_by_id(milestone_id)
     if milestone:
-        milestone.milestone_content = milestone_content
-        milestone.due_date = due_date
-        milestone.save_to_db()
+        milestone.update_milestone(milestone_id, milestone_content, due_date)
         return "마일스톤이 수정되었습니다."
     return "마일스톤을 찾을 수 없습니다."
 
