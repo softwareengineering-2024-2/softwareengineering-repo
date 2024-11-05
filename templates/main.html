@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메인 프레임</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='topbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+    {% include 'topbar.html' %}
+    <div class="main-container">
+        {% include 'sidebar.html' %}
+        <div class="content">
+            <div class="dashboard">
+                <!-- 우리팀의 프로덕트 백로그 달성률 -->
+                <div class="progress-section">
+                    <h2>우리팀의 프로덕트 백로그 달성률</h2>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress" style="width: {{ progress_percentage }}%;"></div>
+                        </div>
+                        <div class="progress-percentage">{{ progress_percentage | round(1) }}%</div>
+                    </div>
+                </div>
+                <!-- 내가 담당받은 작업 목록과 TODO LIST -->
+                <div class="task-sections">
+                    <div class="task-box">
+                        <h3>내가 담당받은 작업 목록</h3>
+                        <p>메인 화면 UI 완성</p>
+                    </div>
+                    <div class="todo-box">
+                        <h3>TODO LIST</h3>
+                        <ul id="todo-list">
+                            <!-- 할 일이 추가되면 여기에 항목이 표시됨 -->
+                        </ul>
+                        <p id="add-todo" onclick="addNewTodoInput()">+ 할 일 추가하기</p>
+                    </div>
+                </div>
+                
+                <!-- 2주 캘린더 -->
+                <div class="calendar-box" id="two-week-calendar">
+                    <h3>2주 캘린더</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- JavaScript 파일 추가 -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
