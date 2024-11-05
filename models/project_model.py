@@ -1,7 +1,8 @@
 from database import db
+
 # Project 모델
 class Project(db.Model):
-    # Project 테이블 생성
+    # Project 테이블 스키마 정의
     __tablename__ = 'Project'
     project_id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
     project_name = db.Column(db.String(20), nullable=False)
@@ -29,7 +30,7 @@ class Project(db.Model):
     
 # UserProject 모델
 class UserProject(db.Model):
-    # UserProject 테이블 생성
+    # UserProject 테이블 스키마 정의
     __tablename__ = 'UserProject'
     index = db.Column(db.Integer, primary_key=True, nullable=False, unique=True, autoincrement=True)
     user_id = db.Column(db.String(255), db.ForeignKey('User.user_id'), nullable=False)

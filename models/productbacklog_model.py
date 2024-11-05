@@ -8,7 +8,7 @@ class ProductBacklog(db.Model):
     story_id = db.Column(db.Integer, db.ForeignKey('UserStory.story_id'), nullable=False)
     project_id = db.Column(db.Integer, db.ForeignKey('Project.project_id'), nullable=False)
     product_backlog_content = db.Column(db.String(50), nullable=True)
-    status = db.Column(db.String(50), nullable=True)
+    status = db.Column(db.Boolean, nullable=True)
     backlog_order = db.Column(db.Integer, nullable=True)
     sprint_id = db.Column(db.Integer, db.ForeignKey('Sprint.sprint_id'), nullable=True)
 

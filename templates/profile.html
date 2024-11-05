@@ -1,27 +1,62 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>사용자 프로필 설정</title>
-</head>
-<body>
-    <h1>사용자 프로필 설정</h1>
-    <form method="POST" enctype="multipart/form-data">
-        <label for="name">이름</label>
-        <input type="text" id="name" name="name" value="{{ userproject.user_name }}">
-        <br>
-
-        <label for="role">역할</label>
-        <select id="role" name="role">
-            <option value="PM" {% if userproject.user_role == 'PM' %}selected{% endif %}>PM</option>
-            <option value="Member" {% if userproject.user_role == 'Member' %}selected{% endif %}>Member</option>
-        </select>
-        <br>
-
-        <input type="submit" value="확인">
-    </form>
-
-    <a href="{{ url_for('index') }}">홈으로 돌아가기</a>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>profile</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='profile.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='global.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='topbar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='sidebar.css') }}"
+    />
+  </head>
+  <body>
+    {% include 'topbar.html' %}
+    <div class="main-container">
+      {% include 'sidebar.html' %}
+      <div class="content">
+        <!-- 메인 콘텐츠가 들어갈 부분 -->
+        {% block content %}
+        <div class="profile-box">
+          <h1>사용자 프로필 수정</h1>
+          <div class="b2-regular">프로젝트 이름: ##</div>
+          <div class="name-input-wrapper">
+            <div class="b2-regular">이름</div>
+            <input type="text" placeholder="이름을 입력하세요." />
+          </div>
+          <div class="role-input-wrapper">
+            <div class="b2-regular">역할 선택</div>
+            <div class="selectBox">
+              <button class="label">역할을 선택해주세요</button>
+              <ul class="optionList">
+                <li class="optionItem">PM(기획자)</li>
+                <li class="optionItem">Member</li>
+              </ul>
+              <img src="../static/icons/chevron-down.svg" />
+            </div>
+          </div>
+          <button class="profile-btn" type="submit">
+            <div class="b2-regular">프로필 수정하기</div>
+          </button>
+        </div>
+        {% endblock %}
+      </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+  </body>
 </html>

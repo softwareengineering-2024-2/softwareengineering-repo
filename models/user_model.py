@@ -3,7 +3,7 @@ from database import db
 
 # User 모델
 class Users(UserMixin, db.Model):
-    # User 테이블 생성
+    # User 테이블 스키마 정의
     __tablename__ = 'User'
     user_id = db.Column(db.String(255), primary_key=True, nullable=False)
     token = db.Column(db.String(255), nullable=False, unique=True)
