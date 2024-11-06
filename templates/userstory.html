@@ -51,6 +51,13 @@
                 </div>
                 <input type="text" id="newKeywordInput" placeholder="추가할 키워드를 입력하세요. 엔터로 등록합니다." class="add-keyword-input">
             </div>
+            <div class="modal-background" id="keywordWarningBackground"></div>
+            <div class="keyword-warning-modal" id="keywordWarningModal">
+                <h2>Not List 키워드 발견</h2>
+                <p>해당 유저스토리에 <span class="highlight">Not List 키워드</span>가 포함되어 있습니다.<br>확인을 누를 시 PM에게 알림이 갑니다.</p>
+                <button class="confirm-button" onclick="confirmKeywordWarning()">확인</button>
+                <button class="cancel-button" onclick="cancelKeywordWarning()">취소</button>
+            </div>
         </div>
     </div>
     <script src="{{ url_for('static', filename='js/userstory.js') }}"></script>

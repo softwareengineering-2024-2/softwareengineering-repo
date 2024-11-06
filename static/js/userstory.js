@@ -7,6 +7,8 @@ const notListKeywordsDisplay = document.getElementById("notListKeywordsDisplay")
 const modalKeywords = document.getElementById("modalKeywords");
 const userStoryList = document.getElementById("userStoryList");
 const newUserStoryInput = document.getElementById("newUserStoryInput");
+const keywordWarningModal = document.getElementById("keywordWarningModal");
+const keywordWarningBackground = document.getElementById("keywordWarningBackground");
 
 // 유저 스토리 목록 배열
 let userStories = [];
@@ -19,14 +21,16 @@ function renderUserStories() {
         userStoryItem.classList.add("userstory-item");
 
         if (story.editing) {
+            // 수정 모드일 때는 원본 텍스트를 표시
             userStoryItem.innerHTML = `
-                <input type="text" value="${story.text}" class="edit-input">
+                <input type="text" value="${story.originalText || story.text}" class="edit-input">
                 <div class="buttons">
                     <button class="complete-edit" onclick="completeEdit(${index})">완료</button>
                     <button class="delete-story" onclick="deleteUserStory(${index})">삭제</button>
                 </div>
             `;
         } else {
+            // 키워드 강조된 텍스트 표시
             userStoryItem.innerHTML = `
                 <span>${story.text}</span>
                 <div class="buttons">
@@ -40,13 +44,38 @@ function renderUserStories() {
     });
 }
 
+// 엔터키로 유저 스토리 추가
+newUserStoryInput.addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+        const newStory = newUserStoryInput.value.trim();
+        addUserStory(newStory);
+    }
+});
+
 // 유저 스토리 추가 함수
 function addUserStory(storyText) {
     if (storyText) {
-        userStories.push({ text: storyText, editing: false });
-        renderUserStories();
-        newUserStoryInput.value = "";
+        if (checkForKeywords(storyText)) {
+            // 키워드가 포함되어 있으면 경고 모달을 표시하고 텍스트를 임시 저장
+            pendingUserStory = storyText;
+            openKeywordWarningModal();
+        } else {
+            // 키워드가 없으면 바로 추가
+            userStories.push({ text: storyText, editing: false });
+            renderUserStories();
+            newUserStoryInput.value = ""; // 입력 필드 초기화
+        }
     }
+}
+
+// 키워드가 포함된 텍스트를 강조하는 함수
+function highlightKeywords(text) {
+    let highlightedText = text;
+    keywords.forEach(keyword => {
+        const keywordRegex = new RegExp(`(${keyword})`, 'gi');
+        highlightedText = highlightedText.replace(keywordRegex, '<span class="highlight">$1</span>');
+    });
+    return highlightedText;
 }
 
 // 유저 스토리 수정 모드 전환 함수
@@ -58,7 +87,9 @@ function editUserStory(index) {
 // 유저 스토리 수정 완료 함수
 function completeEdit(index) {
     const editInput = userStoryList.querySelectorAll(".edit-input")[index];
-    userStories[index].text = editInput.value;
+    const updatedText = editInput.value;
+    userStories[index].text = highlightKeywords(updatedText); // 키워드 강조 적용
+    userStories[index].originalText = updatedText; // 원본 텍스트도 업데이트
     userStories[index].editing = false;
     renderUserStories();
 }
@@ -69,15 +100,7 @@ function deleteUserStory(index) {
     renderUserStories();
 }
 
-// 엔터키로 유저 스토리 추가
-newUserStoryInput.addEventListener("keypress", (event) => {
-    if (event.key === "Enter") {
-        const newStory = newUserStoryInput.value.trim();
-        addUserStory(newStory);
-    }
-});
-
-// 모달 열기/닫기
+// Not List keyword 모달 열기/닫기
 settingsIcon.addEventListener("click", openModal);
 modalBackground.addEventListener("click", closeModal);
 
@@ -93,6 +116,14 @@ function closeModal() {
 
 // 키워드 목록을 저장할 배열
 let keywords = [];
+
+// 엔터키로 키워드 추가
+newKeywordInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        const newKeyword = newKeywordInput.value.trim();
+        addKeyword(newKeyword);
+    }
+});
 
 // 키워드 추가 함수
 function addKeyword(keyword) {
@@ -140,13 +171,40 @@ function renderKeywords() {
     });
 }
 
-// 엔터키로 키워드 추가
-newKeywordInput.addEventListener("keypress", (event) => {
-    if (event.key === "Enter") {
-        const newKeyword = newKeywordInput.value.trim();
-        addKeyword(newKeyword);
-    }
-});
+let pendingUserStory = ""; // 임시로 저장할 유저 스토리 텍스트
+
+// 키워드가 포함되었는지 확인하는 함수
+function checkForKeywords(storyText) {
+    return keywords.some(keyword => storyText.includes(keyword));
+}
+
+// 경고 모달 열기 함수
+function openKeywordWarningModal() {
+    keywordWarningModal.style.display = "block";
+    keywordWarningBackground.style.display = "block";
+}
+
+// 경고 모달 닫기 함수
+function closeKeywordWarningModal() {
+    keywordWarningModal.style.display = "none";
+    keywordWarningBackground.style.display = "none";
+}
+
+// 모달 확인 버튼 클릭 시 유저 스토리에 추가
+function confirmKeywordWarning() {
+    const highlightedText = highlightKeywords(pendingUserStory);
+    userStories.push({ text: highlightedText, originalText: pendingUserStory, editing: false });
+    renderUserStories();
+    newUserStoryInput.value = ""; // 입력 필드 초기화
+    closeKeywordWarningModal();
+}
+
+
+// 모달 취소 버튼 클릭 시 입력창에 그대로 텍스트 남기기
+function cancelKeywordWarning() {
+    newUserStoryInput.value = pendingUserStory;
+    closeKeywordWarningModal();
+}
 
 // 초기 렌더링 호출
 renderKeywords();

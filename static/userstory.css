@@ -70,6 +70,7 @@
     gap: 10px;
     max-height: 300px; /* 7개 이상의 유저스토리가 있을 때 스크롤 활성화 */
     overflow-y: auto;
+    padding-right: 10px; /* 스크롤바와 아이템 간의 패딩 추가 */
 }
 
 .userstory-item {
@@ -109,7 +110,6 @@
     background-color: var(--color-white);
     padding: 15px;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .userstory-input-container input[type="text"] {
@@ -184,7 +184,7 @@
 }
 
 .modal-keyword-item .delete {
-    color: red;
+    color: var(--color-red);
     cursor: pointer;
 }
 
@@ -203,4 +203,51 @@
     right: 15px;
     font-size: 20px;
     cursor: pointer;
+}
+
+.keyword-warning-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    text-align: center;
+}
+
+.highlight {
+    color: var(--color-red);
+    font-weight: bold;
+}
+
+.keyword-warning-modal h2 {
+    margin: 0;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.keyword-warning-modal p {
+    font-size: 1em;
+    margin-bottom: 20px;
+}
+
+.confirm-button, .cancel-button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.confirm-button {
+    background-color: #A0D683; /* Green button */
+}
+
+.cancel-button {
+    background-color: #D3D3D3; /* Gray button */
 }
