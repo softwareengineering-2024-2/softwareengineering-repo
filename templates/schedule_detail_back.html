@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>일정 상세 정보</title>
+</head>
+<body>
+
+<div class="schedule-form">
+    <h2>일정 상세 정보</h2>
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="title">제목</label>
+            <input type="text" id="title" name="title" value="{{ schedule.title }}">
+        </div>
+    
+        <div class="form-group" style="display: inline;">
+            <label for="important">중요</label>
+            <input type="checkbox" id="important" name="important" {% if schedule.important == 1 %}checked{% endif %}>
+        </div>    
+        
+        <div class="form-group">
+            <label for="location">장소</label>
+            <input type="text" id="place" name="place" value="{{ schedule.place }}">
+        </div>
+
+        <div class="form-group">
+            <label for="date">일시</label>
+            <input type="date" id="start_date" name="start_date" value="{{ schedule.start_date }}">
+            <input type="date" id="due_date" name="due_date" value="{{ schedule.due_date }}">
+        </div>
+
+        <div class="form-group">
+            <label for="category">분류</label>
+            <input type="radio" id="team" name="category" value="team" {% if schedule.team == 1 %}checked{% endif %}>
+            <label for="team">팀 일정</label>
+            <input type="radio" id="personal" name="category" value="personal" {% if schedule.team == 0 %}checked{% endif %}>
+            <label for="team">개인 일정</label>
+        </div>
+
+        <div class="form-group">
+            <label for="color">범주</label>
+            <select id="color" name="color">
+                <option value=1 {% if schedule.color == 1 %}selected{% endif %}>빨강</option>
+                <option value=2 {% if schedule.color == 2 %}selected{% endif %}>주황</option>
+                <option value=3 {% if schedule.color == 3 %}selected{% endif %}>노랑</option>
+                <option value=4 {% if schedule.color == 4 %}selected{% endif %}>초록</option>
+                <option value=5 {% if schedule.color == 5 %}selected{% endif %}>파랑</option>
+                <option value=6 {% if schedule.color == 6 %}selected{% endif %}>남색</option>
+                <option value=7 {% if schedule.color == 7 %}selected{% endif %}>보라</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">설명</label>
+            <input type="text" id="description" name="content" value="{{ schedule.content }}">
+        </div>
+
+        <div class="form-buttons">
+            <form action="{{ url_for('calendar.update_schedule_view', project_id=project.project_id, calendar_id=schedule.calendar_id) }}" method="POST">
+                <button type="submit" class="add-button">일정 수정</button>
+            </form>
+            <form action="{{ url_for('calendar.delete_schedule_view', project_id=project.project_id, calendar_id=schedule.calendar_id) }}" method="POST">
+                <button type="submit" class="cancel-button">일정 삭제</button>
+            </form>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

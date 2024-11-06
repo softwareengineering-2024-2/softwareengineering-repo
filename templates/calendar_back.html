@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>캘린더 페이지</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function filterSchedules() {
+            var projectId = document.body.getAttribute('data-project-id');  // data-project-id 읽기
+            var team = $('#team').is(':checked');
+            var personal = $('#personal').is(':checked');
+    
+            $.ajax({
+                url: '/calendar/' + projectId,  // URL 직접 구성
+                type: 'GET',
+                data: {
+                    team: team,
+                    personal: personal
+                },
+                success: function(response) {
+                    console.log('서버 응답:', response);
+                    $('.schedule-list').html($(response).find('.schedule-list').html());
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX 요청 실패:', status, error);
+                }
+            });
+        }
+    </script>
+    
+</head>
+<body data-project-id="{{ project_id }}">
+
+<div class="calendar-container">
+    <!-- 팀/개인 일정 선택 체크박스 -->
+    <div class="filter-options" style="display: inline;">
+        <div>
+            <label><input type="checkbox" id="team" checked onchange="filterSchedules()"> 팀 일정</label>
+            <label><input type="checkbox" id="personal" checked onchange="filterSchedules()"> 개인 일정</label>
+        </div>
+    </div>
+
+    <!-- 일정 목록 -->
+    <div class="schedule-list">
+        <h3>일정 목록</h3>
+        <ul>
+            {% for schedule in schedules %}
+                <li class="schedule-item">
+                    <span id="title" name="title">{{ schedule.title }}</span>
+                    <span id="start_date" name="start_date">{{ schedule.start_date }}</span>
+                    <span id="due_date" name="due_date">{{ schedule.due_date }}</span>
+                    <span id="team" name="team">{% if schedule.team == 1 %}Team{% else %}Personal{% endif %}</span>
+                    <div class="calendar-actions" style="display: inline;">
+                        <a href="{{ url_for('calendar.update_schedule_view', project_id=project_id, calendar_id=schedule.calendar_id) }}">일정 상세</a>
+                    </div>
+                </li>
+            {% else %}
+                <li class="schedule-item">일정이 없습니다.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- 일정 추가 버튼 -->
+    <a href="{{ url_for('calendar.create_schedule_view', project_id=project_id) }}">일정 추가하기</a>
+</div>
+
+</body>
+</html>
