@@ -26,21 +26,17 @@
                 </div>
             </div>
             
-            <!-- User Story -->
+            <!-- 유저스토리 -->
             <div class="userstory-container">
                 <h2>유저스토리</h2>
-                <div class="userstory-list">
-                    <div class="userstory-item">유저스토리 내용</div>
-                    <div class="userstory-item warning"><span class="highlight">키워드</span>가 들어가면 다른색으로 표시합니다.</div>
-                    <div class="userstory-item">유저스토리 내용</div>
-                    <div class="userstory-item">유저스토리 내용</div>
-                    <div class="userstory-item">유저스토리 내용</div>
+                <div class="userstory-list" id="userStoryList">
+                    <!-- JavaScript로 유저 스토리가 추가될 영역 -->
                 </div>
             </div>
-
-            <!-- Input Section -->
+            
+            <!-- 유저 스토리 입력 섹션 -->
             <div class="userstory-input-container">
-                <input type="text" placeholder="유저스토리를 작성해주세요. 엔터를 누를 시 자동으로 유저스토리에 등록됩니다.">
+                <input type="text" id="newUserStoryInput" placeholder="유저스토리를 작성해주세요. 엔터를 누를 시 자동으로 유저스토리에 등록됩니다.">
             </div>
             
             <!-- 모달창 -->
@@ -53,7 +49,7 @@
                 <div id="modalKeywords" class="modal-keyword-list">
                     <!-- 키워드 목록이 JavaScript로 추가될 영역 -->
                 </div>
-                <input type="text" id="newKeywordInput" placeholder="추가할 키워드를 입력하세요. 엔터를 누를 시 자동으로 등록됩니다." class="add-keyword-input">
+                <input type="text" id="newKeywordInput" placeholder="추가할 키워드를 입력하세요. 엔터로 등록합니다." class="add-keyword-input">
             </div>
         </div>
     </div>

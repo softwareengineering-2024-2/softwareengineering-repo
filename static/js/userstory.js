@@ -5,6 +5,77 @@ const settingsIcon = document.querySelector(".settings-icon");
 const newKeywordInput = document.getElementById("newKeywordInput");
 const notListKeywordsDisplay = document.getElementById("notListKeywordsDisplay");
 const modalKeywords = document.getElementById("modalKeywords");
+const userStoryList = document.getElementById("userStoryList");
+const newUserStoryInput = document.getElementById("newUserStoryInput");
+
+// 유저 스토리 목록 배열
+let userStories = [];
+
+// 유저 스토리 렌더링 함수
+function renderUserStories() {
+    userStoryList.innerHTML = "";
+    userStories.forEach((story, index) => {
+        const userStoryItem = document.createElement("div");
+        userStoryItem.classList.add("userstory-item");
+
+        if (story.editing) {
+            userStoryItem.innerHTML = `
+                <input type="text" value="${story.text}" class="edit-input">
+                <div class="buttons">
+                    <button class="complete-edit" onclick="completeEdit(${index})">완료</button>
+                    <button class="delete-story" onclick="deleteUserStory(${index})">삭제</button>
+                </div>
+            `;
+        } else {
+            userStoryItem.innerHTML = `
+                <span>${story.text}</span>
+                <div class="buttons">
+                    <button class="edit-story" onclick="editUserStory(${index})">수정</button>
+                    <button class="delete-story" onclick="deleteUserStory(${index})">삭제</button>
+                </div>
+            `;
+        }
+
+        userStoryList.appendChild(userStoryItem);
+    });
+}
+
+// 유저 스토리 추가 함수
+function addUserStory(storyText) {
+    if (storyText) {
+        userStories.push({ text: storyText, editing: false });
+        renderUserStories();
+        newUserStoryInput.value = "";
+    }
+}
+
+// 유저 스토리 수정 모드 전환 함수
+function editUserStory(index) {
+    userStories[index].editing = true;
+    renderUserStories();
+}
+
+// 유저 스토리 수정 완료 함수
+function completeEdit(index) {
+    const editInput = userStoryList.querySelectorAll(".edit-input")[index];
+    userStories[index].text = editInput.value;
+    userStories[index].editing = false;
+    renderUserStories();
+}
+
+// 유저 스토리 삭제 함수
+function deleteUserStory(index) {
+    userStories.splice(index, 1);
+    renderUserStories();
+}
+
+// 엔터키로 유저 스토리 추가
+newUserStoryInput.addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+        const newStory = newUserStoryInput.value.trim();
+        addUserStory(newStory);
+    }
+});
 
 // 모달 열기/닫기
 settingsIcon.addEventListener("click", openModal);
@@ -79,3 +150,4 @@ newKeywordInput.addEventListener("keypress", (event) => {
 
 // 초기 렌더링 호출
 renderKeywords();
+renderUserStories();

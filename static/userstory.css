@@ -56,6 +56,7 @@
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
+    min-height: 15vh;
 }
 
 .userstory-container h2 {
@@ -67,6 +68,8 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    max-height: 300px; /* 7개 이상의 유저스토리가 있을 때 스크롤 활성화 */
+    overflow-y: auto;
 }
 
 .userstory-item {
@@ -75,15 +78,31 @@
     border-radius: 5px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    height: 50px;
 }
 
-.userstory-item.warning {
-    color: red;
+.userstory-item .buttons {
+    display: flex;
+    gap: 10px;
+}
+.edit-story, .delete-story, .complete-edit {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9em;
 }
 
-.userstory-item .highlight {
-    color: red;
-    font-weight: bold;
+.edit-input {
+    flex: 1;
+    margin-right: 10px;
+    height: 30px; /* 입력 필드의 높이를 버튼과 일치 */
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+.delete-story {
+    color: var(--color-red);
 }
 
 .userstory-input-container {
@@ -118,9 +137,9 @@
     display: none;
     position: fixed;
     top: 50%;
-    left: 50%;
+    left: 55%;
     transform: translate(-50%, -50%);
-    width: 400px;
+    width: 48vh;
     background-color: #fff;
     border-radius: 8px;
     padding: 20px;
