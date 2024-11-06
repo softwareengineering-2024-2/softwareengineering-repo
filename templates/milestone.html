@@ -1,22 +1,134 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>milestone</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='topbar.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='milestone.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='global.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='topbar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='sidebar.css') }}"
+    />
+  </head>
+  <body>
     {% include 'topbar.html' %}
     <div class="main-container">
-        {% include 'sidebar.html' %}
-        <div class="content">
-            <!-- 메인 콘텐츠가 들어갈 부분 -->
-            {% block content %}{% endblock %}
+      {% include 'sidebar.html' %}
+      <div class="content">
+        <!-- 메인 콘텐츠가 들어갈 부분 -->
+        {% block content %}
+        <div class="milestone-line-container">
+          <div class="line" id="line"></div>
         </div>
+
+        <div class="milestone-list-container">
+          <div class="list-header">
+            <h1>마일스톤 목록</h1>
+            <button class="create-milstone-btn" id="openMilestone">
+              <p>마일스톤 추가</p>
+            </button>
+          </div>
+          <div class="milestone-lists-wrapper">
+            <div class="milestone-list">
+              <p>마일스톤 이름</p>
+              <div class="b2-regular">마감날짜: 2022.22.22</div>
+              <div class="milestone-button-wrapper">
+                <button class="modify-milestone-btn" id="openModifyButton">
+                  수정
+                </button>
+                <button class="delete-milestone-btn">삭제</button>
+                <input type="checkbox" id="check" /><label for="check"></label>
+              </div>
+            </div>
+          </div>
+
+          <!-- 모달 관련 코드 -->
+          <!-- 모달 생성 시 배경화면 어둡게(기본속성: none) -->
+          <div class="modal-background" id="modalBackground"></div>
+          <!-- 마일스톤 생성 모달창 -->
+          <div class="milestone-modal" id="createMilestoneModal">
+            <h1>마일스톤 생성</h1>
+            <div class="milestone-input-wrapper">
+              <div class="b2-semibold">마일스톤 이름</div>
+              <input
+                class="input-box"
+                type="text"
+                placeholder="마일스톤을 입력하세요"
+              />
+            </div>
+            <div class="milestone-input-wrapper">
+              <div class="b2-semibold">마감 기한</div>
+              <input
+                class="input-box"
+                type="date"
+                placeholder="마감기한을 선택하세요"
+              />
+            </div>
+            <div class="modal-buttons-wrapper">
+              <button class="create-button" id="createProjectButton">
+                <div class="b2-regular">마일스톤 추가</div>
+              </button>
+              <button
+                class="cancel-button"
+                id="cancelButton"
+                onclick="closeModal('createMilestoneModal');"
+              >
+                <div class="b2-regular">취소하기</div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 마일스톤 수정 모달창-->
+        <div class="milestone-modal" id="modifyMilestoneModal">
+          <h1>마일스톤 수정</h1>
+          <div class="milestone-input-wrapper">
+            <div class="b2-semibold">마일스톤 이름</div>
+            <input
+              class="input-box"
+              type="text"
+              placeholder="마일스톤을 입력하세요"
+            />
+          </div>
+          <div class="milestone-input-wrapper">
+            <div class="b2-semibold">마감 기한</div>
+            <input
+              class="input-box"
+              type="date"
+              placeholder="마감기한을 선택하세요"
+            />
+          </div>
+          <div class="modal-buttons-wrapper">
+            <button class="create-button" id="modifyProjectButton">
+              <div class="b2-regular">마일스톤 수정</div>
+            </button>
+            <button
+              class="cancel-button"
+              id="cancelButton"
+              onclick="closeModal('modifyMilestoneModal');"
+            >
+              <div class="b2-regular">취소하기</div>
+            </button>
+          </div>
+        </div>
+        {% endblock %}
+      </div>
     </div>
-</body>
+    <script src="{{ url_for('static', filename='js/milestone.js') }}"></script>
+  </body>
 </html>
