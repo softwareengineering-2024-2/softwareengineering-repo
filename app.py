@@ -8,6 +8,7 @@ from views.notlist_view import notlist_bp
 from views.milestone_view import milestone_bp
 from views.productbacklog_view import productbacklog_bp
 from views.sprint_view import sprint_bp
+from views.calendar_view import calendar_bp
 from dotenv import load_dotenv
 from database import init_db
 
@@ -37,6 +38,7 @@ app.register_blueprint(productbacklog_bp, url_prefix='/backlog')  # /backlog 경
 app.register_blueprint(sprint_bp, url_prefix='/sprint_back')
 app.register_blueprint(userstory_bp, url_prefix='/userstory_view')
 app.register_blueprint(notlist_bp, url_prefix='/notlist_view')
+app.register_blueprint(calendar_bp, url_prefix='/calendar')
 
 @app.route("/")
 def index():
