@@ -3,20 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>userstory</title>
+    <title>User Story</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='topbar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='userstory.css') }}">
 </head>
 <body>
     {% include 'topbar.html' %}
     <div class="main-container">
         {% include 'sidebar.html' %}
         <div class="content">
-            <!-- 메인 콘텐츠가 들어갈 부분 -->
-            {% block content %}{% endblock %}
+            <!-- Not List -->
+            <div class="not-list-box">
+                <div class="not-list-header">
+                    <h2>Not List</h2>
+                    <img src="{{ url_for('static', filename='icons/setting.svg') }}" alt="설정 아이콘" class="settings-icon">
+                </div>
+                <div class="not-list-keywords" id="notListKeywordsDisplay">
+                    <!-- 키워드가 JavaScript로 추가될 영역 -->
+                </div>
+            </div>
+            
+            <!-- User Story -->
+            <div class="userstory-container">
+                <h2>유저스토리</h2>
+                <div class="userstory-list">
+                    <div class="userstory-item">유저스토리 내용</div>
+                    <div class="userstory-item warning"><span class="highlight">키워드</span>가 들어가면 다른색으로 표시합니다.</div>
+                    <div class="userstory-item">유저스토리 내용</div>
+                    <div class="userstory-item">유저스토리 내용</div>
+                    <div class="userstory-item">유저스토리 내용</div>
+                </div>
+            </div>
+
+            <!-- Input Section -->
+            <div class="userstory-input-container">
+                <input type="text" placeholder="유저스토리를 작성해주세요. 엔터를 누를 시 자동으로 유저스토리에 등록됩니다.">
+            </div>
+            
+            <!-- 모달창 -->
+            <div class="modal-background" id="modalBackground"></div>
+            <div class="not-list-modal" id="notListModal">
+                <div class="modal-header">
+                    <h1>NOT LIST 키워드 관리</h1>
+                    <img src="{{ url_for('static', filename='icons/xbutton.svg') }}" alt="Close" class="close-icon" onclick="closeModal();">
+                </div>
+                <div id="modalKeywords" class="modal-keyword-list">
+                    <!-- 키워드 목록이 JavaScript로 추가될 영역 -->
+                </div>
+                <input type="text" id="newKeywordInput" placeholder="추가할 키워드를 입력하세요. 엔터를 누를 시 자동으로 등록됩니다." class="add-keyword-input">
+            </div>
         </div>
     </div>
+    <script src="{{ url_for('static', filename='js/userstory.js') }}"></script>
 </body>
 </html>
