@@ -1,0 +1,278 @@
+.content {
+    margin-top: 2vh; /* 탑바 밑 여백 추가 */
+    margin-left: 25vh;
+}
+
+/* Not List와 User Story, Input Section 간의 여백 설정 */
+.not-list-box,
+.userstory-container,
+.userstory-input-container {
+    margin-bottom: 2vh;
+    margin-left: 2vh;
+    margin-right: 2vh;/* 각 섹션 간 2vh의 여백 추가 */
+}
+
+
+.not-list-box {
+    background-color: var(--color-white);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 15vh; /* 최소 높이 설정 */
+}
+
+.not-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.settings-icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.not-list-keywords {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap; /* 줄바꿈 설정 */
+}
+
+.keyword {
+    background-color: var(--color-green-200);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+
+.userstory-container {
+    background-color: var(--color-white);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    min-height: 15vh;
+}
+
+.userstory-container h2 {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.userstory-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 300px; /* 7개 이상의 유저스토리가 있을 때 스크롤 활성화 */
+    overflow-y: auto;
+    padding-right: 10px; /* 스크롤바와 아이템 간의 패딩 추가 */
+}
+
+.userstory-item {
+    background-color: var(--color-grey-50);
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+}
+
+.userstory-item .buttons {
+    display: flex;
+    gap: 10px;
+}
+.edit-story, .delete-story, .complete-edit {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.edit-input {
+    flex: 1;
+    margin-right: 10px;
+    height: 30px; /* 입력 필드의 높이를 버튼과 일치 */
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+.delete-story {
+    color: var(--color-red);
+}
+
+.userstory-input-container {
+    background-color: var(--color-white);
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.userstory-input-container input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--color-grey-100);
+    border-radius: 5px;
+    outline: none;
+}
+
+/* 모달 배경 */
+.modal-background {
+    display: none; /* 기본적으로 숨김 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* 어두운 배경 */
+    z-index: 999;
+}
+
+/* 모달 창 */
+.not-list-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 55%;
+    transform: translate(-50%, -50%);
+    width: 48vh;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    padding: 20px; /* 하단 여백을 더 주기 위해 padding-bottom을 40px로 설정 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    text-align: center;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px 40px;
+}
+
+.modal-header h1 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.close-icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.modal-keyword-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 300px; /* 최대 높이 설정 */
+    overflow-y: auto; /* 스크롤바 추가 */
+    padding-right: 10px; /* 스크롤바가 생길 때 오른쪽 여백 추가 */
+    margin-bottom: 20px; /* 입력란과 키워드 목록 사이 여백 */
+}
+
+.modal-keyword-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    background-color: var(--color-grey-50);
+    border-radius: 5px;
+}
+
+.modal-keyword-item .delete {
+    color: var(--color-red);
+    cursor: pointer;
+}
+
+.add-keyword-input {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--color-grey-200);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.keyword-warning-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    text-align: center;
+}
+
+.highlight {
+    color: var(--color-red);
+    font-weight: bold;
+}
+
+.keyword-warning-modal h2 {
+    margin: 0;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.keyword-warning-modal p {
+    font-size: 1em;
+    margin-bottom: 20px;
+}
+
+.confirm-button, .cancel-button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.confirm-button {
+    background-color: var(--color-green-500); /* Green button */
+}
+
+.cancel-button {
+    background-color: var(--color-grey-100); /* Gray button */
+}
+
+/* Not List가 비어 있을 때 표시할 스타일 */
+.empty-message-key {
+    color: var(--color-grey-500);
+    font-size: 0.9em;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* 부모 요소에서 세로 중앙 정렬 */
+    width: 100%; /* 전체 너비 차지 */
+}
+
+/* 유저 스토리가 비어 있을 때 표시할 스타일 */
+.empty-message-story {
+    color: var(--color-grey-500);
+    font-size: 0.9em;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* 부모 요소에서 세로 중앙 정렬 */
+    width: 100%; /* 전체 너비 차지 */
+}
