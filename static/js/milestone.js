@@ -14,16 +14,14 @@ function closeModal(modalId) {
 }
 
 // 버튼 클릭 이벤트 리스너
-document
-  .getElementById("openCreateButton")
-  .addEventListener("click", function () {
-    openModal("createProjectModal");
-  });
+document.getElementById("openMilestone").addEventListener("click", function () {
+  openModal("createMilestoneModal");
+});
 
 document
-  .getElementById("openJoinButton")
+  .getElementById("openModifyButton")
   .addEventListener("click", function () {
-    openModal("joinProjectModal");
+    openModal("modifyMilestoneModal");
   });
 
 // 초기 설정: 모달과 배경 숨기기

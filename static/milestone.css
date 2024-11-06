@@ -1,0 +1,210 @@
+@import url("global.css");
+
+.main-container {
+  margin-top: 2vh; /* 탑바 밑 여백 추가 */
+  margin-left: 25vh; /* 사이드바 너비만큼 왼쪽 여백 추가 */
+}
+
+.content {
+  padding: 20px;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+}
+
+.milestone-line-container {
+  border-radius: 10px;
+  border: 1px solid var(--color-grey-100);
+  background: var(--color-white);
+  height: 20vh;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center; /* 수직 가운데 정렬 */
+}
+
+.milestone-list-container {
+  border-radius: 10px;
+  border: 1px solid var(--color-grey-100);
+  background: var(--color-white);
+  margin-top: 2vh;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  height: 60vh;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.milestone-lists-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 4vh;
+  align-items: center;
+}
+
+.milestone-list {
+  border-radius: 10px;
+  background: var(--color-grey-50);
+  display: flex;
+  padding: 2vh;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1vh;
+  width: 100%;
+}
+
+.milestone-button-wrapper {
+  display: flex;
+  gap: 3vh;
+}
+
+.line {
+  position: inherit;
+  width: 100%;
+  height: 5px;
+  background: var(--color-green-500);
+}
+
+.milestone-list {
+  margin-bottom: 10px;
+}
+
+.create-milstone-btn {
+  border-radius: 10px;
+  border: 1px solid var(--color-grey-300);
+  background: #fff;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+.milestone-button-wrapper button {
+  border: none;
+  background-color: transparent;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  cursor: pointer;
+}
+
+.delete-milestone-btn {
+  color: var(--color-red);
+}
+
+#check {
+  display: none;
+}
+label {
+  display: block;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+/* off */
+#check + label {
+  background-repeat: no-repeat; /* 반복 방지 */
+  background-image: url("../static/icons/checkbox-off.svg"); /*off 이미지*/
+}
+/* on */
+#check:checked + label {
+  background-repeat: no-repeat; /* 반복 방지 */
+  background-image: url("../static/icons/checkbox.svg"); /*on 이미지*/
+}
+.modal-background {
+  display: none; /* 기본적으로 숨김 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* 어두운 배경 */
+  z-index: 999;
+}
+
+.milestone-modal {
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  width: 600px;
+  background-color: var(--color-white);
+  border-radius: 10px;
+  height: fit-content;
+  padding: 4vh 6vh;
+  top: 50%;
+  left: 50%;
+  display: none;
+  transform: translate(-50%, -50%);
+  position: fixed;
+  z-index: 1000;
+}
+
+.modal-buttons-wrapper {
+  display: flex;
+  gap: 1vh;
+  align-items: center; /* 수직 가운데 정렬 */
+  justify-content: center; /* 수평 가운데 정렬 */
+}
+
+/* 추가적인 스타일 */
+.milestone-modal h1,
+.milestone-modal p {
+  text-align: center; /* 중앙 정렬 */
+  margin: 0; /* 기본 마진 제거 */
+}
+
+.milestone-input-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2vh;
+  gap: 6px;
+  text-align: left;
+}
+
+.milestone-input-wrapper .b2-regular {
+  margin-bottom: 1vh;
+}
+
+.input-box {
+  margin: 0; /* 기본 마진 제거 */
+  padding: 12px; /* 필요시 패딩 추가 */
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid var(--color-grey-300);
+  display: flex;
+  align-self: stretch;
+  width: 75%;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.input-box:focus {
+  outline: none;
+}
+
+.modal-buttons-wrapper button {
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  padding: 8px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.create-button {
+  background-color: var(--color-green-500);
+}
+
+.cancel-button {
+  background-color: var(--color-grey-100);
+}

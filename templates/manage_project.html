@@ -36,11 +36,11 @@
           ※ 프로젝트 링크를 이미 받았다면 프로젝트 참여하기를 눌러주세요!
         </p>
         <div class="project-buttons-wrapper">
-          <button class="project-create-button" id="modalButton">
+          <button class="project-create-button" id="openCreateButton">
             <img src="../static/icons/circle-plus.svg" alt="프로젝트 생성" />
             <h1>프로젝트 생성하기</h1>
           </button>
-          <button class="project-attend-button" id="modalButton">
+          <button class="project-attend-button" id="openJoinButton">
             <img src="../static/icons/link.svg" alt="프로젝트 참여" />
             <h1>프로젝트 참여하기</h1>
           </button>
@@ -76,7 +76,7 @@
       <!-- 모달 생성 시 배경화면 어둡게(기본속성: none) -->
       <div class="modal-background" id="modalBackground"></div>
       <!-- 프로젝트 생성 모달 -->
-      <div class="project-modal" id="projectModal">
+      <div class="project-modal" id="createProjectModal">
         <h1>프로젝트 생성</h1>
         <div class="project-input-wrapper">
           <div class="b2-regular">프로젝트 명</div>
@@ -84,32 +84,38 @@
         </div>
         <div class="modal-buttons-wrapper">
           <button class="create-button" id="createProjectButton">
-            <b2-regular>생성하기</b2-regular>
+            <div class="b2-regular">생성하기</div>
           </button>
-          <button class="cancel-button" id="cancelButton">
-            <b2-regular>취소하기</b2-regular>
+          <button
+            class="cancel-button"
+            id="cancelButton"
+            onclick="closeModal('createProjectModal');"
+          >
+            <div class="b2-regular">취소하기</div>
           </button>
         </div>
       </div>
-      <div class="project-modal" id="projectModal">
+      <div class="project-modal" id="joinProjectModal">
         <h1>프로젝트 참여하기</h1>
         <div class="project-input-wrapper">
           <div class="b2-regular">프로젝트 참여코드</div>
           <div class="code-check-input-wrapper">
             <input type="text" placeholder="프로젝트 참여코드를 입력해주세요" />
-            <button class="code-check-button">코드확인</button>
+            <button class="code-check-button">
+              <div class="b2-regular">코드확인</div>
+            </button>
           </div>
         </div>
         <div class="modal-buttons-wrapper">
           <button class="create-button" id="joinProjectButton">
-            <b2-regular>참여하기</b2-regular>
+            <div class="b2-regular">참여하기</div>
           </button>
           <button
             class="cancel-button"
             id="cancelButton"
-            onclick="closeModal();"
+            onclick="closeModal('joinProjectModal');"
           >
-            <b2-regular>취소하기</b2-regular>
+            <div class="b2-regular">취소하기</div>
           </button>
         </div>
       </div>
