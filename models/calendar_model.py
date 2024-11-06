@@ -6,15 +6,15 @@ class Calendar(db.Model):
     # Calendar 테이블 스키마 정의
     __tablename__ = 'Calendar'
     calendar_id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
-    user_id = db.Column(db.String, db.ForeignKey('User.user_id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(db.String(255), db.ForeignKey('User.user_id', ondelete='CASCADE'), nullable=False)
     project_id = db.Column(db.Integer, db.ForeignKey('Project.project_id', ondelete='CASCADE'), nullable=False)
     title = db.Column(db.String(20), nullable=False)
     place = db.Column(db.String(20), nullable=True)
     start_date = db.Column(db.Date, nullable=False)
     due_date = db.Column(db.Date, nullable=False)
-    team = db.Column(db.String(20), nullable=False, default=True)
-    color = db.Column(db.Boolean, nullable=False)
-    content = db.Column(db.String(40), nullable=False)
+    team = db.Column(db.Boolean, nullable=False)
+    color = db.Column(db.Integer, nullable=False)
+    content = db.Column(db.String(40), nullable=True)
     important = db.Column(db.Boolean, nullable=False, default=False)
 
     def __init__(self, user_id, project_id, title, place, start_date, due_date, team, color, content, important):
