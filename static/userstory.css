@@ -43,7 +43,7 @@
 }
 
 .keyword {
-    background-color: #D9EFCD;
+    background-color: var(--color-green-200);
     padding: 5px 10px;
     border-radius: 5px;
     font-weight: bold;
@@ -74,7 +74,7 @@
 }
 
 .userstory-item {
-    background-color: #f5f5f5;
+    background-color: var(--color-grey-50);
     padding: 10px;
     border-radius: 5px;
     display: flex;
@@ -115,7 +115,7 @@
 .userstory-input-container input[type="text"] {
     width: 100%;
     padding: 10px;
-    border: 1px solid #d3d3d3;
+    border: 1px solid var(--color-grey-100);
     border-radius: 5px;
     outline: none;
 }
@@ -140,9 +140,9 @@
     left: 55%;
     transform: translate(-50%, -50%);
     width: 48vh;
-    background-color: #fff;
+    background-color: var(--color-white);
     border-radius: 8px;
-    padding: 20px;
+    padding: 20px; /* 하단 여백을 더 주기 위해 padding-bottom을 40px로 설정 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 1000;
     text-align: center;
@@ -152,6 +152,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 20px 20px 40px;
 }
 
 .modal-header h1 {
@@ -178,8 +179,8 @@
 .modal-keyword-item {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
-    background-color: #f5f5f5;
+    padding: 15px;
+    background-color: var(--color-grey-50);
     border-radius: 5px;
 }
 
@@ -192,7 +193,7 @@
     margin-top: 15px;
     padding: 10px;
     border-radius: 5px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-grey-200);
     width: 100%;
     box-sizing: border-box;
 }
@@ -245,9 +246,33 @@
 }
 
 .confirm-button {
-    background-color: #A0D683; /* Green button */
+    background-color: var(--color-green-500); /* Green button */
 }
 
 .cancel-button {
-    background-color: #D3D3D3; /* Gray button */
+    background-color: var(--color-grey-100); /* Gray button */
+}
+
+/* Not List가 비어 있을 때 표시할 스타일 */
+.empty-message-key {
+    color: var(--color-grey-500);
+    font-size: 0.9em;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* 부모 요소에서 세로 중앙 정렬 */
+    width: 100%; /* 전체 너비 차지 */
+}
+
+/* 유저 스토리가 비어 있을 때 표시할 스타일 */
+.empty-message-story {
+    color: var(--color-grey-500);
+    font-size: 0.9em;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* 부모 요소에서 세로 중앙 정렬 */
+    width: 100%; /* 전체 너비 차지 */
 }

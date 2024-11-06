@@ -16,32 +16,41 @@ let userStories = [];
 // 유저 스토리 렌더링 함수
 function renderUserStories() {
     userStoryList.innerHTML = "";
-    userStories.forEach((story, index) => {
-        const userStoryItem = document.createElement("div");
-        userStoryItem.classList.add("userstory-item");
 
-        if (story.editing) {
-            // 수정 모드일 때는 원본 텍스트를 표시
-            userStoryItem.innerHTML = `
-                <input type="text" value="${story.originalText || story.text}" class="edit-input">
-                <div class="buttons">
-                    <button class="complete-edit" onclick="completeEdit(${index})">완료</button>
-                    <button class="delete-story" onclick="deleteUserStory(${index})">삭제</button>
-                </div>
-            `;
-        } else {
-            // 키워드 강조된 텍스트 표시
-            userStoryItem.innerHTML = `
-                <span>${story.text}</span>
-                <div class="buttons">
-                    <button class="edit-story" onclick="editUserStory(${index})">수정</button>
-                    <button class="delete-story" onclick="deleteUserStory(${index})">삭제</button>
-                </div>
-            `;
-        }
+    if (userStories.length === 0) {
+        // 유저 스토리가 없을 때 안내 문구 추가
+        const emptyMessage = document.createElement("p");
+        emptyMessage.className = "empty-message-story";
+        emptyMessage.textContent = "유저스토리를 입력하여 추가해보세요.";
+        userStoryList.appendChild(emptyMessage);
+    } else {
+        userStories.forEach((story, index) => {
+            const userStoryItem = document.createElement("div");
+            userStoryItem.classList.add("userstory-item");
 
-        userStoryList.appendChild(userStoryItem);
-    });
+            if (story.editing) {
+                // 수정 모드일 때는 원본 텍스트를 표시
+                userStoryItem.innerHTML = `
+                    <input type="text" value="${story.originalText || story.text}" class="edit-input">
+                    <div class="buttons">
+                        <button class="complete-edit" onclick="completeEdit(${index})">완료</button>
+                        <button class="delete-story" onclick="deleteUserStory(${index})">삭제</button>
+                    </div>
+                `;
+            } else {
+                // 키워드 강조된 텍스트 표시
+                userStoryItem.innerHTML = `
+                    <span>${story.text}</span>
+                    <div class="buttons">
+                        <button class="edit-story" onclick="editUserStory(${index})">수정</button>
+                        <button class="delete-story" onclick="deleteUserStory(${index})">삭제</button>
+                    </div>
+                `;
+            }
+
+            userStoryList.appendChild(userStoryItem);
+        });
+    }
 }
 
 // 엔터키로 유저 스토리 추가
@@ -146,29 +155,37 @@ function renderKeywords() {
     notListKeywordsDisplay.innerHTML = "";
     modalKeywords.innerHTML = "";
 
-    keywords.forEach(keyword => {
-        // Not List에 키워드 표시
-        const keywordElem = document.createElement("span");
-        keywordElem.className = "keyword";
-        keywordElem.textContent = keyword;
-        notListKeywordsDisplay.appendChild(keywordElem);
+    if (keywords.length === 0) {
+        // 키워드가 없을 때 안내 문구 추가
+        const emptyMessage = document.createElement("p");
+        emptyMessage.className = "empty-message-key";
+        emptyMessage.textContent = "오른쪽 위 설정 버튼을 눌러 키워드를 추가하세요.";
+        notListKeywordsDisplay.appendChild(emptyMessage);
+    } else {
+        // 키워드가 있을 때 패딩 제거
+        notListKeywordsDisplay.style.padding = "0";
+        
+        keywords.forEach(keyword => {
+            const keywordElem = document.createElement("span");
+            keywordElem.className = "keyword";
+            keywordElem.textContent = keyword;
+            notListKeywordsDisplay.appendChild(keywordElem);
 
-        // 모달창에 키워드 항목 표시
-        const modalKeywordElem = document.createElement("div");
-        modalKeywordElem.className = "modal-keyword-item";
-        modalKeywordElem.innerHTML = `${keyword}`;
+            const modalKeywordElem = document.createElement("div");
+            modalKeywordElem.className = "modal-keyword-item";
+            modalKeywordElem.innerHTML = `${keyword}`;
 
-        // PM이면 키워드 삭제 버튼 표시
-        if (projectRole === "PM") {
-            const deleteBtn = document.createElement("span");
-            deleteBtn.className = "delete";
-            deleteBtn.textContent = "삭제";
-            deleteBtn.onclick = () => deleteKeyword(keyword);
-            modalKeywordElem.appendChild(deleteBtn);
-        }
+            if (projectRole === "PM") {
+                const deleteBtn = document.createElement("span");
+                deleteBtn.className = "delete";
+                deleteBtn.textContent = "삭제";
+                deleteBtn.onclick = () => deleteKeyword(keyword);
+                modalKeywordElem.appendChild(deleteBtn);
+            }
 
-        modalKeywords.appendChild(modalKeywordElem);
-    });
+            modalKeywords.appendChild(modalKeywordElem);
+        });
+    }
 }
 
 let pendingUserStory = ""; // 임시로 저장할 유저 스토리 텍스트
