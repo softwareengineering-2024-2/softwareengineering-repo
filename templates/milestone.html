@@ -30,10 +30,11 @@
     <div class="main-container">
       {% include 'sidebar.html' %}
       <div class="content">
-        <!-- 메인 콘텐츠가 들어갈 부분 -->
         {% block content %}
         <div class="milestone-line-container">
-          <div class="line" id="line"></div>
+          <div class="line" id="line">
+              <!-- 마일스톤 점들이 이곳에 추가됩니다 -->
+          </div>
         </div>
 
         <div class="milestone-list-container">
