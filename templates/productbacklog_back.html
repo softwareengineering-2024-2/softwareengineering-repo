@@ -52,7 +52,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 </head>
 
-
 <body>
     <h2>프로덕트 백로그</h2>
     <div id="userStories" class="backlog">
@@ -73,7 +72,7 @@
         </form>
         {% for backlog in product_backlog_groups %}
             <div class="backlog-box" data-backlog-id="{{ backlog.product_backlog_id }}">
-                <input type="text" value="{{ backlog.product_backlog_content }}" readonly>
+                <input type="text" value="{{ backlog.product_backlog_content }}">
                 <button onclick="deleteBacklog('{{ backlog.product_backlog_id }}')">x</button>
                 {% for story in user_stories if story.product_backlog_id == backlog.product_backlog_id %}
                     <div class="user-story" draggable="true" data-story-id="{{ story.story_id }}">
@@ -153,29 +152,44 @@
 
             const deleteButton = document.createElement("button");
             deleteButton.innerText = "x";
-            deleteButton.onclick = () => backlogBox.remove();
+            deleteButton.onclick = () => {
+                const backlogId = backlogBox.getAttribute('data-backlog-id');
+                if (backlogId) {
+                    deleteBacklog(backlogId, false);
+                }
+                backlogBox.remove();
+            };
+            // deleteButton.onclick = () => backlogBox.remove();
             backlogBox.appendChild(deleteButton);
 
             document.getElementById("productBacklog").appendChild(backlogBox);
             return backlogBox;
         }
 
-        // 백로그 박스 내부에 유저 스토리가 없는 경우 해당 박스를 삭제
         function checkEmptyBacklogs() {
             document.querySelectorAll('.backlog-box').forEach(function (box) {
                 if (box.querySelectorAll('.user-story').length === 0) {
+                    const backlogId = box.getAttribute('data-backlog-id');
+                    if (backlogId) {
+                        deleteBacklog(backlogId, false);
+                    }
                     box.remove();
                 }
             });
-        }
+        }        
 
         // 백로그 저장
         function saveBacklogGroup() {
             const backlogGroups = Array.from(document.querySelectorAll('.backlog-box')).map(box => {
                 const backlogName = box.querySelector('input').value.trim();
                 const storyIds = Array.from(box.querySelectorAll('.user-story')).map(story => story.getAttribute('data-story-id'));
-                return { backlogName, storyIds };
+                const backlogId = box.getAttribute('data-backlog-id'); // 기존 백로그의 ID를 유지
+                return { backlogName, storyIds, backlogId };
+                // return { backlogName, storyIds };
             });
+
+            // 유저스토리 컨테이너에서 백로그에 속하지 않은 유저스토리 찾기
+            const unassignedStoryIds = Array.from(document.querySelectorAll('#userStories .user-story')).map(story => story.getAttribute('data-story-id'));
 
             // 백로그 이름이 하나라도 비어있으면 저장할 수 없게 함
             for (const group of backlogGroups) {
@@ -185,10 +199,11 @@
                 }
             }
 
+            // 서버에 백로그 그룹 상태 저장 요청 보내기
             fetch("/backlog/product_backlog/save_groups", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(backlogGroups)
+                body: JSON.stringify({backlogGroups, unassignedStoryIds})
             })
             .then(response => response.json())
             .then(data => {
@@ -201,15 +216,26 @@
             });
         }
 
-
         // 백로그 삭제
-        function deleteBacklog(backlogId) {
-            fetch(`/backlog/product_backlog/delete/${backlogId}`, { method: "DELETE" })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) location.reload();
-                    else alert("삭제 실패");
-                });
+        function deleteBacklog(backlogId, shouldReload = true) {
+            fetch(`/backlog/product_backlog/delete/${backlogId}`, {
+                method: "DELETE"
+            })
+            .then(response => response.json())
+            .then(data => {
+                // if (!data.success) {
+                //     alert("삭제 실패");
+                // } else if (shouldReload) {
+                //     location.reload();
+                // }
+                if (shouldReload) {
+                    location.reload();
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert("서버와의 통신 중 문제가 발생했습니다.");
+            });
         }
 
         document.querySelectorAll('.user-story').forEach(element => {
@@ -218,5 +244,3 @@
     </script>
 </body>
 </html>
-
-
