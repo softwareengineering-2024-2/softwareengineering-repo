@@ -159,7 +159,6 @@
                 }
                 backlogBox.remove();
             };
-            // deleteButton.onclick = () => backlogBox.remove();
             backlogBox.appendChild(deleteButton);
 
             document.getElementById("productBacklog").appendChild(backlogBox);
@@ -185,7 +184,6 @@
                 const storyIds = Array.from(box.querySelectorAll('.user-story')).map(story => story.getAttribute('data-story-id'));
                 const backlogId = box.getAttribute('data-backlog-id'); // 기존 백로그의 ID를 유지
                 return { backlogName, storyIds, backlogId };
-                // return { backlogName, storyIds };
             });
 
             // 유저스토리 컨테이너에서 백로그에 속하지 않은 유저스토리 찾기
@@ -223,11 +221,6 @@
             })
             .then(response => response.json())
             .then(data => {
-                // if (!data.success) {
-                //     alert("삭제 실패");
-                // } else if (shouldReload) {
-                //     location.reload();
-                // }
                 if (shouldReload) {
                     location.reload();
                 }

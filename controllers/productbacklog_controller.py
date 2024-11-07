@@ -6,12 +6,10 @@ from database import db
 
 # 특정 프로젝트의 유저스토리 목록을 가져오는 함수
 def get_user_stories(project_id):
-    print(f"Fetching user stories for project_id: {project_id}")  # 디버깅용 출력
     try:
         user_stories = UserStory.query.filter_by(project_id=project_id).order_by(UserStory.story_id).all()
         return user_stories if user_stories else []
-    except Exception as e:
-        print(f"Error fetching user stories: {e}")
+    except Exception:
         return None
 
 # 유저스토리를 지정된 프로덕트 백로그에 추가하는 함수
@@ -23,10 +21,8 @@ def update_product_backlog(story_id, backlog_id):
             db.session.commit()
             return True
         else:
-            print("User story not found")
             return False
-    except Exception as e:
-        print(f"Error updating product backlog: {e}")
+    except Exception:
         db.session.rollback()
         return False
 
@@ -52,7 +48,6 @@ def create_or_update_product_backlog_group(group_name, story_ids, backlog_id=Non
         # 새로운 백로그 생성
         first_story = UserStory.query.get(story_ids[0])
         if not first_story:
-            print("Error: No valid user story found.")
             return None
         project_id = first_story.project_id
         new_backlog_order = ProductBacklog.query.filter_by(project_id=project_id).count() + 1
@@ -73,8 +68,7 @@ def create_or_update_product_backlog_group(group_name, story_ids, backlog_id=Non
         db.session.commit()
         
         return new_backlog.product_backlog_id
-    except Exception as e:
-        print(f"Error creating or updating product backlog group: {e}")
+    except Exception:
         db.session.rollback()
         return None
     
@@ -113,8 +107,7 @@ def save_all_backlog_groups(backlog_groups, unassigned_story_ids):
         db.session.commit()
         
         return success
-    except Exception as e:
-        print(f"Error saving backlog groups: {e}")
+    except Exception:
         db.session.rollback()
         return False
 
@@ -131,10 +124,9 @@ def delete_product_backlog(backlog_id):
             db.session.delete(backlog)  # 백로그 삭제
             db.session.commit()
             return True
-    except Exception as e:
-        print(f"Error deleting backlog: {e}")
+    except Exception:
         db.session.rollback()
-    return False
+        return False
 
 # 백로그 박스의 순서를 저장하는 함수
 def save_backlog_order(backlog_order_list):
@@ -146,7 +138,6 @@ def save_backlog_order(backlog_order_list):
                 db.session.add(backlog)
         db.session.commit()
         return True
-    except Exception as e:
-        print(f"Error saving backlog order: {e}")
+    except Exception:
         db.session.rollback()
         return False
