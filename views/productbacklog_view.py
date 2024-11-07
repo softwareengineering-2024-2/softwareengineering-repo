@@ -13,7 +13,6 @@ productbacklog_bp = Blueprint('productbacklog', __name__)
 @productbacklog_bp.route('/product_backlog', methods=['GET'])
 def product_backlog_view():
     project_id = request.args.get('project_id')
-    print(f"Received project_id: {project_id}")  # 디버깅용 출력
     user_stories = get_user_stories(project_id) or [] # 프로젝트 ID에 따른 유저스토리 목록 가져오기
 
     # 저장된 ProductBacklog 그룹 가져오기
