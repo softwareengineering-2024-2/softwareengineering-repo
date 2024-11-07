@@ -1,0 +1,179 @@
+.content {
+    margin-top: 2vh;
+    margin-left: 25vh;
+    padding: 2vh;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sprint-create-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    margin-right: 5vh;
+}
+
+.create-sprint-btn {
+    padding: 5px 15px;
+    border: 1px solid var(--color-grey-300);
+    background-color: var(--color-white);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.sprint-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    font-size: 2em;
+    cursor: pointer;
+    color: var(--color-grey-500);
+}
+
+.sprint-container {
+    background-color: var(--color-white);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 95%;
+    max-width: 1400px;
+    min-height: 45vh;
+    margin: 0 auto;
+}
+
+.sprint-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sprint-title-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* 스프린트 이름과 날짜 사이의 간격 */
+}
+
+.sprint-actions {
+    margin-left: auto; /* 설정 버튼을 오른쪽 끝으로 밀기 */
+    margin-right: 2vh; /* 오른쪽 끝에서 2vh 정도의 여백 추가 */
+}
+
+.header-options-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.header-options-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+.sprint-backlog-container {
+    margin-top: 10px;
+}
+
+.product-backlog-section {
+    background-color: var(--color-green-100);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.backlog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1vh;
+}
+
+.add-backlog-btn {
+    padding: 4px 8px;
+    border: 1px solid var(--color-grey-300);
+    background-color: var(--color-white);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.sprint-backlog-list {
+    margin-top: 10px;
+}
+
+.sprint-backlog-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-white);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.status-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-dropdown {
+    padding: 4px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.user-initials {
+    background-color: var(--color-grey-500);
+    color: var(--color-white);
+    padding: 5px 8px;
+    border-radius: 50%;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.options-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.options-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+.backlog-navigation {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
+
+.product-backlog {
+    background-color: var(--color-white);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 95%;
+    max-width: 1400px;
+    min-height: 30vh;
+    margin: 0 auto;
+}
+
+.product-backlog-list {
+    margin-top: 10px;
+}
+
+.product-backlog-item {
+    background-color: var(--color-green-100);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}

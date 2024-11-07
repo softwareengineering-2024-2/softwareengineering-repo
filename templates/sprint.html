@@ -3,19 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sprint</title>
+    <title>Sprint</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='topbar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sprint.css') }}">
 </head>
 <body>
     {% include 'topbar.html' %}
     <div class="main-container">
         {% include 'sidebar.html' %}
         <div class="content">
-            <!-- 메인 콘텐츠가 들어갈 부분 -->
-            {% block content %}{% endblock %}
+            <div class="sprint-create-container">
+                <button class="create-sprint-btn">스프린트 생성</button>
+            </div>
+            <div class="sprint-navigation">
+                <button class="nav-btn">&lt;</button>
+                <div class="sprint-container">
+                    <div class="sprint-header">
+                        <div class="sprint-title-container">
+                            <h2>스프린트 1 - [스프린트 이름]</h2>
+                            <span class="sprint-dates">2024.10.01 - 2024.10.08</span>
+                        </div>
+                        <div class="sprint-actions">
+                            <button class="header-options-btn">
+                                <img src="{{ url_for('static', filename='icons/dotdotdot.svg') }}" alt="설정 버튼">
+                            </button>
+                        </div>
+                    </div>                                        
+                    <div class="sprint-backlog-container">
+                        <!-- 프로덕트 백로그 섹션 -->
+                        <div class="product-backlog-section">
+                            <div class="backlog-header">
+                                <h3># ~~~ 할 수 있게 만들기 (=프로덕트 백로그 이름)</h3>
+                                <button class="add-backlog-btn">스프린트 백로그 추가</button>
+                            </div>
+                            <div class="sprint-backlog-list">
+                                <div class="sprint-backlog-item">
+                                    <p>스프린트 백로그 이름</p>
+                                    <div class="status-container">
+                                        <select class="status-dropdown">
+                                            <option>To do</option>
+                                            <option>In Progress</option>
+                                            <option>Done</option>
+                                        </select>
+                                        <span class="user-initials">서준</span>
+                                        <button class="options-btn">
+                                            <img src="{{ url_for('static', filename='icons/dotdotdot.svg') }}" alt="설정 버튼">
+                                        </button>                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-backlog-section">
+                            <div class="backlog-header">
+                                <h3># ~~~ 할 수 있게 만들기 (=프로덕트 백로그 이름)</h3>
+                                <button class="add-backlog-btn">스프린트 백로그 추가</button>
+                            </div>
+                            <div class="sprint-backlog-list">
+                                <div class="sprint-backlog-item">
+                                    <p>스프린트 백로그 이름</p>
+                                    <div class="status-container">
+                                        <select class="status-dropdown">
+                                            <option>To do</option>
+                                            <option>In Progress</option>
+                                            <option>Done</option>
+                                        </select>
+                                        <span class="user-initials">서준</span>
+                                        <button class="options-btn">
+                                            <img src="{{ url_for('static', filename='icons/dotdotdot.svg') }}" alt="설정 버튼">
+                                        </button>                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="nav-btn">&gt;</button>
+            </div>
+
+            <div class="backlog-navigation">
+                <button class="nav-btn" style="visibility: hidden;">&lt;</button>
+                <div class="product-backlog">
+                    <h3>프로덕트 백로그</h3>
+                    <div class="product-backlog-list">
+                        <div class="product-backlog-item">
+                            <p># ~~~ 할 수 있게 만들기 (=프로덕트 백로그 이름)</p>
+                        </div>
+                        <div class="product-backlog-item">
+                            <p># ~~~ 할 수 있게 만들기 (=프로덕트 백로그 이름)</p>
+                        </div>
+                        <div class="product-backlog-item">
+                            <p># ~~~ 할 수 있게 만들기 (=프로덕트 백로그 이름)</p>
+                        </div>
+                    </div>
+                </div>
+                <button class="nav-btn" style="visibility: hidden;">&gt;</button>
+            </div>            
         </div>
     </div>
 </body>
