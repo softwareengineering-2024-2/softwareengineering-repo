@@ -13,7 +13,7 @@ def get_product_backlogs_view(project_id):
     sprints = get_sprints_with_backlogs(project_id)
     backlogs = get_all_product_backlogs(project_id)
     users = get_users_by_project_id(project_id)
-    return render_template('sprint_back.html', backlogs=backlogs, sprints=sprints, users=users, project_id=project_id)
+    return render_template('sprint.html', backlogs=backlogs, sprints=sprints, users=users, project_id=project_id)
 
 # 스프린트 추가
 @sprint_bp.route('/add-sprint', methods=['POST'])
