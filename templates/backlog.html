@@ -1,22 +1,116 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>backlog</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='topbar.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='backlog.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='global.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='topbar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='sidebar.css') }}"
+    />
+  </head>
+  <body>
     {% include 'topbar.html' %}
     <div class="main-container">
-        {% include 'sidebar.html' %}
-        <div class="content">
-            <!-- 메인 콘텐츠가 들어갈 부분 -->
-            {% block content %}{% endblock %}
+      {% include 'sidebar.html' %}
+      <div class="content">
+        <!-- 메인 콘텐츠가 들어갈 부분 -->
+        {% block content %}
+        <div id="userStories" class="userstory-container">
+          <h1>유저스토리 목록</h1>
+          <!-- h1 제목은 고정 -->
+          <div class="userstory-lists" id="userstoryLists">
+            <!-- user-story들만 움직이게 설정 -->
+            {% for story in user_stories %} {% if story.product_backlog_id is
+            none %}
+            <div
+              class="user-story"
+              draggable="true"
+              data-story-id="{{ story.story_id }}"
+            >
+              <div class="user-story-content">
+                {{ story.user_story_content }}
+              </div>
+            </div>
+            {% endif %} {% endfor %}
+          </div>
         </div>
+
+        <div
+          id="productBacklog"
+          class="backlog-container"
+          ondrop="drop(event)"
+          ondragover="allowDrop(event)"
+        >
+          <div class="backlog-header">
+            <h1 class="backlog-title">백로그 목록</h1>
+            <form id="createBacklogGroupForm">
+              <button
+                type="button"
+                onclick="saveBacklogGroup()"
+                class="save-btn"
+              >
+                <div class="b2-regular">변경사항 저장</div>
+              </button>
+            </form>
+          </div>
+          <div class="backlogs" id="backlogs">
+            {% for backlog in product_backlog_groups %}
+            <div
+              class="backlog-box"
+              data-backlog-id="{{ backlog.product_backlog_id }}"
+            >
+              <div class="backlog-title-wrapper">
+                <input
+                  type="text"
+                  value="{{ backlog.product_backlog_content }}"
+                />
+                <button
+                  onclick="deleteBacklog('{{ backlog.product_backlog_id }}')"
+                >
+                  x
+                </button>
+              </div>
+
+              <!-- Only one .user-stories container -->
+              <div class="user-stories">
+                {% for story in user_stories if story.product_backlog_id ==
+                backlog.product_backlog_id %}
+                <div
+                  class="user-story"
+                  draggable="true"
+                  data-story-id="{{ story.story_id }}"
+                >
+                  {{ story.user_story_content }}
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+
+            {% endfor %}
+          </div>
+          {% endblock %}
+        </div>
+        <!-- SortableJS 라이브러리 추가 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+        <script src="{{ url_for('static', filename='js/backlog.js') }}"></script>
+      </div>
     </div>
-</body>
+  </body>
 </html>

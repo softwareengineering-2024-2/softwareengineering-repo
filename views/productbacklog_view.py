@@ -18,7 +18,7 @@ def product_backlog_view():
     # 저장된 ProductBacklog 그룹 가져오기
     product_backlog_groups = ProductBacklog.query.filter_by(project_id=project_id).order_by(ProductBacklog.backlog_order).all()
 
-    return render_template('productbacklog_back.html', user_stories=user_stories,
+    return render_template('backlog.html', user_stories=user_stories,
                            product_backlog_groups=product_backlog_groups)
 
 # 새로운 백로그 그룹 생성 또는 업데이트
