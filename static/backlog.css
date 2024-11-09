@@ -1,0 +1,113 @@
+@import url("global.css");
+
+.main-container {
+  margin-top: 2vh; /* 탑바 밑 여백 추가 */
+  margin-left: 25vh; /* 사이드바 너비만큼 왼쪽 여백 추가 */
+}
+
+.content {
+  display: flex;
+  padding: 20px;
+  flex-direction: row;
+  text-align: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.userstory-container {
+  border-radius: 10px;
+  border: 1px solid var(--color-grey-100);
+  background: var(--color-white);
+  padding: 20px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 수직 가운데 정렬 */
+  width: 17%;
+  height: 80vh;
+  overflow-y: auto;
+}
+
+.userstory-lists {
+  height: 100%;
+}
+
+.user-story {
+  width: auto; /* 자동 크기 조정 */
+  height: auto; /* 자동 크기 조정 */
+  cursor: move;
+  background-image: url("../static/icons/backlog_background.svg");
+  background-repeat: no-repeat;
+  background-size: contain; /* 이미지 비율에 맞게 조정 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px;
+  padding: 16px; /* 이미지와의 간격을 위해 패딩 추가 */
+  min-width: 148px; /* 최소 너비 설정 */
+  min-height: 148px; /* 최소 높이 설정 */
+  max-width: 100%; /* 최대 너비를 부모 요소에 맞춤 */
+  max-height: 100%; /* 최대 높이를 부모 요소에 맞춤 */
+}
+
+.backlog-container {
+  border-radius: 10px;
+  border: 1px solid var(--color-grey-100);
+  background: var(--color-white);
+  padding: 20px 40px;
+  width: 83%;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.backlog-header {
+  align-items: center;
+  justify-content: space-between;
+  display: flex;
+  height: fit-content;
+  width: 100%;
+  gap: 8px;
+}
+
+.backlogs {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  width: 100%;
+  overflow-x: auto;
+  height: 100%;
+}
+
+.backlog-title {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.save-btn {
+  border-radius: 10px;
+  border: 1px solid var(--color-grey-300);
+  background: #fff;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.backlog-box {
+  border: 1px solid var(--color-green-700);
+  background: var(--color-green-100);
+  padding: 10px;
+  margin: 10px 0;
+  height: fit-content;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.backlog-title-wrapper {
+  display: flex;
+}
+
+.selected {
+  background-color: #d3ffd3;
+}
