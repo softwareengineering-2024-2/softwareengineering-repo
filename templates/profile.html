@@ -34,25 +34,27 @@
         {% block content %}
         <div class="profile-box">
           <h1>사용자 프로필 수정</h1>
-          <div class="b2-regular">프로젝트 이름: ##</div>
-          <div class="name-input-wrapper">
-            <div class="b2-regular">이름</div>
-            <input type="text" placeholder="이름을 입력하세요." />
-          </div>
-          <div class="role-input-wrapper">
-            <div class="b2-regular">역할 선택</div>
-            <div class="selectBox">
-              <button class="label">역할을 선택해주세요</button>
-              <ul class="optionList">
-                <li class="optionItem">PM(기획자)</li>
-                <li class="optionItem">Member</li>
-              </ul>
-              <img src="../static/icons/chevron-down.svg" />
+          <form method="POST">
+            <div class="b2-regular">프로젝트 이름: {{ project_name }}</div>
+            <div class="name-input-wrapper">
+              <div class="b2-regular">이름</div>
+              <input type="text" id="name" name="name" value="{{ userproject.user_name }}" placeholder="이름을 입력하세요." />
             </div>
-          </div>
-          <button class="profile-btn" type="submit">
-            <div class="b2-regular">프로필 수정하기</div>
-          </button>
+            <div class="role-input-wrapper">
+              <div class="b2-regular">역할 선택</div>
+              <div class="selectBox">
+                <div class="label">역할을 선택해주세요</div>
+                <ul class="optionList">
+                  <li class="optionItem">PM(기획자)</li>
+                  <li class="optionItem">Member</li>
+                </ul>
+                <img src="../static/icons/chevron-down.svg" />
+              </div>
+            </div>
+            <button class="profile-btn" type="submit">
+              <div class="b2-regular">프로필 수정하기</div>
+            </button>
+          </form>
         </div>
         {% endblock %}
       </div>

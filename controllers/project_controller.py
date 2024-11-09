@@ -14,11 +14,11 @@ def create_project(project_name):
 
     return new_project
 
-# 프로젝트 링크를 통해 사용자를 프로젝트에 추가하는 로직
-def join_project_by_link(project_link):
-    project = Project.find_by_link(project_link)
+# 사용자를 프로젝트에 추가하는 로직
+def join_project(project_id):
+    project = Project.find_by_id(project_id)
     if project:
-        user_project = UserProject(user_id=current_user.id, project_id=project.project_id, user_name=current_user.name, user_role="PM")
+        user_project = UserProject(user_id=current_user.id, project_id=project_id, user_name=current_user.name, user_role="PM")
         user_project.save_to_db()
         return f"프로젝트 {project.project_name}에 성공적으로 참여했습니다."
     else:

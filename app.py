@@ -42,7 +42,7 @@ app.register_blueprint(calendar_bp, url_prefix='/calendar')
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("login.html")
 
 #------------------------------------------------
 #view로 이동 요청
