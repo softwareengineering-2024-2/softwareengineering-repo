@@ -1,235 +1,386 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sprint</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='topbar.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='sprint.css') }}">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='global.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='topbar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='sidebar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='sprint.css') }}"
+    />
+  </head>
+  <body>
     {% include 'topbar.html' %}
     <div class="main-container">
-        {% include 'sidebar.html' %}
-        <div class="content">
-            <div class="sprint-create-container">
-                <button class="create-sprint-btn" onclick="openSprintCreateModal()">스프린트 생성</button>
-            </div>
-            <div class="sprint-navigation">
-                <button class="nav-btn" onclick="navigateSprints(-1)">&lt;</button>
-                    {% if sprints %}
-                        {% for sprint in sprints %}
-                            <div class="sprint-container" id="sprint-{{ loop.index }}" style="display: {% if loop.index == 1 %}block{% else %}none{% endif %};">
-                                <div class="sprint-header">
-                                    <div class="sprint-title-container">
-                                        <h2>{{ sprint.sprint_name }}</h2>
-                                        <span class="sprint-dates">{{ sprint.start_date }} - {{ sprint.end_date }}</span>
-                                    </div>
-                                    <div class="sprint-actions">
-                                        <button class="header-options-btn" onclick="toggleSprintOptionsModal(event, {{ sprint.sprint_id }}, '{{ sprint.sprint_name }}', '{{ sprint.start_date }}', '{{ sprint.end_date }}', '{{ url_for('sprint.edit_sprint', sprint_id=sprint.sprint_id) }}')">
-                                            <img src="{{ url_for('static', filename='icons/dotdotdot.svg') }}" alt="설정 버튼">
-                                        </button>
-                                    </div>
-                                </div>                                        
-                                <div class="sprint-backlog-container">
-                                    <!-- 프로덕트 백로그 섹션 -->
-                                    {% for backlog in sprint.product_backlogs %}
-                                        <div class="product-backlog-section">
-                                            <div class="backlog-header">
-                                                <h3>{{ backlog.content }}</h3>
-                                                <button class="add-backlog-btn" onclick="openSprintBacklogModal({{ sprint.sprint_id }}, {{ backlog.product_backlog_id }})">스프린트 백로그 추가</button>
-                                            </div>
-                                            <div class="sprint-backlog-list">
-                                                {% if backlog.sprint_backlogs %}
-                                                    {% for sprint_backlog in backlog.sprint_backlogs %}
-                                                        <div class="sprint-backlog-item">
-                                                            <p>{{ sprint_backlog.content }}</p>
-                                                            <div class="status-container">
-                                                                <form method="POST" action="{{ url_for('sprint.edit_backlog_status_view', backlog_id=sprint_backlog.sprint_backlog_id) }}">
-                                                                <input type="hidden" name="backlog_id" value="{{ sprint_backlog.sprint_backlog_id }}">
-                                                                <select class="status-dropdown" name="status" onchange="this.form.submit()">
-                                                                    <option value="0" {% if sprint_backlog.status == 0 %}selected{% endif %}>To Do</option>
-                                                                    <option value="1" {% if sprint_backlog.status == 1 %}selected{% endif %}>In Progress</option>
-                                                                    <option value="2" {% if sprint_backlog.status == 2 %}selected{% endif %}>Done</option>
-                                                                </select>
-                                                            </form>
-                                                            <span class="user-initials">{{ sprint_backlog.user_name }}</span>
-                                                            <button class="options-btn" onclick="toggleBacklogOptionsModal(event, {{ sprint_backlog.sprint_backlog_id }}, '{{ sprint_backlog.content }}', {{ sprint_backlog.user_id }})">
-                                                                <img src="{{ url_for('static', filename='icons/dotdotdot.svg') }}" alt="설정 버튼">
-                                                            </button>                                      
-                                                        </div>
-                                                    </div>
-                                                    {%endfor%}
-                                                {% else %}
-                                                    <p>스프린트 백로그가 없습니다.</p>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>아직 생성된 스프린트가 없습니다.</p>
-                    {% endif %}
-                    <button class="nav-btn" onclick="navigateSprints(1)">&gt;</button>
-                </div>
-
-            <div class="backlog-navigation">
-                <button class="nav-btn" style="visibility: hidden;">&lt;</button>
-                <div class="product-backlog">
-                    <h3>프로덕트 백로그</h3>
-                    <div class="product-backlog-list">
-                        {% for backlog in backlogs %}
-                            <div class="product-backlog-item">
-                                <p>{{ backlog.product_backlog_content }}</p>
-                            </div>
-                        {% else %}
-                        <div class="product-backlog-item">
-                            <p>백로그가 없습니다.</p>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                <button class="nav-btn" style="visibility: hidden;">&gt;</button>
-            </div>            
+      {% include 'sidebar.html' %}
+      <div class="content">
+        <div class="sprint-create-container">
+          <button class="create-sprint-btn" onclick="openSprintCreateModal()">
+            스프린트 생성
+          </button>
         </div>
+        <div class="sprint-navigation">
+          <button class="nav-btn" onclick="navigateSprints(-1)">&lt;</button>
+          {% if sprints %} {% for sprint in sprints %}
+          <div
+            class="sprint-container"
+            id="sprint-{{ loop.index }}"
+            style="display: {% if loop.index == 1 %}block{% else %}none{% endif %};"
+          >
+            <div class="sprint-header">
+              <div class="sprint-title-container">
+                <h2>{{ sprint.sprint_name }}</h2>
+                <span class="sprint-dates"
+                  >{{ sprint.start_date }} - {{ sprint.end_date }}</span
+                >
+              </div>
+              <div class="sprint-actions">
+                <button
+                  class="header-options-btn"
+                  onclick="toggleSprintOptionsModal(event, {{ sprint.sprint_id }}, '{{ sprint.sprint_name }}', '{{ sprint.start_date }}', '{{ sprint.end_date }}', '{{ url_for('sprint.edit_sprint', sprint_id=sprint.sprint_id) }}')"
+                >
+                  <img
+                    src="{{ url_for('static', filename='icons/dotdotdot.svg') }}"
+                    alt="설정 버튼"
+                  />
+                </button>
+              </div>
+            </div>
+            <div class="sprint-backlog-container">
+              <!-- 프로덕트 백로그 섹션 -->
+              {% for backlog in sprint.product_backlogs %}
+              <div class="product-backlog-section">
+                <div class="backlog-header">
+                  <h3>{{ backlog.content }}</h3>
+                  <button
+                    class="add-backlog-btn"
+                    onclick="openSprintBacklogModal({{ sprint.sprint_id }}, {{ backlog.product_backlog_id }})"
+                  >
+                    스프린트 백로그 추가
+                  </button>
+                </div>
+                <div class="sprint-backlog-list">
+                  {% if backlog.sprint_backlogs %} {% for sprint_backlog in
+                  backlog.sprint_backlogs %}
+                  <div class="sprint-backlog-item">
+                    <p>{{ sprint_backlog.content }}</p>
+                    <div class="status-container">
+                      <form
+                        method="POST"
+                        action="{{ url_for('sprint.edit_backlog_status_view', backlog_id=sprint_backlog.sprint_backlog_id) }}"
+                      >
+                        <input
+                          type="hidden"
+                          name="backlog_id"
+                          value="{{ sprint_backlog.sprint_backlog_id }}"
+                        />
+                        <div>{{sprint_backlog.status}}</div>
+                      </form>
+                      <span class="user-initials">
+                        {{ sprint_backlog.user_name[:2] }}</span
+                      >
+                      <button
+                        class="options-btn"
+                        onclick="toggleBacklogOptionsModal(event, {{ sprint_backlog.sprint_backlog_id }}, '{{ sprint_backlog.content }}', {{ sprint_backlog.user_id }})"
+                      >
+                        <img
+                          src="{{ url_for('static', filename='icons/dotdotdot.svg') }}"
+                          alt="설정 버튼"
+                        />
+                      </button>
+                    </div>
+                  </div>
+                  {%endfor%} {% else %}
+                  <p>스프린트 백로그가 없습니다.</p>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %} {% else %}
+          <p>아직 생성된 스프린트가 없습니다.</p>
+          {% endif %}
+          <button class="nav-btn" onclick="navigateSprints(1)">&gt;</button>
+        </div>
+
+        <div class="backlog-navigation">
+          <button class="nav-btn" style="visibility: hidden">&lt;</button>
+          <div class="product-backlog">
+            <h3>프로덕트 백로그</h3>
+            <div class="product-backlog-list">
+              {% for backlog in backlogs.all_backlogs %}
+              <div class="product-backlog-item">
+                <p>{{ backlog.product_backlog_content }}</p>
+              </div>
+              {% else %}
+              <div class="product-backlog-item">
+                <p>백로그가 없습니다.</p>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <button class="nav-btn" style="visibility: hidden">&gt;</button>
+        </div>
+      </div>
     </div>
 
     <!-- 스프린트 생성 모달 구조 -->
-    <div id="sprint_create_modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <h2>스프린트 생성</h2>
-            <form action="{{ url_for('sprint.add_sprint') }}" method="post">
-                <label for="sprint-name">스프린트 이름</label>
-                <input type="text" id="sprint-name" name="sprint_name" placeholder="스프린트 이름을 입력하세요" />
+    <div id="sprint_create_modal" class="modal" style="display: none">
+      <div class="modal-content">
+        <h2>스프린트 생성</h2>
+        <form action="{{ url_for('sprint.add_sprint') }}" method="post">
+          <label for="sprint-name">스프린트 이름</label>
+          <input
+            type="text"
+            id="sprint-name"
+            name="sprint_name"
+            placeholder="스프린트 이름을 입력하세요"
+          />
 
-                <label for="sprint-start-date">스프린트 기간</label>
-                <div class="date-inputs">
-                    <input type="date" id="sprint-start-date" name="start_date" placeholder="시작 날짜" />
-                    <input type="date" id="sprint-end-date" name="end_date" placeholder="종료 날짜" />
-                </div>
+          <label for="sprint-start-date">스프린트 기간</label>
+          <div class="date-inputs">
+            <input
+              type="date"
+              id="sprint-start-date"
+              name="start_date"
+              placeholder="시작 날짜"
+            />
+            <input
+              type="date"
+              id="sprint-end-date"
+              name="end_date"
+              placeholder="종료 날짜"
+            />
+          </div>
 
-                <label for="product-backlog">프로덕트 백로그</label>
-                    <select id="product-backlog" name="backlogs" multiple size="3" >
-                        {% if backlogs %}
-                            {% for backlog in backlogs %}
-                                <option value="{{ backlog.product_backlog_id }}">{{ backlog.product_backlog_content }}</option>
-                            {% endfor %}
-                        {% else %}
-                            <option disabled>백로그가 없습니다.</option>
-                        {% endif %}
-                    </select>
+          <!-- 선택된 항목이 표시될 텍스트 입력창 -->
+          <input
+            type="text"
+            id="selected-backlogs"
+            readonly
+            placeholder="선택된 백로그가 여기에 표시됩니다"
+          />
 
-                <div class="modal-buttons">
-                    <input type="hidden" name="project_id" value="{{ project_id }}">
-                    <button type="submit" class="add-sprint-btn">스프린트 추가</button>
-                    <button type="button" class="cancel-btn" onclick="closeSprintCreateModal()">취소하기</button>
-                </div>
-            </form>
-        </div>
+          <!-- 선택 가능한 항목들을 담는 컨테이너 -->
+          <div id="product-backlog-container">
+            {% if backlogs.unassigned_backlogs %} {% for backlog in
+            backlogs.unassigned_backlogs %}
+            <div
+              class="backlog-item"
+              onclick="toggleBacklog('{{ backlog.product_backlog_content }}', '{{ backlog.product_backlog_id }}')"
+            >
+              {{ backlog.product_backlog_content }}
+            </div>
+            {% endfor %} {% else %}
+            <p>백로그가 없습니다.</p>
+            {% endif %}
+          </div>
+
+          <div class="modal-buttons">
+            <input type="hidden" name="project_id" value="{{ project_id }}" />
+            <button type="submit" class="add-sprint-btn">스프린트 추가</button>
+            <button
+              type="button"
+              class="cancel-btn"
+              onclick="closeSprintCreateModal()"
+            >
+              취소하기
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- 스프린트 수정 모달 -->
-    <div id="sprint_edit_modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <h2>스프린트 수정</h2>
-            <form id="edit-sprint-form" action="" method="post">
-                <input type="hidden" id="edit-sprint-id" name="sprint_id">
-                <label for="edit-sprint-name">스프린트 이름</label>
-                <input type="text" id="edit-sprint-name" name="sprint_name" placeholder="스프린트 이름을 입력하세요" required>
+    <div id="sprint_edit_modal" class="modal" style="display: none">
+      <div class="modal-content">
+        <h2>스프린트 수정</h2>
+        <form id="edit-sprint-form" action="" method="post">
+          <input type="hidden" id="edit-sprint-id" name="sprint_id" />
+          <label for="edit-sprint-name">스프린트 이름</label>
+          <input
+            type="text"
+            id="edit-sprint-name"
+            name="sprint_name"
+            placeholder="스프린트 이름을 입력하세요"
+            required
+          />
 
-                <label for="edit-sprint-start-date">스프린트 시작일</label>
-                <input type="date" id="edit-sprint-start-date" name="start_date" required>
+          <label for="edit-sprint-start-date">스프린트 시작일</label>
+          <input
+            type="date"
+            id="edit-sprint-start-date"
+            name="start_date"
+            required
+          />
 
-                <label for="edit-sprint-end-date">스프린트 종료일</label>
-                <input type="date" id="edit-sprint-end-date" name="end_date" required>
+          <label for="edit-sprint-end-date">스프린트 종료일</label>
+          <input
+            type="date"
+            id="edit-sprint-end-date"
+            name="end_date"
+            required
+          />
 
-                <label for="edit-product-backlog">프로덕트 백로그</label>
-                <select id="edit-product-backlog" name="backlogs" multiple>
-                    {% for backlog in backlogs %}
-                        <option value="{{ backlog.product_backlog_id }}">{{ backlog.product_backlog_content }}</option>
-                    {% endfor %}
-                </select>
+          <label for="edit-product-backlog">프로덕트 백로그</label>
+          <select id="edit-product-backlog" name="backlogs" multiple>
+            {% for backlog in backlogs.unassigned_backlogs %}
+            <option value="{{ backlog.product_backlog_id }}">
+              {{ backlog.product_backlog_content }}
+            </option>
+            {% endfor %}
+          </select>
 
-                <div class="modal-buttons">
-                    <button type="submit" class="add-sprint-btn">저장</button>
-                    <button type="button" class="cancel-btn" onclick="closeSprintEditModal()">취소하기</button>
-                </div>
-            </form>
-        </div>
+          <div class="modal-buttons">
+            <button type="submit" class="add-sprint-btn">저장</button>
+            <button
+              type="button"
+              class="cancel-btn"
+              onclick="closeSprintEditModal()"
+            >
+              취소하기
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- 스프린트 백로그 생성 모달 -->
-    <div id="sprint_backlog_modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <h2>스프린트 백로그 생성</h2>
-            <form id="add-sprint-backlog-form" method="post">
-                <label for="backlog-name">스프린트 백로그 이름</label>
-                <input type="text" id="backlog-name" name="content" placeholder="스프린트 백로그 이름을 입력하세요" />
+    <div id="sprint_backlog_modal" class="modal" style="display: none">
+      <div class="modal-content">
+        <h2>스프린트 백로그 생성</h2>
+        <form id="add-sprint-backlog-form" method="post">
+          <label for="backlog-name">스프린트 백로그 이름</label>
+          <input
+            type="text"
+            id="backlog-name"
+            name="content"
+            placeholder="스프린트 백로그 이름을 입력하세요"
+          />
 
-                <label for="assignee">담당자</label>
-                <select id="assignee" name="user_id" required>
-                    <option value="">담당자 선택</option>
-                    {% for user in users %}
-                        <option value="{{ user.user_id }}">{{ user.user_name }}</option>
-                    {% endfor %}
-                </select>
+          <label for="assignee">담당자</label>
+          <select id="assignee" name="user_id" required>
+            <option value="">담당자 선택</option>
+            {% for user in users %}
+            <option value="{{ user.user_id }}">{{ user.user_name }}</option>
+            {% endfor %}
+          </select>
 
-                <input type="hidden" id="sprint-backlog-sprint-id" name="sprint_id">
-                <input type="hidden" id="sprint-backlog-product-id" name="product_backlog_id">
-                <input type="hidden" id="project-id" name="project_id" value="{{ project_id }}">
+          <input type="hidden" id="sprint-backlog-sprint-id" name="sprint_id" />
+          <input
+            type="hidden"
+            id="sprint-backlog-product-id"
+            name="product_backlog_id"
+          />
+          <input
+            type="hidden"
+            id="project-id"
+            name="project_id"
+            value="{{ project_id }}"
+          />
 
-                <div class="modal-buttons">
-                    <button type="button" class="modal-add-backlog-btn" onclick="addSprintBacklog()">백로그 추가</button>
-                    <button type="button" class="cancel-btn" onclick="closeSprintBacklogModal()">취소하기</button>
-                </div>
-            </form>
-        </div>
+          <div class="modal-buttons">
+            <button
+              type="button"
+              class="modal-add-backlog-btn"
+              onclick="addSprintBacklog()"
+            >
+              백로그 추가
+            </button>
+            <button
+              type="button"
+              class="cancel-btn"
+              onclick="closeSprintBacklogModal()"
+            >
+              취소하기
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
-
     <!-- 스프린트 백로그 수정 모달 -->
-    <div id="sprint_backlog_edit_modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <h2>스프린트 백로그 수정</h2>
-            <form id="edit-sprint-backlog-form" method="post">
-                <label for="edit-backlog-name">백로그 이름</label>
-                <input type="text" id="edit-backlog-name" name="content" required />
-    
-                <label for="edit-assignee">담당자</label>
-                <select id="edit-assignee" name="user_id" required>
-                    {% for user in users %}
-                        <option value="{{ user.user_id }}">{{ user.user_name }}</option>
-                    {% endfor %}
-                </select>
-    
-                <input type="hidden" id="edit-backlog-id" name="backlog_id">
-    
-                <div class="modal-buttons">
-                    <button type="submit" class="add-sprint-btn">백로그 수정</button>
-                    <button type="button" class="cancel-btn" onclick="closeSprintBacklogEditModal()">취소하기</button>
-                </div>
-            </form>
-        </div>
+    <div id="sprint_backlog_edit_modal" class="modal" style="display: none">
+      <div class="modal-content">
+        <h2>스프린트 백로그 수정</h2>
+        <form id="edit-sprint-backlog-form" method="post">
+          <label for="edit-backlog-name">백로그 이름</label>
+          <input type="text" id="edit-backlog-name" name="content" required />
+
+          <label for="edit-assignee">담당자</label>
+          <select id="edit-assignee" name="user_id" required>
+            {% for user in users %}
+            <option value="{{ user.user_id }}">{{ user.user_name }}</option>
+            {% endfor %}
+          </select>
+
+          <input type="hidden" id="edit-backlog-id" name="backlog_id" />
+
+          <div class="modal-buttons">
+            <button type="submit" class="add-sprint-btn">백로그 수정</button>
+            <button
+              type="button"
+              class="cancel-btn"
+              onclick="closeSprintBacklogEditModal()"
+            >
+              취소하기
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- 스프린트 설정 팝업 모달 -->
-    <div id="sprint-options-modal" class="small-modal" style="display: none;">
-        <button id="edit-sprint-btn" onclick="">스프린트 수정</button>
-        <button class="delete-btn" onclick="deleteSprint()">스프린트 삭제</button>
+    <div id="sprint-options-modal" class="small-modal" style="display: none">
+      <button id="edit-sprint-btn" onclick="">스프린트 수정</button>
+      <button class="delete-btn" onclick="deleteSprint()">스프린트 삭제</button>
     </div>
 
     <!-- 백로그 설정 팝업 모달 -->
-    <div id="backlog-options-modal" class="small-modal" style="display: none;">
-        <button onclick="openSprintBacklogEditModal()">백로그 수정</button>
-        <button class="delete-btn" onclick="deleteBacklog()">백로그 삭제</button>
+    <div id="backlog-options-modal" class="small-modal" style="display: none">
+      <button onclick="openSprintBacklogEditModal()">백로그 수정</button>
+      <button class="delete-btn" onclick="deleteBacklog()">백로그 삭제</button>
     </div>
-</body>
-<!-- JavaScript 파일 로드 -->
-<script src="{{ url_for('static', filename='js/sprint.js') }}"></script>
+  </body>
+  <!-- JavaScript 파일 로드 -->
+  <script src="{{ url_for('static', filename='js/sprint.js') }}"></script>
+  <script>
+    const selectedBacklogs = new Map(); // 선택된 항목들을 저장하는 Map (key: ID, value: content)
 
+    // 항목 클릭 시 선택/해제하고 입력창 업데이트
+    function toggleBacklog(content, id) {
+      // 선택된 항목이 이미 있는 경우 제거 (해제)
+      if (selectedBacklogs.has(id)) {
+        selectedBacklogs.delete(id);
+      } else {
+        // 선택된 항목에 추가
+        selectedBacklogs.set(id, content);
+      }
+      updateSelectedBacklogs();
+    }
+
+    // 선택된 항목들을 쉼표로 구분하여 입력창에 표시
+    function updateSelectedBacklogs() {
+      const selectedInput = document.getElementById("selected-backlogs");
+      // 선택된 백로그 내용을 쉼표로 구분하여 표시
+      selectedInput.value = Array.from(selectedBacklogs.values()).join(", ");
+    }
+  </script>
 </html>

@@ -1,7 +1,7 @@
 # views/sprint_view.py
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from controllers.sprint_controller import (
-    assign_backlogs_to_sprint, create_sprint, delete_backlog, get_sprints_with_backlogs, get_users_by_project_id, update_backlog_details, update_backlog_status, update_sprint, delete_sprint,
+    assign_backlogs_to_sprint, create_sprint, delete_backlog, get_sprints_with_backlogs, get_unassigned_product_backlogs, get_users_by_project_id, update_backlog_details, update_backlog_status, update_sprint, delete_sprint,
     get_all_product_backlogs, create_sprint_backlog
 )
 
@@ -11,7 +11,10 @@ sprint_bp = Blueprint('sprint', __name__)
 @sprint_bp.route('/sprint/<int:project_id>', methods=['GET'])
 def get_product_backlogs_view(project_id):
     sprints = get_sprints_with_backlogs(project_id)
-    backlogs = get_all_product_backlogs(project_id)
+    backlogs = {
+        'all_backlogs': get_all_product_backlogs(project_id),
+        'unassigned_backlogs': get_unassigned_product_backlogs(project_id)
+    } 
     users = get_users_by_project_id(project_id)
     return render_template('sprint.html', backlogs=backlogs, sprints=sprints, users=users, project_id=project_id)
 
@@ -51,10 +54,15 @@ def edit_sprint(sprint_id):
     if updated_sprint:
         assign_backlogs_to_sprint(sprint_id, selected_backlogs)
         flash('스프린트가 성공적으로 수정되었습니다.')
+        project_id = updated_sprint.project_id
     else:
         flash('스프린트 수정에 실패했습니다.')
 
-    return redirect(url_for('sprint.get_product_backlogs_view', project_id=updated_sprint.project_id))
+    if project_id:
+        return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id))
+    else:
+        # project_id가 None이면 기본 페이지로 리다이렉트
+        return redirect(url_for('sprint.default_view'))
 
 # 스프린트 삭제
 @sprint_bp.route('/delete-sprint/<int:sprint_id>', methods=['POST'])
