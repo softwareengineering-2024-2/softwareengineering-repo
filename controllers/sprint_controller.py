@@ -15,6 +15,15 @@ def get_all_product_backlogs(project_id):
         return ProductBacklog.query.filter_by(project_id=project_id).all()
     except SQLAlchemyError as e:
         return str(e)
+    
+# 스프린트 백로그에 할당되지 않은 프로덕트 백로그만 가져오는 함수
+def get_unassigned_product_backlogs(project_id):
+    try:
+        # 스프린트에 할당되지 않은 프로덕트 백로그를 필터링
+        unassigned_backlogs = ProductBacklog.query.filter_by(project_id=project_id, sprint_id=None).all()
+        return unassigned_backlogs
+    except SQLAlchemyError as e:
+        return str(e)
 
 # 모든 스프린트를 가져오는 로직
 def get_sprint(project_id):
