@@ -43,7 +43,7 @@ body {
   margin: 24px;
 }
 
-.login-buton {
+.login-button {
   border-radius: 10px;
   border: 1px solid #000;
   background: var(--white, #fff);
@@ -61,4 +61,8 @@ body {
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+}
+
+.login-button:hover {
+  text-decoration: none;
 }
