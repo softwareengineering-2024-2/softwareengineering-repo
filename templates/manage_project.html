@@ -49,7 +49,7 @@
               ><p>{{ userproject.project_name }}</p></a
             >
             <div class="project-list-options">
-              <button class="normal-button"><p>링크복사</p></button>
+              <button class="normal-button" onclick="copyToClipboard('{{ userproject.project_link }}')"><p>링크복사</p></button>
               <form
                 action="{{ url_for('manage_project.set_profile_view', project_id=userproject.project_id) }}"
                 method="GET"
@@ -110,5 +110,17 @@
       {% endblock %}
     </div>
     <script src="{{ url_for('static', filename='js/manage_project.js') }}"></script>
+    <script>
+      function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(
+          function () {
+            alert("링크가 클립보드에 복사되었습니다.");
+          },
+          function (err) {
+            alert("링크 복사에 실패했습니다.");
+          }
+        );
+      }
+    </script>
   </body>
 </html>
