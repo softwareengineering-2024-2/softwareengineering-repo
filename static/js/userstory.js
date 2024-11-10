@@ -14,6 +14,7 @@ const keywordWarningBackground = document.getElementById("keywordWarningBackgrou
 let userStories = [];
 
 // 유저 스토리 렌더링 함수
+
 function renderUserStories() {
     userStoryList.innerHTML = "";
 
@@ -87,11 +88,13 @@ function highlightKeywords(text) {
     return highlightedText;
 }
 
+/*
 // 유저 스토리 수정 모드 전환 함수
 function editUserStory(index) {
     userStories[index].editing = true;
     renderUserStories();
 }
+    */
 
 // 유저 스토리 수정 완료 함수
 function completeEdit(index) {
@@ -109,10 +112,6 @@ function deleteUserStory(index) {
     renderUserStories();
 }
 
-// Not List keyword 모달 열기/닫기
-settingsIcon.addEventListener("click", openModal);
-modalBackground.addEventListener("click", closeModal);
-
 function openModal() {
     modalBackground.style.display = "block";
     notListModal.style.display = "block";
@@ -127,66 +126,66 @@ function closeModal() {
 let keywords = [];
 
 // 엔터키로 키워드 추가
-newKeywordInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-        const newKeyword = newKeywordInput.value.trim();
-        addKeyword(newKeyword);
-    }
-});
+// newKeywordInput.addEventListener("keydown", (event) => {
+//     if (event.key === "Enter") {
+//         const newKeyword = newKeywordInput.value.trim();
+//         addKeyword(newKeyword);
+//     }
+// });
 
 // 키워드 추가 함수
-function addKeyword(keyword) {
-    if (keyword && !keywords.includes(keyword)) {
-        keywords.push(keyword);
-        renderKeywords();
-        newKeywordInput.value = ""; // 입력 필드 초기화
-    }
-}
+// function addKeyword(keyword) {
+//     if (keyword && !keywords.includes(keyword)) {
+//         keywords.push(keyword);
+//         renderKeywords();
+//         newKeywordInput.value = ""; // 입력 필드 초기화
+//     }
+// }
 
 // 키워드 삭제 함수
-function deleteKeyword(keyword) {
-    keywords = keywords.filter(item => item !== keyword);
-    renderKeywords();
-}
+// function deleteKeyword(keyword) {
+//     keywords = keywords.filter(item => item !== keyword);
+//     renderKeywords();
+// }
 
 // 키워드 목록 렌더링 함수
-function renderKeywords() {
-    // Not List와 모달창 모두에 키워드 표시 업데이트
-    notListKeywordsDisplay.innerHTML = "";
-    modalKeywords.innerHTML = "";
+// function renderKeywords() {
+//     // Not List와 모달창 모두에 키워드 표시 업데이트
+//     notListKeywordsDisplay.innerHTML = "";
+//     modalKeywords.innerHTML = "";
 
-    if (keywords.length === 0) {
-        // 키워드가 없을 때 안내 문구 추가
-        const emptyMessage = document.createElement("p");
-        emptyMessage.className = "empty-message-key";
-        emptyMessage.textContent = "오른쪽 위 설정 버튼을 눌러 키워드를 추가하세요.";
-        notListKeywordsDisplay.appendChild(emptyMessage);
-    } else {
-        // 키워드가 있을 때 패딩 제거
-        notListKeywordsDisplay.style.padding = "0";
+//     if (keywords.length === 0) {
+//         // 키워드가 없을 때 안내 문구 추가
+//         const emptyMessage = document.createElement("p");
+//         emptyMessage.className = "empty-message-key";
+//         emptyMessage.textContent = "오른쪽 위 설정 버튼을 눌러 키워드를 추가하세요.";
+//         notListKeywordsDisplay.appendChild(emptyMessage);
+//     } else {
+//         // 키워드가 있을 때 패딩 제거
+//         notListKeywordsDisplay.style.padding = "0";
         
-        keywords.forEach(keyword => {
-            const keywordElem = document.createElement("span");
-            keywordElem.className = "keyword";
-            keywordElem.textContent = keyword;
-            notListKeywordsDisplay.appendChild(keywordElem);
+//         keywords.forEach(keyword => {
+//             const keywordElem = document.createElement("span");
+//             keywordElem.className = "keyword";
+//             keywordElem.textContent = keyword;
+//             notListKeywordsDisplay.appendChild(keywordElem);
 
-            const modalKeywordElem = document.createElement("div");
-            modalKeywordElem.className = "modal-keyword-item";
-            modalKeywordElem.innerHTML = `${keyword}`;
+//             const modalKeywordElem = document.createElement("div");
+//             modalKeywordElem.className = "modal-keyword-item";
+//             modalKeywordElem.innerHTML = `${keyword}`;
 
-            if (projectRole === "PM") {
-                const deleteBtn = document.createElement("span");
-                deleteBtn.className = "delete";
-                deleteBtn.textContent = "삭제";
-                deleteBtn.onclick = () => deleteKeyword(keyword);
-                modalKeywordElem.appendChild(deleteBtn);
-            }
+//             if (projectRole === "PM") {
+//                 const deleteBtn = document.createElement("span");
+//                 deleteBtn.className = "delete";
+//                 deleteBtn.textContent = "삭제";
+//                 deleteBtn.onclick = () => deleteKeyword(keyword);
+//                 modalKeywordElem.appendChild(deleteBtn);
+//             }
 
-            modalKeywords.appendChild(modalKeywordElem);
-        });
-    }
-}
+//             modalKeywords.appendChild(modalKeywordElem);
+//         });
+//     }
+// }
 
 let pendingUserStory = ""; // 임시로 저장할 유저 스토리 텍스트
 
@@ -224,5 +223,5 @@ function cancelKeywordWarning() {
 }
 
 // 초기 렌더링 호출
-renderKeywords();
+// renderKeywords();
 renderUserStories();

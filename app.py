@@ -4,7 +4,6 @@ from controllers.auth import auth_bp, init_login_manager
 from views.project_main_view import project_main_bp
 from views.manage_project_view import manage_project_bp
 from views.userstory_view import userstory_bp
-from views.notlist_view import notlist_bp
 from views.milestone_view import milestone_bp
 from views.productbacklog_view import productbacklog_bp
 from views.sprint_view import sprint_bp
@@ -36,8 +35,7 @@ app.register_blueprint(manage_project_bp, url_prefix='/manage_project')
 app.register_blueprint(milestone_bp, url_prefix='/milestone')
 app.register_blueprint(productbacklog_bp, url_prefix='/productbacklog')
 app.register_blueprint(sprint_bp, url_prefix='/sprint')
-app.register_blueprint(userstory_bp, url_prefix='/userstory_view')
-app.register_blueprint(notlist_bp, url_prefix='/notlist_view')
+app.register_blueprint(userstory_bp, url_prefix='/userstory')
 app.register_blueprint(calendar_bp, url_prefix='/calendar')
 
 @app.route("/")
@@ -57,10 +55,6 @@ def main():
 # @app.route("/milestone")
 # def milestone():
 #     return render_template("milestone.html")
-
-# @app.route("/userstory")
-# def userstory():
-#     return render_template("userstory.html")
 
 # @app.route("/backlog")
 # def backlog():

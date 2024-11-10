@@ -33,13 +33,13 @@
     </ul>
 
     <!-- 확인 버튼 -->
-    <form action="{{ url_for('userstory_view.check_keyword_route', project_id=project_id) }}" method="POST" style="display:inline;">
+    <form action="{{ url_for('userstory.check_keyword_route', project_id=project_id) }}" method="POST" style="display:inline;">
         <input type="hidden" name="check_or_not" value="check">
         <button type="submit">확인</button>
     </form>
 
     <!-- 취소 버튼 -->
-    <form action="{{ url_for('userstory_view.check_keyword_route', project_id=project_id) }}" method="POST" style="display:inline;">
+    <form action="{{ url_for('userstory.check_keyword_route', project_id=project_id) }}" method="POST" style="display:inline;">
         <input type="hidden" name="check_or_not" value="not">
         <button type="submit">취소</button>
     </form>
