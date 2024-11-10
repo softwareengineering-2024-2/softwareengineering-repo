@@ -34,20 +34,31 @@ def get_sprint(project_id):
         return str(e)
 
 # 스프린트를 생성하는 로직
+# 스프린트를 생성하는 로직
 def create_sprint(project_id, sprint_name, start_date, end_date, status=None):
     try:
         start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
         end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
-        new_sprint = Sprint(project_id=project_id, sprint_name=sprint_name, sprint_start_date=start_date, sprint_end_date=end_date, status=status)
-        if not new_sprint.is_valid_dates():
-            return None, "Invalid sprint dates: Start date must be today or later, and end date must be after start date."
+        if end_date <= start_date:
+            return None, "Invalid dates: End date must be after start date."
+
+        # 해당 프로젝트의 다른 스프린트와 날짜가 겹치지 않는지 확인
+        overlapping_sprints = Sprint.query.filter(
+            Sprint.project_id == project_id,
+            Sprint.sprint_end_date >= start_date,
+            Sprint.sprint_start_date <= end_date
+        ).all()
         
+        if overlapping_sprints:
+            return None, "Date conflict: Another sprint overlaps with the given dates."
+
+        new_sprint = Sprint(project_id=project_id, sprint_name=sprint_name, sprint_start_date=start_date, sprint_end_date=end_date, status=status)
         db.session.add(new_sprint)
         db.session.commit()
-        return new_sprint
+        return new_sprint, None
     except SQLAlchemyError as e:
         db.session.rollback()
-        return str(e)
+        return None, str(e)
 
 # 스프린트를 업데이트하는 메서드
 def update_sprint(sprint_id, updates):
@@ -235,3 +246,55 @@ def get_users_by_project_id(project_id):
     user_projects = UserProject.query.filter_by(project_id=project_id).all()
     users = [{'user_id': user_project.user_id, 'user_name': user_project.user_name} for user_project in user_projects]
     return users
+
+
+def get_current_sprint_backlogs(user_id, project_id):
+    try:
+        # 현재 사용자가 참여 중인 프로젝트의 ID 확인
+        user_projects = UserProject.query.filter_by(user_id=user_id, project_id=project_id).all()
+        project_ids = [up.project_id for up in user_projects]
+
+        # 오늘 날짜 기준으로 현재 스프린트 찾기
+        today = datetime.today().date()
+        current_sprint = Sprint.query.filter(
+            Sprint.project_id.in_(project_ids),
+            Sprint.sprint_start_date <= today,
+            Sprint.sprint_end_date >= today,
+        ).first()
+
+        # 현재 스프린트가 있는지 확인
+        if current_sprint:
+            # 스프린트 ID로 전체 백로그 가져오기 (퍼센트 계산용)
+            all_sprint_backlogs = SprintBacklog.query.filter_by(sprint_id=current_sprint.sprint_id).all()
+            
+            # 전체 백로그 개수
+            total_backlogs = len(all_sprint_backlogs)
+            # 'Done' 상태인 백로그 개수
+            done_backlogs = sum(1 for backlog in all_sprint_backlogs if backlog.status == 'Done')
+
+            # 퍼센트 계산 (총 백로그가 0이 아닌 경우)
+            progress_percentage = (done_backlogs / total_backlogs * 100) if total_backlogs > 0 else 0
+
+            # 현재 사용자 ID로 필터링된 스프린트 백로그 가져오기 (사용자별 콘텐츠 표시용)
+            user_sprint_backlogs = SprintBacklog.query.filter_by(sprint_id=current_sprint.sprint_id, user_id=user_id).all()
+
+            # 스프린트 백로그 정보를 반환할 데이터 구조
+            backlog_details = [
+                {
+                    'sprint_backlog_content': backlog.sprint_backlog_content,
+                    'status': backlog.status
+                }
+                for backlog in user_sprint_backlogs
+            ]
+
+            return {
+                'sprint_id': current_sprint.sprint_id,
+                'sprint_name': current_sprint.sprint_name,
+                'backlogs': backlog_details,
+                'progress_percentage': round(progress_percentage, 2)  # 소수점 두 자리까지 반올림
+            }
+        else:
+            return {'message': 'No current sprint found'}
+
+    except SQLAlchemyError as e:
+        return {'error': str(e)}

@@ -11,7 +11,7 @@
     display: flex;
     justify-content: flex-end;
     margin-bottom: 10px;
-    margin-right: 5vh;
+    margin-right: 10vh;
 }
 
 .create-sprint-btn {
@@ -42,9 +42,12 @@
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 95%;
-    max-width: 1400px;
     min-height: 45vh;
     margin: 0 auto;
+    overflow-y: auto; /* 스크롤 추가 */
+}
+.sprint-container::-webkit-scrollbar {
+    display: none; /* 스크롤바 숨기기 */
 }
 
 .sprint-header {
@@ -149,7 +152,7 @@
     height: 20px;
 }
 
-.backlog-navigation {
+.backlog-div {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -162,7 +165,6 @@
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 95%;
-    max-width: 1400px;
     min-height: 30vh;
     margin: 0 auto;
 }
@@ -312,4 +314,47 @@
 /* 삭제 버튼 색상 적용 */
 .small-modal .delete-btn {
     color: var(--color-red); /* 삭제 버튼에 색상 지정 */
+}
+
+
+
+/* 스프린트가 없을때 */
+.sprint-container-none {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 1400px;
+    width: 95%;
+    min-height: 45vh;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-btn-lt,
+.nav-btn-gt {
+    background-color: var(--color-white); /* 하얀색 배경 */
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 */
+    position: absolute;
+    top: 40vh;
+    transform: translateY(-50%); /* 세로 중앙 정렬 */
+}
+
+.nav-btn-lt {
+    left: 27vh; /* 왼쪽 여백 설정 */
+
+}
+
+.nav-btn-gt {
+    right: 2vh; /* 오른쪽 여백 설정 */
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    font-size: 2em;
+    cursor: pointer;
+    color: var(--color-grey-500);
 }
