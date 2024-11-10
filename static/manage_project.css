@@ -1,10 +1,5 @@
 @import url("global.css");
 
-.main-container {
-  margin-top: 2vh; /* 탑바 밑 여백 추가 */
-  margin-left: 25vh; /* 사이드바 너비만큼 왼쪽 여백 추가 */
-}
-
 .projects-content {
   padding: 20px;
   flex-direction: column;
@@ -55,10 +50,14 @@
   justify-content: space-between;
   align-items: center;
   margin-top: 1vh;
-  width: 80%;
+  width: 70%;
 }
 
-.project-list button {
+.project-list-options {
+  display: flex;
+}
+
+.project-list-options button {
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -117,7 +116,7 @@
 }
 
 .project-input-wrapper {
-  margin: 2vh;
+  /* margin: 2vh; */
 }
 
 .project-input-wrapper .b2-regular {
@@ -145,6 +144,7 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  margin-top: 20px;
 }
 
 .create-button {
@@ -155,22 +155,139 @@
   background-color: var(--color-grey-100);
 }
 
+.join-modal-content {
+  display: flex;
+  padding: 20px;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.join-modal {
+  flex-direction: column;
+  display: flex;
+  padding: 6vh 8vh;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  border-radius: 10px;
+  background: var(--color-white);
+  box-shadow: 0px 0px 20px 12px rgba(0, 0, 0, 0.05);
+  width: 30%;
+}
+
+.join-form {
+  width: 100%;
+  margin: 1vh;
+  justify-content: left;
+}
+
 .code-check-input-wrapper {
   display: flex;
   gap: 1vh;
   width: 100%;
-  max-height: 39px;
+  /* max-height: 39px; */
 }
 .code-check-input-wrapper input {
-  width: 75%;
-  height: 100%;
+  margin: 0; /* 기본 마진 제거 */
+  padding: 12px; /* 필요시 패딩 추가 */
+
+  border-radius: 10px;
+  background: var(--color-grey-50);
+  display: flex;
+  align-self: stretch;
+  border: none;
+  width: 80%;
 }
 .code-check-button {
+  width: 20%;
   background-color: var(--color-green-200);
   border: none;
   border-radius: 10px;
   display: flex;
   padding: 0px 12px;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
+}
+
+.code-check-button .b2-regular {
+  margin-bottom: 0;
+}
+
+.no-project-text {
+  margin-top: 5vh;
+}
+
+.project-link-content {
+  display: flex;
+  padding: 20px;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* project 참여코드 링크 페이지 */
+.project-link-modal {
+  flex-direction: column;
+  display: flex;
+  padding: 8vh 12vh;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  border-radius: 10px;
+  background: var(--color-white);
+  box-shadow: 0px 0px 20px 12px rgba(0, 0, 0, 0.05);
+  /* width: 40%; */
+}
+
+.link-content {
+  width: 100%;
+  gap: 16px;
+  flex-direction: column;
+  display: flex;
+}
+
+.link-element-wrapper {
+  gap: 4px;
+}
+
+.link-wrapper {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.copy-button {
+  width: fit-content;
+  background-color: var(--color-green-200);
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  padding: 12px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.profile-set-btn {
+  border-radius: 10px;
+  background: var(--color-green-500);
+  display: flex;
+  padding: 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+  color: var(--color-black);
 }
