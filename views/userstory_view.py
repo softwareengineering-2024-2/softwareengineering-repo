@@ -1,3 +1,5 @@
+from models.project_model import Project, UserProject
+from flask_login import current_user
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session,jsonify
 from controllers.userstory_controller import show_stories, create_story, update_story, delete_story
 from controllers.notlist_controller import create_keywords, delete_keyword, show_notlist 
@@ -15,7 +17,11 @@ def view_stories_route(project_id):
     if isinstance(not_list, tuple):
         return not_list
    
-    return render_template('userstory.html', project_id=project_id, stories=stories, not_list=not_list)
+    keyword_list = []
+    for keyword in not_list:
+        keyword_list.append(keyword.keyword)
+
+    return render_template('userstory.html', project=Project.find_by_id(project_id), userproject=UserProject.find_by_user_and_project(current_user.id, project_id), stories=stories, not_list=not_list,keyword_list=keyword_list)
 
 # 유저스토리 작성
 @userstory_bp.route('/userstory/<int:project_id>', methods=['POST'])

@@ -10,24 +10,26 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='userstory.css') }}">
 
-    <script>
-        function enableEdit(storyId) {
-            var storyContent = document.getElementById('story-content-' + storyId);
-            var editForm = document.getElementById('edit-form-' + storyId);
-            storyContent.style.display = 'none';
-            editForm.style.display = 'inline';
-            var inputField = editForm.querySelector('input[name="content"]');
-            inputField.focus();
-            inputField.addEventListener('keypress', function(event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    editForm.submit();
-                }
-            });
-        }
-    </script>
+
 
 </head>
+<script>
+    // 유저스토리 수정
+function enableEdit(storyId) {
+    var storyContent = document.getElementById('story-content-' + storyId);
+    var editForm = document.getElementById('edit-form-' + storyId);
+    storyContent.style.display = 'none';
+    editForm.style.display = 'inline';
+    var inputField = editForm.querySelector('input[name="content"]');
+    inputField.focus();
+    inputField.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            editForm.submit();
+        }
+    });
+}
+</script>
 <body>
     {% include 'topbar.html' %}
     <div class="main-container">
@@ -45,7 +47,7 @@
                             {{ item.keyword }}
                         </span>
 
-                        <form action="{{ url_for('userstory.delete_keyword_route', project_id=project_id, not_list_id=item.not_list_id) }}" method="POST" style="display:inline;" onsubmit="return confirmDelete();">
+                        <form action="{{ url_for('userstory.delete_keyword_route', project_id=project.project_id, not_list_id=item.not_list_id) }}" method="POST" style="display:inline;" onsubmit="return confirmDelete();">
                             <input type="hidden" name="_method" value="DELETE">
                             <button type="submit"  class="delete-story">삭제</button>
                         </form>
@@ -59,7 +61,7 @@
 
              <!-- not list 입력 -->
             <div class="userstory-input-container">
-                <form action="{{ url_for('userstory.create_keywords_route', project_id=project_id) }}" method="POST">
+                <form action="{{ url_for('userstory.create_keywords_route', project_id=project.project_id) }}" method="POST">
                     <input type="text" name="keyword" placeholder="not list를 작성해주세요. 엔터를 누를 시 자동으로 유저스토리에 등록됩니다.">
                 </form>
             </div>
@@ -71,7 +73,7 @@
                     {% for story in stories %}
                     <li class="userstory-item">
                         <span id="story-content-{{ story.story_id }}">{{ story.user_story_content }}</span>
-                        <form id="edit-form-{{ story.story_id }}" action="{{ url_for('userstory.update_story_route', project_id=project_id, story_id=story.story_id) }}" method="POST" style="display:none;" class="edit-input">
+                        <form id="edit-form-{{ story.story_id }}" action="{{ url_for('userstory.update_story_route', project_id=project.project_id, story_id=story.story_id) }}" method="POST" style="display:none;" class="edit-input">
                             <input type="hidden" name="_method" value="PUT">
                             <input type="hidden" name="story_id" value="{{ story.story_id }}">
                             <input type="text" name="content" value="{{ story.user_story_content }}">
@@ -80,7 +82,7 @@
                         <div class="button-wrapper">
                             <button class="edit-story" type="button" onclick="enableEdit('{{ story.story_id }}')">수정</button>
                             
-                            <form action="{{ url_for('userstory.delete_story_route', project_id=project_id, story_id=story.story_id) }}" method="POST" style="display:inline;">
+                            <form action="{{ url_for('userstory.delete_story_route', project_id=project.project_id, story_id=story.story_id) }}" method="POST" style="display:inline;">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit"  class="delete-story">삭제</button>
                                 
@@ -98,12 +100,21 @@
             
             <!-- 유저 스토리 입력 섹션 -->
             <div class="userstory-input-container">
-                <form action="{{ url_for('userstory.create_story_route', project_id=project_id) }}" method="POST">
+                <form action="{{ url_for('userstory.create_story_route', project_id=project.project_id) }}" method="POST">
                     <input type="text" name="content" placeholder="유저스토리를 작성해주세요. 엔터를 누를 시 자동으로 유저스토리에 등록됩니다.">
                     </form>
             </div>
-                                  
+
+            <!-- 경고 모달창 -->
+            <div class="modal-background" id="keywordWarningBackground"></div>
+            <div class="keyword-warning-modal" id="keywordWarningModal">
+                <h2>Not List 키워드 발견</h2>
+                <p>해당 유저스토리에 <span class="highlight">Not List 키워드</span>가 포함되어 있습니다.<br>확인을 누를 시 PM에게 알림이 갑니다.</p>
+                <button class="confirm-button" onclick="confirmKeywordWarning()">확인</button>
+                <button class="cancel-button" onclick="cancelKeywordWarning()">취소</button>
+            </div>
+        </div>
+    </div>
+                           
 </body> 
-
-
 </html>
