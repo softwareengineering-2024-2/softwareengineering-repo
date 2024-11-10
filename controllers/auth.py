@@ -95,7 +95,6 @@ def callback():
     
     # 액세스 토큰 저장
     access_token = token_response.json().get("access_token")
-    # session["token"] = access_token
     
     userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
     uri, headers, body = client.add_token(userinfo_endpoint)
@@ -124,7 +123,7 @@ def callback():
     
     login_user(user)
         
-    return redirect(url_for("index"))  # 로그인 후 인덱스 페이지로 리다이렉트
+    return redirect(url_for("manage_project.manage_project_view"))
 
 @auth_bp.route("/logout")
 @login_required

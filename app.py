@@ -35,14 +35,14 @@ app.register_blueprint(project_main_bp, url_prefix='/project_main')
 app.register_blueprint(manage_project_bp, url_prefix='/manage_project')
 app.register_blueprint(milestone_bp, url_prefix='/milestone')
 app.register_blueprint(productbacklog_bp, url_prefix='/backlog')  # /backlog 경로에 등록
-app.register_blueprint(sprint_bp, url_prefix='/sprint_back')
+app.register_blueprint(sprint_bp, url_prefix='/sprint')
 app.register_blueprint(userstory_bp, url_prefix='/userstory')
 app.register_blueprint(notlist_bp, url_prefix='/notlist')
 app.register_blueprint(calendar_bp, url_prefix='/calendar')
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("login.html")
 
 #------------------------------------------------
 #view로 이동 요청
