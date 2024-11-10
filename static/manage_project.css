@@ -144,6 +144,7 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  margin-top: 20px;
 }
 
 .create-button {
@@ -211,4 +212,75 @@
 
 .no-project-text {
   margin-top: 5vh;
+}
+
+.project-link-content {
+  display: flex;
+  padding: 20px;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* project 참여코드 링크 페이지 */
+.project-link-modal {
+  flex-direction: column;
+  display: flex;
+  padding: 8vh 12vh;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  border-radius: 10px;
+  background: var(--color-white);
+  box-shadow: 0px 0px 20px 12px rgba(0, 0, 0, 0.05);
+  /* width: 40%; */
+}
+
+.link-content {
+  width: 100%;
+  gap: 16px;
+  flex-direction: column;
+  display: flex;
+}
+
+.link-element-wrapper {
+  gap: 4px;
+}
+
+.link-wrapper {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.copy-button {
+  width: fit-content;
+  background-color: var(--color-green-200);
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  padding: 12px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.profile-set-btn {
+  border-radius: 10px;
+  background: var(--color-green-500);
+  display: flex;
+  padding: 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+  color: var(--color-black);
 }
