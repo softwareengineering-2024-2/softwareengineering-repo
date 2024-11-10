@@ -288,3 +288,72 @@
     height: 100%; /* 부모 요소에서 세로 중앙 정렬 */
     width: 100%; /* 전체 너비 차지 */
 }
+
+
+
+/* 모달 배경 */
+.modal {
+    display: none; /* 기본은 숨김 */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* 모달 콘텐츠 */
+.modal-content {
+    background-color: var(--color-white);
+    padding: 20px 20px;
+    border-radius: 10px;
+    width: 450px;
+    max-width: 500px;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.modal-content label {
+    display: block;
+    font-weight: bold;
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="date"],
+.modal-content select {
+    width: calc(100% - 10px);
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid var(--color-grey-300);
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+
+#modalMessage {
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+/* 닫기 */
+.modal-close-btn {
+    background-color: var(--color-grey-100);
+    color: var(--color-black);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    float: right; /* 버튼을 오른쪽으로 정렬 */
+}       
