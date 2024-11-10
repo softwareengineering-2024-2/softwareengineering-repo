@@ -36,7 +36,9 @@
           </button>
         </div>
         <div class="sprint-navigation">
-          <button class="nav-btn" onclick="navigateSprints(-1)">&lt;</button>
+          <div class="nav-btn-lt">
+            <button class="nav-btn" onclick="navigateSprints(-1)">&lt;</button>
+          </div>
           {% if sprints %} {% for sprint in sprints %}
           <div
             class="sprint-container"
@@ -115,13 +117,16 @@
             </div>
           </div>
           {% endfor %} {% else %}
-          <p>아직 생성된 스프린트가 없습니다.</p>
+          <div class="sprint-container-none">
+            <p>아직 생성된 스프린트가 없습니다.</p>
+          </div>
           {% endif %}
-          <button class="nav-btn" onclick="navigateSprints(1)">&gt;</button>
+          <div class="nav-btn-gt">
+            <button class="nav-btn" onclick="navigateSprints(1)">&gt;</button>
+          </div>
         </div>
 
-        <div class="backlog-navigation">
-          <button class="nav-btn" style="visibility: hidden">&lt;</button>
+        <div class="backlog-div">
           <div class="product-backlog">
             <h3>프로덕트 백로그</h3>
             <div class="product-backlog-list">
@@ -136,7 +141,6 @@
               {% endfor %}
             </div>
           </div>
-          <button class="nav-btn" style="visibility: hidden">&gt;</button>
         </div>
       </div>
     </div>

@@ -34,20 +34,31 @@ def get_sprint(project_id):
         return str(e)
 
 # 스프린트를 생성하는 로직
+# 스프린트를 생성하는 로직
 def create_sprint(project_id, sprint_name, start_date, end_date, status=None):
     try:
         start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
         end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
-        new_sprint = Sprint(project_id=project_id, sprint_name=sprint_name, sprint_start_date=start_date, sprint_end_date=end_date, status=status)
-        if not new_sprint.is_valid_dates():
-            return None, "Invalid sprint dates: Start date must be today or later, and end date must be after start date."
+        if end_date <= start_date:
+            return None, "Invalid dates: End date must be after start date."
+
+        # 해당 프로젝트의 다른 스프린트와 날짜가 겹치지 않는지 확인
+        overlapping_sprints = Sprint.query.filter(
+            Sprint.project_id == project_id,
+            Sprint.sprint_end_date >= start_date,
+            Sprint.sprint_start_date <= end_date
+        ).all()
         
+        if overlapping_sprints:
+            return None, "Date conflict: Another sprint overlaps with the given dates."
+
+        new_sprint = Sprint(project_id=project_id, sprint_name=sprint_name, sprint_start_date=start_date, sprint_end_date=end_date, status=status)
         db.session.add(new_sprint)
         db.session.commit()
-        return new_sprint
+        return new_sprint, None
     except SQLAlchemyError as e:
         db.session.rollback()
-        return str(e)
+        return None, str(e)
 
 # 스프린트를 업데이트하는 메서드
 def update_sprint(sprint_id, updates):

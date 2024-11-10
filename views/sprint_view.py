@@ -5,13 +5,17 @@ from controllers.sprint_controller import (
     get_all_product_backlogs, create_sprint_backlog
 )
 from models.project_model import Project, UserProject
-from flask_login import current_user
+from flask_login import current_user, login_required
 
 # 블루프린트 생성
 sprint_bp = Blueprint('sprint', __name__)
 
 @sprint_bp.route('/sprint/<int:project_id>', methods=['GET'])
+@login_required 
 def get_product_backlogs_view(project_id):
+    if not current_user.is_authenticated:
+        flash('로그인이 필요합니다.')  # 사용자에게 로그인이 필요하다는 메시지를 표시
+        return redirect(url_for('auth.login'))  # 로그인 페이지로 리디렉트
     sprints = get_sprints_with_backlogs(project_id)
     backlogs = {
         'all_backlogs': get_all_product_backlogs(project_id),
@@ -24,23 +28,22 @@ def get_product_backlogs_view(project_id):
                            backlogs=backlogs, sprints=sprints, users=users, project_id=project_id)
 
 # 스프린트 추가
+# 스프린트 추가
 @sprint_bp.route('/add-sprint', methods=['POST'])
 def add_sprint():
     project_id = request.form['project_id']
     sprint_name = request.form['sprint_name']
     start_date = request.form['start_date']
     end_date = request.form['end_date']
-    status = request.form.get('status', None) 
+    status = request.form.get('status', None)
     selected_backlogs = request.form.getlist('backlogs')
 
-    new_sprint = create_sprint(project_id, sprint_name, start_date, end_date, status)
+    new_sprint, error = create_sprint(project_id, sprint_name, start_date, end_date, status)
     if new_sprint:
         assign_backlogs_to_sprint(new_sprint.sprint_id, selected_backlogs)
-        flash('스프린트가 성공적으로 추가되었습니다!')
+        return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id, status=1))
     else:
-        flash('스프린트 추가에 실패했습니다.')
-
-    return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id))
+        return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id, status=-1, error_message=error))
 
 # 스프린트 수정
 @sprint_bp.route('/edit-sprint/<int:sprint_id>', methods=['POST'])
