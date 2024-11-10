@@ -25,8 +25,6 @@
                 }
             });
         }
-
-        
     </script>
 
 </head>
@@ -39,24 +37,37 @@
             <div class="not-list-box">
                 <div class="not-list-header">
                     <h2>Not List</h2>
-                    <img src="{{ url_for('static', filename='icons/setting.svg') }}" alt="설정 아이콘" class="settings-icon"  onclick="openModal();">
                 </div>
-                <div class="not-list-keywords" id="notListKeywordsDisplay">
+                <div class="not-list-keywords">
                     {% for item in not_list %}
-                    <li class="notlist-item">
-                        {{ item.keyword }}
-                    </li>
+                    <div class="keyword-wrapper">
+                        <span class="modal-keyword-item">
+                            {{ item.keyword }}
+                        </span>
+
+                        <form action="{{ url_for('userstory.delete_keyword_route', project_id=project_id, not_list_id=item.not_list_id) }}" method="POST" style="display:inline;" onsubmit="return confirmDelete();">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit"  class="delete-story">삭제</button>
+                        </form>
+                    </div>
+
                 {% else %}
-                    <li class="notlist-item">No keywords found.</li>
+                    <p class="not-list-keywords">not list 키워드가 없습니다.</p>
                 {% endfor %}
                 </div>
+            </div>
+
+             <!-- not list 입력 -->
+            <div class="userstory-input-container">
+                <form action="{{ url_for('userstory.create_keywords_route', project_id=project_id) }}" method="POST">
+                    <input type="text" name="keyword" placeholder="not list를 작성해주세요. 엔터를 누를 시 자동으로 유저스토리에 등록됩니다.">
+                </form>
             </div>
             
             <!-- 유저스토리 -->
             <div class="userstory-container">
                 <h2>유저스토리</h2>
                 <div class="userstory-list" id="userStoryList">
-                    <!-- JavaScript로 유저 스토리가 추가될 영역 -->
                     {% for story in stories %}
                     <li class="userstory-item">
                         <span id="story-content-{{ story.story_id }}">{{ story.user_story_content }}</span>
@@ -66,17 +77,22 @@
                             <input type="text" name="content" value="{{ story.user_story_content }}">
                             
                         </form>
-                        
-                        <button class="edit-story" type="button" onclick="enableEdit('{{ story.story_id }}')">수정</button>
-                        <form action="{{ url_for('userstory.delete_story_route', project_id=project_id, story_id=story.story_id) }}" method="POST" style="display:inline;">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit"  class="delete-story">삭제</button>
-                        </form>
-                        
-                    </li>
+                        <div class="button-wrapper">
+                            <button class="edit-story" type="button" onclick="enableEdit('{{ story.story_id }}')">수정</button>
+                            
+                            <form action="{{ url_for('userstory.delete_story_route', project_id=project_id, story_id=story.story_id) }}" method="POST" style="display:inline;">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit"  class="delete-story">삭제</button>
+                                
+                            </form>
+                        </div>
+                    </li>    
+                    
                 {% else %}
-                    <li class="userstory-item">유저스토리가 없습니다.</li>
+                    <p class="userstory-list">유저스토리가 없습니다.</p>
+                
                 {% endfor %}
+                       
                 </div>
             </div>
             
@@ -84,120 +100,10 @@
             <div class="userstory-input-container">
                 <form action="{{ url_for('userstory.create_story_route', project_id=project_id) }}" method="POST">
                     <input type="text" name="content" placeholder="유저스토리를 작성해주세요. 엔터를 누를 시 자동으로 유저스토리에 등록됩니다.">
+                    </form>
             </div>
-            
-            <!-- 모달창 -->
-            <div class="modal-background" id="modalBackground" onclick="closeModal();"></div>
-            <div class="not-list-modal" id="notListModal">
-                <div class="modal-header">
-                    <h1>NOT LIST 키워드 관리</h1>
-                    <img src="{{ url_for('static', filename='icons/xbutton.svg') }}" alt="Close" class="close-icon" onclick="closeModal();">
-                </div>
-                <div  class="modal-keyword-list">
-                    <ul>
-                        {% for item in not_list %}
-                            <li class="notlist-item">
-                                {{ item.keyword }}
-                                
-                                <form action="{{ url_for('notlist.delete_keyword_route', project_id=project_id, not_list_id=item.not_list_id) }}" method="POST" style="display:inline;" >   
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <button type="submit" class="delete-story">삭제</button>
-                                </form>
-                                
-                            </li>
-                        {% else %}
-                            <li class="notlist-item">No keywords found.</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <form id="keywordForm">
-                    <input type="text" id="newKeywordInput" placeholder="추가할 키워드를 입력하세요. 엔터로 등록합니다." class="add-keyword-input">
-                </form>
-            </div>
-            
-            
-            <div class="modal-background" id="keywordWarningBackground"></div>
-            <div class="keyword-warning-modal" id="keywordWarningModal">
-                <h2>Not List 키워드 발견</h2>
-                <p>해당 유저스토리에 <span class="highlight">Not List 키워드</span>가 포함되어 있습니다.<br>확인을 누를 시 PM에게 알림이 갑니다.</p>
-                <button class="confirm-button" onclick="confirmKeywordWarning()">확인</button>
-                <button class="cancel-button" onclick="cancelKeywordWarning()">취소</button>
-            </div>
-        </div>
-    </div>
-    <script src="{{ url_for('static', filename='js/userstory.js') }}"></script>
-</body>
-
-<script>
-document.querySelector('.add-keyword-input').addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-
-        // 키워드 입력값 가져오기
-        const keyword = event.target.value.trim();
-        if (!keyword) return;  // 빈 값은 처리하지 않음
-
-        // AJAX 요청 보내기 (폼 데이터를 서버로 전달)
-        fetch(`/notlist/{{ project_id }}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'  // 폼 형식으로 데이터 전송
-            },
-            body: new URLSearchParams({
-                'keyword': keyword  // 폼 데이터 형식으로 키워드 전송
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert(data.error);  // 서버 에러 처리
-            } else {
-                // 새로 추가된 키워드를 모달 내 목록에 즉시 추가
-                const keywordList = document.querySelector('.modal-keyword-list ul');
-                const newKeywordItem = document.createElement('li');
-                newKeywordItem.classList.add('notlist-item');
-                newKeywordItem.innerHTML = `
-                    ${data.keyword}
-                    <button class="delete-keyword">삭제</button>
-                `;
-                keywordList.appendChild(newKeywordItem);
-
-                // 삭제 버튼 이벤트 추가
-                newKeywordItem.querySelector('.delete-keyword').addEventListener('click', function() {
-                    // 삭제 요청
-                    fetch(`/notlist/{{ project_id }}/${data.id}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: new URLSearchParams({
-                            '_method': 'DELETE'  // HTTP DELETE 요청 방식
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(deleteData => {
-                        if (deleteData.success) {
-                            // 삭제된 키워드 항목 UI에서 제거
-                            newKeywordItem.remove();
-                        } else {
-                            alert('삭제 실패');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-                });
-
-                // 입력 필드 초기화
-                event.target.value = '';
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-});
+                                  
+</body> 
 
 
-</script>
 </html>

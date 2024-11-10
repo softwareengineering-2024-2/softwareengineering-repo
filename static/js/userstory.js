@@ -14,6 +14,7 @@ const keywordWarningBackground = document.getElementById("keywordWarningBackgrou
 let userStories = [];
 
 // 유저 스토리 렌더링 함수
+
 function renderUserStories() {
     userStoryList.innerHTML = "";
 
@@ -87,11 +88,13 @@ function highlightKeywords(text) {
     return highlightedText;
 }
 
+/*
 // 유저 스토리 수정 모드 전환 함수
 function editUserStory(index) {
     userStories[index].editing = true;
     renderUserStories();
 }
+    */
 
 // 유저 스토리 수정 완료 함수
 function completeEdit(index) {

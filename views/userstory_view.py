@@ -1,32 +1,27 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, session
-from controllers.userstory_controller import show_stories, create_story, update_story, delete_story, check_keyword
-from controllers.notlist_controller import show_notlist
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session,jsonify
+from controllers.userstory_controller import show_stories, create_story, update_story, delete_story
+from controllers.notlist_controller import create_keywords, delete_keyword, show_notlist 
 
 userstory_bp = Blueprint('userstory', __name__)
 
 # 유저스토리 목록 보기
 @userstory_bp.route('/<int:project_id>', methods=['GET'])
 def view_stories_route(project_id):
-    result = show_stories(project_id)
+    stories = show_stories(project_id)
     not_list = show_notlist(project_id)
-    if isinstance(result, tuple):
-        return result
+    if isinstance(stories, tuple):
+        return stories
+    
+    if isinstance(not_list, tuple):
+        return not_list
    
-    return render_template('userstory.html', project_id=project_id, stories=result, not_list=not_list)
+    return render_template('userstory.html', project_id=project_id, stories=stories, not_list=not_list)
 
 # 유저스토리 작성
 @userstory_bp.route('/userstory/<int:project_id>', methods=['POST'])
 def create_story_route(project_id):
     content = request.form.get('content')
-    result = create_story(content, project_id)
-    
-    if result == "키워드 감지":
-        session['pending_user_story'] = {
-            'content': content,
-            'project_id': project_id,
-            'story_id': None  # 새 유저스토리이므로 story_id는 None
-        }
-        return render_template('keyword_check_back.html', project_id=project_id, user_story_content=content)
+    create_story(content, project_id)
     
     return redirect(url_for('userstory.view_stories_route', project_id=project_id))
 
@@ -34,16 +29,8 @@ def create_story_route(project_id):
 @userstory_bp.route('/userstory/<int:project_id>/<int:story_id>', methods=['POST'])
 def update_story_route(project_id, story_id):
     content = request.form.get('content')
-    result = update_story(story_id, content, project_id)
-   
-    if result == "키워드 감지":
-        session['pending_user_story'] = {
-            'content': content,
-            'project_id': project_id,
-            'story_id': story_id
-        }
-        return render_template('keyword_check_back.html', project_id=project_id, story_id=story_id, user_story_content=content)
-   
+    update_story(story_id, content)
+
     return redirect(url_for('userstory.view_stories_route', project_id=project_id))
 
 # 유저스토리 삭제
@@ -52,24 +39,26 @@ def delete_story_route(project_id, story_id):
     delete_story(story_id)
     return redirect(url_for('userstory.view_stories_route', project_id=project_id))
 
-# 유저스토리 키워드 검사
-@userstory_bp.route('/userstory/check/<int:project_id>', methods=['POST'])
-def check_keyword_route(project_id):
-    check_or_not = request.form.get('check_or_not')
-    pending_user_story = session.get('pending_user_story')
-    if not pending_user_story:
-        flash("세션에 유저스토리 데이터가 없습니다.", "error")
-        return redirect(url_for('userstory.view_stories_route', project_id=project_id))
+
+# 키워드 추가 라우트
+@userstory_bp.route('/notlist/<int:project_id>', methods=['POST'])
+def create_keywords_route(project_id):
+    keyword = request.form.get('keyword')  # form 데이터로부터 키워드 받기
     
-    user_story_content = pending_user_story['content']
-    story_id = pending_user_story['story_id']
-    result = check_keyword(check_or_not, user_story_content, project_id, story_id)
+    if not keyword:
+        return jsonify({"error": "Keyword missing"}), 400
     
-    if result == "check":
-        flash("유저스토리가 성공적으로 저장되었습니다.", "success")
-    elif result == "not":
-        flash("유저스토리 저장이 취소되었습니다.", "info")
-    
-    session.pop('pending_user_story', None)  # 세션에서 데이터 제거
+    # 키워드 저장 함수 호출 (데이터베이스에 저장)
+    result = create_keywords(keyword, project_id)
+
+    if isinstance(result, tuple):
+        return jsonify({"error": result[0]}), result[1]
+
+    # 저장된 키워드를 반환 (클라이언트에 보여줄 데이터)
     return redirect(url_for('userstory.view_stories_route', project_id=project_id))
 
+# 키워드 삭제 라우트
+@userstory_bp.route('/notlist/<int:project_id>/<int:not_list_id>/delete', methods=['POST'])
+def delete_keyword_route(project_id, not_list_id):
+    delete_keyword(not_list_id)      
+    return redirect(url_for('userstory.view_stories_route', project_id=project_id))

@@ -4,7 +4,6 @@ from controllers.auth import auth_bp, init_login_manager
 from views.project_main_view import project_main_bp
 from views.manage_project_view import manage_project_bp
 from views.userstory_view import userstory_bp
-from views.notlist_view import notlist_bp
 from views.milestone_view import milestone_bp
 from views.productbacklog_view import productbacklog_bp
 from views.sprint_view import sprint_bp
@@ -37,7 +36,6 @@ app.register_blueprint(milestone_bp, url_prefix='/milestone')
 app.register_blueprint(productbacklog_bp, url_prefix='/backlog')  # /backlog 경로에 등록
 app.register_blueprint(sprint_bp, url_prefix='/sprint')
 app.register_blueprint(userstory_bp, url_prefix='/userstory')
-app.register_blueprint(notlist_bp, url_prefix='/notlist')
 app.register_blueprint(calendar_bp, url_prefix='/calendar')
 
 @app.route("/")
