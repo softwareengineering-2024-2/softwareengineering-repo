@@ -3,17 +3,49 @@ let currentSprintIndex = 1;
 
 function navigateSprints(direction) {
   const sprints = document.querySelectorAll(".sprint-container");
+  const navBtnLt = document.querySelector(".nav-btn-lt");
+  const navBtnGt = document.querySelector(".nav-btn-gt");
+
+  // 현재 스프린트를 숨기기
   sprints[currentSprintIndex - 1].style.display = "none";
 
+  // 스프린트 인덱스 업데이트
   currentSprintIndex += direction;
-  if (currentSprintIndex < 1) {
-    currentSprintIndex = sprints.length;
-  } else if (currentSprintIndex > sprints.length) {
+
+  // 첫 번째와 마지막 스프린트에서 버튼을 숨김
+  if (currentSprintIndex <= 1) {
     currentSprintIndex = 1;
+    navBtnLt.style.display = "none"; // 첫 번째 스프린트에서는 왼쪽 버튼 숨김
+  } else {
+    navBtnLt.style.display = "flex"; // 첫 번째가 아니면 왼쪽 버튼 표시
   }
 
+  if (currentSprintIndex >= sprints.length) {
+    currentSprintIndex = sprints.length;
+    navBtnGt.style.display = "none"; // 마지막 스프린트에서는 오른쪽 버튼 숨김
+  } else {
+    navBtnGt.style.display = "flex"; // 마지막이 아니면 오른쪽 버튼 표시
+  }
+
+  // 새로 선택된 스프린트 표시
   sprints[currentSprintIndex - 1].style.display = "block";
 }
+
+// 초기화 시 버튼 상태 설정
+document.addEventListener("DOMContentLoaded", function() {
+  const sprints = document.querySelectorAll(".sprint-container");
+  const navBtnLt = document.querySelector(".nav-btn-lt");
+  const navBtnGt = document.querySelector(".nav-btn-gt");
+
+  // 스프린트가 없을 때 네비게이션 버튼 숨기기
+  if (sprints.length === 0) {
+      navBtnLt.style.display = "none";
+      navBtnGt.style.display = "none";
+  } else {
+      // 스프린트가 있을 때 초기 상태 설정
+      navigateSprints(0);
+  }
+});
 
 // 스프린트 생성 모달 열기 함수
 function openSprintCreateModal() {
@@ -221,5 +253,18 @@ window.addEventListener("click", function (event) {
     !event.target.closest("#backlog-options-modal")
   ) {
     closeBacklogOptionsModal();
+  }
+});
+
+
+// 스프린트가 없는 경우 nav-btn 숨기기
+window.addEventListener("DOMContentLoaded", function() {
+  const sprintContainerNone = document.querySelector(".sprint-container-none");
+  const navButtons = document.querySelectorAll(".nav-btn");
+
+  if (sprintContainerNone) {
+      navButtons.forEach(button => {
+          button.style.display = "none";
+      });
   }
 });
