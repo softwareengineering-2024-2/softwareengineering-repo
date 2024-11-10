@@ -8,7 +8,7 @@
             <a href="{{ url_for('milestone.milestone_view', project_id=project.project_id) }}"><img src="{{ url_for('static', filename='icons/milestone.svg') }}" alt="마일스톤 아이콘" class="icon"> 프로젝트 마일스톤</a>
         </li>
         <li class="{% if request.path == '/userstory/<int:project_id>' %}active{% endif %}">
-            <a href="{{ url_for('userstory_view.view_stories_route', project_id=project.project_id) }}"><img src="{{ url_for('static', filename='icons/userstory.svg') }}" alt="유저스토리 아이콘" class="icon"> 유저스토리</a>
+            <a href="{{ url_for('userstory.view_stories_route', project_id=project.project_id) }}"><img src="{{ url_for('static', filename='icons/userstory.svg') }}" alt="유저스토리 아이콘" class="icon"> 유저스토리</a>
         </li>
         <li class="{% if request.path == '/productbacklog/product_backlog/<int:project_id>' %}active{% endif %}">
             <a href="{{ url_for('productbacklog.product_backlog_view', project_id=project.project_id) }}"><img src="{{ url_for('static', filename='icons/backlog.svg') }}" alt="백로그 아이콘" class="icon"> 프로덕트 백로그</a>
