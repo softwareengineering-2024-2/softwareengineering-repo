@@ -13,6 +13,9 @@ function enableEdit(storyId) {
     var inputField = editForm.querySelector('input[name="content"]');
     inputField.focus();
 
+    const length = inputField.value.length;
+    inputField.setSelectionRange(length, length);
+
     // Enter 키 이벤트 리스너 추가 및 이전 리스너 제거
     const handleEnterKeyPress = function(event) {
         if (event.key === 'Enter') {
