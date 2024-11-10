@@ -356,4 +356,9 @@
     border-radius: 5px;
     cursor: pointer;
     float: right; /* 버튼을 오른쪽으로 정렬 */
-}       
+}
+
+/* 강조된 키워드 스타일 */
+.highlight-keyword {
+    color: var(--color-red);
+}

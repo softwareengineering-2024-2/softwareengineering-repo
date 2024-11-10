@@ -79,6 +79,25 @@ editForms.forEach(function(editForm) {
 });
 
 
+// 유저스토리 텍스트 강조 함수
+function highlightKeywordsInUserStories() {
+    document.querySelectorAll('.userstory-item span[id^="story-content-"]').forEach(storyElement => {
+        const originalContent = storyElement.textContent;
+        const highlightedContent = highlightKeywords(originalContent);
+        storyElement.innerHTML = highlightedContent;
+    });
+}
+
+// 키워드 강조 로직
+function highlightKeywords(storyContent) {
+    // 키워드 리스트에 있는 각 단어를 찾고, 그 단어만 빨간색으로 강조
+    keywordList.forEach(keyword => {
+        const regex = new RegExp(`(${keyword})`, 'gi');
+        storyContent = storyContent.replace(regex, '<span class="highlight-keyword">$1</span>');
+    });
+    return storyContent;
+}
+
 // 모달 내 버튼 동작 설정
 document.querySelector('.confirm-button').addEventListener('click', function() {
     // 확인을 눌렀을 때 모달 닫기 및 폼 제출
@@ -89,4 +108,9 @@ document.querySelector('.confirm-button').addEventListener('click', function() {
 document.querySelector('.cancel-button').addEventListener('click', function() {
     // 취소 버튼 클릭 시 모달 닫기
     closeKeywordWarningModal();
+});
+
+// 페이지 로드 시 유저스토리 텍스트를 강조
+document.addEventListener('DOMContentLoaded', () => {
+    highlightKeywordsInUserStories();
 });
