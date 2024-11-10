@@ -17,9 +17,7 @@ def view_stories_route(project_id):
     if isinstance(not_list, tuple):
         return not_list
    
-    keyword_list = []
-    for keyword in not_list:
-        keyword_list.append(keyword.keyword)
+    keyword_list = [keyword.keyword for keyword in not_list]
 
     return render_template('userstory.html', project=Project.find_by_id(project_id), userproject=UserProject.find_by_user_and_project(current_user.id, project_id), stories=stories, not_list=not_list,keyword_list=keyword_list)
 

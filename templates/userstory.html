@@ -88,7 +88,12 @@
             </div>
         </div>
     </div>
-
+    <script>
+        // Python 리스트를 JSON 배열로 변환하여 JavaScript에서 사용
+        const keywordList = JSON.parse('{{ keyword_list | tojson | safe }}');
+        console.log(keywordList);  // 출력 확인용
+    </script>
+    
     <script src="{{ url_for('static', filename='js/userstory.js') }}"></script>
 </body>
 </html>
