@@ -12,23 +12,44 @@ function enableEdit(storyId) {
     editForm.style.display = 'inline';
     var inputField = editForm.querySelector('input[name="content"]');
     inputField.focus();
-    inputField.addEventListener('keypress', function(event) {
+
+    // Enter 키 이벤트 리스너 추가 및 이전 리스너 제거
+    const handleEnterKeyPress = function(event) {
         if (event.key === 'Enter') {
             event.preventDefault();
-            editForm.submit();
+            checkForNotListKeywords(inputField.value.trim(), () => {
+                inputField.removeEventListener('keypress', handleEnterKeyPress);
+                editForm.submit();
+            });
         }
-    });
+    };
+
+    inputField.removeEventListener('keypress', handleEnterKeyPress); // 중복 방지
+    inputField.addEventListener('keypress', handleEnterKeyPress);
 }
 
 // 키워드 검증 및 모달 표시 함수
-function checkForNotListKeywords(userStoryContent) {
-    return keywordList.some(keyword => userStoryContent.includes(keyword));
+function checkForNotListKeywords(userStoryContent, submitCallback) {
+    if (keywordList.some(keyword => userStoryContent.includes(keyword))) {
+        openKeywordWarningModal(submitCallback);
+    } else {
+        submitCallback(); // 키워드가 없으면 폼을 바로 제출
+    }
 }
 
 // 모달 열기 함수
-function openKeywordWarningModal() {
+function openKeywordWarningModal(confirmCallback) {
     keywordWarningModal.style.display = 'block';
     keywordWarningBackground.style.display = 'block';
+
+    // 확인 버튼에 콜백 설정
+    const handleConfirmClick = function() {
+        closeKeywordWarningModal();
+        confirmCallback();
+        document.querySelector('.confirm-button').removeEventListener('click', handleConfirmClick); // 기존 이벤트 제거
+    };
+
+    document.querySelector('.confirm-button').addEventListener('click', handleConfirmClick);
 }
 
 // 모달 닫기 함수
@@ -39,43 +60,33 @@ function closeKeywordWarningModal() {
 
 
 // 유저스토리 입력 필드에 Enter 키 이벤트 추가
-storyInputField.addEventListener('keypress', function(event) {
+const handleInputEnterKeyPress = function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();  // 폼이 바로 제출되는 것을 막음
-        const userStoryContent = storyInputField.value.trim();
-        
-        // 키워드 검증 및 모달 표시
-        if (checkForNotListKeywords(userStoryContent)) {
-            openKeywordWarningModal();
-        } else {
-            // 키워드가 없으면 유저스토리 추가 폼 제출
+        checkForNotListKeywords(storyInputField.value.trim(), () => {
+            storyInputField.removeEventListener('keypress', handleInputEnterKeyPress); // 중복 방지
             storyInputField.form.submit();
-        }
+        });
     }
-});
+};
+
+storyInputField.addEventListener('keypress', handleInputEnterKeyPress);
 
 // 수정 입력 필드에 Enter 키 이벤트 추가
 editForms.forEach(function(editForm) {
     const editInputField = editForm.querySelector('input[name="content"]');
-    editInputField.addEventListener('keypress', function(event) {
+
+    const handleEditEnterKeyPress = function(event) {
         if (event.key === 'Enter') {
             event.preventDefault();  // 폼이 바로 제출되는 것을 막음
-            const editedContent = editInputField.value.trim();
-            
-            // 키워드 검증 및 모달 표시
-            if (checkForNotListKeywords(editedContent)) {
-                openKeywordWarningModal();
-
-                // 모달 내 확인 버튼 동작: 모달 닫고 폼 제출
-                document.querySelector('.confirm-button').onclick = function() {
-                    closeKeywordWarningModal();
-                    editForm.submit();  // 수정 내용 폼 제출
-                };
-            } else {
-                editForm.submit();  // 키워드가 없으면 폼 제출
-            }
+            checkForNotListKeywords(editInputField.value.trim(), () => {
+                editInputField.removeEventListener('keypress', handleEditEnterKeyPress); // 중복 방지
+                editForm.submit();
+            });
         }
-    });
+    };
+
+    editInputField.addEventListener('keypress', handleEditEnterKeyPress);
 });
 
 
