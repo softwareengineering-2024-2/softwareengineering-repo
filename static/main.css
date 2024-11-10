@@ -1,128 +1,125 @@
 .content {
-    margin-top: 2vh; /* 탑바 밑 여백 추가 */
-    margin-left: 25vh; /* 사이드바 너비만큼 왼쪽 여백 추가 */
+  margin-top: 2vh; /* 탑바 밑 여백 추가 */
+  margin-left: 25vh; /* 사이드바 너비만큼 왼쪽 여백 추가 */
 }
 /* 전체 대시보드 스타일 */
 .dashboard {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 /* 프로덕트 백로그 달성률 섹션 */
 .progress-section {
-    background-color: var(--color-grey-50);
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: var(--color-white);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .progress-bar-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .progress-bar {
-    width: 97%;
-    height: 20px;
-    background-color: var(--color-grey-200);
-    border-radius: 10px;
-    overflow: hidden;
-    margin-right: 10px;
+  width: 97%;
+  height: 20px;
+  background-color: var(---color-white);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-right: 10px;
 }
 
 .progress {
-    height: 100%;
-    background-color: var(--color-green-400);
-    transition: width 0.3s ease;
+  height: 100%;
+  background-color: var(--color-green-400);
+  transition: width 0.3s ease;
 }
 
 .progress-percentage {
-    font-weight: bold;
-    color: var(--color-grey-800)
+  font-weight: bold;
+  color: var(--color-grey-800);
 }
 
 /* 작업 목록 */
 .task-sections {
-    display: flex;
-    gap: 20px;
+  display: flex;
+  gap: 20px;
 }
 
-.task-box, .todo-box{
-    flex: 1;
-    background-color: var(--color-grey-50);
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.task-list {
+  padding: 20px;
 }
 
-.task-box h3{
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 8px;
+.task-box,
+.todo-box {
+  flex: 1;
+  background-color: var(--color-white);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
 /* TODO LIST 설정 */
 #todo-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
 .todo-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
 }
 
 .todo-text {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
 .todo-input {
-    width: 100%;
-    padding: 5px;
-    font-size: 14px;
+  width: 100%;
+  padding: 5px;
+  font-size: 14px;
 }
 
-button.todo-complete, button.todo-edit, button.todo-delete {
-    white-space: nowrap; /* 줄바꿈 방지 */
-    background-color: #ddd;
-    border: none;
-    padding: 5px 8px;
-    cursor: pointer;
-    font-size: 12px;
-    border-radius: 4px;
+button.todo-complete,
+button.todo-edit,
+button.todo-delete {
+  white-space: nowrap; /* 줄바꿈 방지 */
+  background-color: #ddd;
+  border: none;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 4px;
 }
 
 button.todo-complete:hover {
-    background-color: #a0d683;
-    color: white;
+  background-color: #a0d683;
+  color: white;
 }
 
 button.todo-edit:hover {
-    background-color: #ffde59;
-    color: white;
+  background-color: #ffde59;
+  color: white;
 }
 
 button.todo-delete:hover {
-    background-color: #ff5252;
-    color: white;
+  background-color: #ff5252;
+  color: white;
 }
 
 /* 2주 캘린더 섹션 */
 .calendar-box {
-    background-color: var(--color-grey-50);
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer; /* 클릭 가능한 상태를 시각적으로 표시 */
+  background-color: var(--color-white);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer; /* 클릭 가능한 상태를 시각적으로 표시 */
+  min-height: 45vh;
 }
-
-.calendar-box h3 {
-    font-size: 16px;
-    font-weight: bold;
-}
-
