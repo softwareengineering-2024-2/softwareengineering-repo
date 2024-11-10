@@ -83,6 +83,14 @@
     height: 50px;
 }
 
+.button-wrapper{
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+
+}
+
 .userstory-item .buttons {
     display: flex;
     gap: 10px;
@@ -119,6 +127,7 @@
     border-radius: 5px;
     outline: none;
 }
+
 
 /* 모달 배경 */
 .modal-background {
@@ -176,17 +185,20 @@
     margin-bottom: 20px; /* 입력란과 키워드 목록 사이 여백 */
 }
 
-.modal-keyword-item {
+
+
+.modal-keyword-item .delete {
+    color: var(--color-red);
+    cursor: pointer;
+}
+
+.keyword-wrapper{
+    gap: 4px;
     display: flex;
     justify-content: space-between;
     padding: 15px;
     background-color: var(--color-grey-50);
     border-radius: 5px;
-}
-
-.modal-keyword-item .delete {
-    color: var(--color-red);
-    cursor: pointer;
 }
 
 .add-keyword-input {
