@@ -32,8 +32,8 @@
 }
 
 .user-story {
-  width: auto; /* 자동 크기 조정 */
-  height: auto; /* 자동 크기 조정 */
+  width: 148px; /* 자동 크기 조정 */
+  height: 148px; /* 자동 크기 조정 */
   cursor: move;
   background-image: url("../static/icons/backlog_background.svg");
   background-repeat: no-repeat;
@@ -41,12 +41,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
   margin: 8px;
   padding: 16px; /* 이미지와의 간격을 위해 패딩 추가 */
-  min-width: 148px; /* 최소 너비 설정 */
-  min-height: 148px; /* 최소 높이 설정 */
-  max-width: 100%; /* 최대 너비를 부모 요소에 맞춤 */
-  max-height: 100%; /* 최대 높이를 부모 요소에 맞춤 */
 }
 
 .backlog-container {
