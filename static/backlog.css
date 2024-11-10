@@ -44,6 +44,7 @@
   text-align: center;
   margin: 8px;
   padding: 16px; /* 이미지와의 간격을 위해 패딩 추가 */
+  word-break: break-word;
 }
 
 .backlog-container {
