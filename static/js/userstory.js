@@ -128,3 +128,14 @@ document.querySelector('.cancel-button').addEventListener('click', function() {
 document.addEventListener('DOMContentLoaded', () => {
     highlightKeywordsInUserStories();
 });
+
+
+function openMessageModal(title, message) {
+    document.getElementById("modalTitle").textContent = title;
+    document.getElementById("modalMessage").textContent = message;
+    document.getElementById("messageModal").style.display = "flex";
+}
+
+function closeMessageModal() {
+    document.getElementById("messageModal").style.display = "none";
+}

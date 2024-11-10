@@ -86,6 +86,33 @@
                 <button class="confirm-button" onclick="confirmKeywordWarning()">확인</button>
                 <button class="cancel-button" onclick="cancelKeywordWarning()">취소</button>
             </div>
+
+            <!-- 메시지 모달 -->
+            <div id="messageModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                <h2 id="modalTitle">알림</h2>
+                <p id="modalMessage">메시지 내용이 여기에 표시됩니다.</p>
+                <button onclick="closeMessageModal()" class="modal-close-btn">닫기</button>
+                </div>
+            </div>
+            
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const messages = {{ messages | tojson }};
+                        messages.forEach(([category, message]) => {
+                        if (category === 'error') {
+                            openMessageModal("오류", message);
+                        } else if (category === 'success') {
+                            openMessageModal("성공", message);
+                        }
+                        });
+                    });
+                    </script>
+                {% endif %}
+                {% endwith %}
         </div>
     </div>
     <script>

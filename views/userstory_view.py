@@ -40,7 +40,11 @@ def update_story_route(project_id, story_id):
 # 유저스토리 삭제
 @userstory_bp.route('/userstory/<int:project_id>/<int:story_id>/delete', methods=['POST'])
 def delete_story_route(project_id, story_id):
-    delete_story(story_id)
+    error_message = delete_story(story_id)
+    if error_message:
+        flash(error_message, "error")
+    else:
+        flash("유저스토리가 성공적으로 삭제되었습니다.", "success")
     return redirect(url_for('userstory.view_stories_route', project_id=project_id))
 
 
