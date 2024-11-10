@@ -42,7 +42,6 @@
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 95%;
-    max-width: 1400px;
     min-height: 45vh;
     margin: 0 auto;
     overflow-y: auto; /* 스크롤 추가 */
@@ -166,7 +165,6 @@
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 95%;
-    max-width: 1400px;
     min-height: 30vh;
     margin: 0 auto;
 }
@@ -345,12 +343,12 @@
 }
 
 .nav-btn-lt {
-    left: 28vh; /* 왼쪽 여백 설정 */
+    left: 27vh; /* 왼쪽 여백 설정 */
 
 }
 
 .nav-btn-gt {
-    right: 3vh; /* 오른쪽 여백 설정 */
+    right: 2vh; /* 오른쪽 여백 설정 */
 }
 
 .nav-btn {
