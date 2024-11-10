@@ -4,21 +4,24 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from controllers.productbacklog_controller import get_user_stories, update_product_backlog, create_or_update_product_backlog_group, save_all_backlog_groups, delete_product_backlog, save_backlog_order
 from models.productbacklog_model import ProductBacklog
 from models.userstory_model import UserStory
+from models.project_model import Project, UserProject
+from flask_login import current_user
 from database import db
 
 # Blueprint 객체 생성
 productbacklog_bp = Blueprint('productbacklog', __name__)
 
 # Product Backlog 관리 페이지
-@productbacklog_bp.route('/product_backlog', methods=['GET'])
-def product_backlog_view():
-    project_id = request.args.get('project_id')
+@productbacklog_bp.route('/product_backlog/<int:project_id>', methods=['GET'])
+def product_backlog_view(project_id):
     user_stories = get_user_stories(project_id) or [] # 프로젝트 ID에 따른 유저스토리 목록 가져오기
 
     # 저장된 ProductBacklog 그룹 가져오기
     product_backlog_groups = ProductBacklog.query.filter_by(project_id=project_id).order_by(ProductBacklog.backlog_order).all()
 
-    return render_template('backlog.html', user_stories=user_stories,
+    return render_template('backlog.html', project=Project.find_by_id(project_id),
+                           userproject=UserProject.find_by_user_and_project(current_user.id, project_id),
+                           user_stories=user_stories,
                            product_backlog_groups=product_backlog_groups)
 
 # 새로운 백로그 그룹 생성 또는 업데이트

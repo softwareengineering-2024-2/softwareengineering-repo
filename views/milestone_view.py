@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from controllers.milestone_controller import get_milestones, create_milestone, update_milestone, delete_milestone
+from controllers.milestone_controller import get_milestones, create_milestone, update_milestone, delete_milestone, get_milestone_counts
 from models.project_model import UserProject
 from models.milestone_model import Milestone
 from flask_login import login_required, current_user
@@ -16,7 +16,8 @@ def milestone_view(project_id):
         flash("프로젝트를 찾을 수 없습니다.")
         return redirect(url_for('project_main.project_main_view', project_id=project_id))
     milestones = get_milestones(project.project_id)
-    return render_template('milestone_back.html', project_id=project_id, milestones=milestones)
+    total_count, completed_count = get_milestone_counts(project.project_id)
+    return render_template('milestone_back.html', project_id=project_id, milestones=milestones, total_count=total_count, completed_count=completed_count)
 
 # 마일스톤 생성 로직
 @milestone_bp.route('/<int:project_id>/create', methods=['GET', 'POST'])

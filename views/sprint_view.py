@@ -4,6 +4,8 @@ from controllers.sprint_controller import (
     assign_backlogs_to_sprint, create_sprint, delete_backlog, get_sprints_with_backlogs, get_unassigned_product_backlogs, get_users_by_project_id, update_backlog_details, update_backlog_status, update_sprint, delete_sprint,
     get_all_product_backlogs, create_sprint_backlog
 )
+from models.project_model import Project, UserProject
+from flask_login import current_user
 
 # 블루프린트 생성
 sprint_bp = Blueprint('sprint', __name__)
@@ -16,7 +18,10 @@ def get_product_backlogs_view(project_id):
         'unassigned_backlogs': get_unassigned_product_backlogs(project_id)
     } 
     users = get_users_by_project_id(project_id)
-    return render_template('sprint.html', backlogs=backlogs, sprints=sprints, users=users, project_id=project_id)
+    return render_template('sprint.html', 
+                           project=Project.find_by_id(project_id),
+                           userproject=UserProject.find_by_user_and_project(current_user.id, project_id),
+                           backlogs=backlogs, sprints=sprints, users=users, project_id=project_id)
 
 # 스프린트 추가
 @sprint_bp.route('/add-sprint', methods=['POST'])

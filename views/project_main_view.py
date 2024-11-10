@@ -9,5 +9,5 @@ project_main_bp = Blueprint('project_main', __name__)
 @login_required
 def project_main_view(project_id):
     userproject=UserProject.find_by_user_and_project(current_user.id, project_id)
-    project_name = Project.find_by_id(project_id).project_name
-    return render_template('project_main_back.html', userproject=userproject, project_name=project_name)
+    project = Project.find_by_id(project_id)
+    return render_template('main.html', userproject=userproject, project=project, progress_percentage=35)

@@ -2,11 +2,13 @@
 const label = document.querySelector(".label");
 const options = document.querySelectorAll(".optionItem");
 const selectBox = document.querySelector(".selectBox");
+const roleSubmit = document.querySelector(".roleSubmit");
 
 // 클릭한 옵션의 텍스트를 라벨 안에 넣음
 const handleSelect = (item) => {
   label.parentNode.classList.remove("active");
   label.innerHTML = item.textContent;
+  roleSubmit.value = item.textContent;
 };
 // 옵션 클릭시 클릭한 옵션을 넘김
 options.forEach((option) => {
