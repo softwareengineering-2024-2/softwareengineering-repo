@@ -199,9 +199,9 @@
 /* 모달 콘텐츠 */
 .modal-content {
     background-color: var(--color-white);
-    padding: 40px 30px;
+    padding: 20px 20px;
     border-radius: 10px;
-    width: 400px;
+    width: 450px;
     max-width: 500px;
 }
 
@@ -247,6 +247,45 @@
     gap: 10px;
     margin-top: 20px;
 }
+
+/* 닫기 */
+.modal-close-btn {
+    background-color: var(--color-grey-100);
+    color: var(--color-black);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    float: right; /* 버튼을 오른쪽으로 정렬 */
+}
+
+#modalMessage {
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+#messageModal {
+    z-index: 100;
+}
+
+.modal-confirm-btn {
+    background-color: var(--color-red); /* 확인 버튼 색상 */
+    color: var(--color-white);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  /* 취소 */
+  .modal-cancel-btn {
+    background-color: var(--color-grey-100);
+    color: var(--color-black);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
 
 .add-sprint-btn {
     padding: 10px 20px;
@@ -323,7 +362,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    max-width: 1400px;
     width: 95%;
     min-height: 45vh;
     background-color: var(--color-white);
@@ -334,7 +372,7 @@
 .nav-btn-lt,
 .nav-btn-gt {
     background-color: var(--color-white); /* 하얀색 배경 */
-    padding: 10px;
+    padding: 8px;
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 */
     position: absolute;

@@ -187,14 +187,8 @@
 
           <div class="modal-buttons">
             <input type="hidden" name="project_id" value="{{ project_id }}" />
-            <button type="submit" class="add-sprint-btn">스프린트 추가</button>
-            <button
-              type="button"
-              class="cancel-btn"
-              onclick="closeSprintCreateModal()"
-            >
-              취소하기
-            </button>
+            <button type="button" class="add-sprint-btn" onclick="submitSprintForm()">스프린트 추가</button>
+            <button type="button" class="cancel-btn" onclick="closeSprintCreateModal()">취소하기</button>
           </div>
         </form>
       </div>
@@ -216,20 +210,10 @@
           />
 
           <label for="edit-sprint-start-date">스프린트 시작일</label>
-          <input
-            type="date"
-            id="edit-sprint-start-date"
-            name="start_date"
-            required
-          />
+        <input type="date" id="edit-sprint-start-date" name="start_date" required />
 
-          <label for="edit-sprint-end-date">스프린트 종료일</label>
-          <input
-            type="date"
-            id="edit-sprint-end-date"
-            name="end_date"
-            required
-          />
+        <label for="edit-sprint-end-date">스프린트 종료일</label>
+        <input type="date" id="edit-sprint-end-date" name="end_date" required />
 
           <label for="edit-product-backlog">프로덕트 백로그</label>
           <select id="edit-product-backlog" name="backlogs" multiple>
@@ -241,7 +225,7 @@
           </select>
 
           <div class="modal-buttons">
-            <button type="submit" class="add-sprint-btn">저장</button>
+            <button type="button" class="add-sprint-btn" onclick="submitEditSprintForm()">저장</button>
             <button
               type="button"
               class="cancel-btn"
@@ -341,7 +325,7 @@
 
     <!-- 스프린트 설정 팝업 모달 -->
     <div id="sprint-options-modal" class="small-modal" style="display: none">
-      <button id="edit-sprint-btn" onclick="">스프린트 수정</button>
+      <button id="edit-sprint-btn">스프린트 수정</button>
       <button class="delete-btn" onclick="deleteSprint()">스프린트 삭제</button>
     </div>
 
@@ -350,6 +334,28 @@
       <button onclick="openSprintBacklogEditModal()">백로그 수정</button>
       <button class="delete-btn" onclick="deleteBacklog()">백로그 삭제</button>
     </div>
+
+    <!-- 메시지 모달 -->
+    <div id="messageModal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <h2 id="modalTitle">알림</h2>
+        <p id="modalMessage">메시지 내용이 여기에 표시됩니다.</p>
+        <button onclick="closeMessageModal()" class="modal-close-btn">닫기</button>
+      </div>
+    </div>
+
+    <!-- 삭제 확인 모달 -->
+    <div id="confirmDeleteModal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <h2>확인</h2>
+        <p id="confirmDeleteMessage">삭제 문구 위치</p>
+        <div class="modal-buttons">
+          <button onclick="confirmDelete()" class="modal-confirm-btn">확인</button>
+          <button onclick="closeConfirmDeleteModal()" class="modal-cancel-btn">취소</button>
+        </div>
+      </div>
+    </div>
+
   </body>
   <!-- JavaScript 파일 로드 -->
   <script src="{{ url_for('static', filename='js/sprint.js') }}"></script>
