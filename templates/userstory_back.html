@@ -22,22 +22,14 @@
     </script>
 </head>
 <body>
+    {% include 'topbar.html' %}
     <div class="container">
+        {% include 'sidebar.html' %}
         <header class="header">
             <h1>유저스토리</h1>
         </header>
 
         <main class="main-content">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <ul class="flashes">
-                        {% for category, message in messages %}
-                            <li class="{{ category }}">{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
-            
             <section class="notlist">
                 <h2>Not List 키워드</h2>
                 <ul>

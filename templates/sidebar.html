@@ -26,7 +26,7 @@
             <a href="{{ url_for('milestone') }}"><img src="{{ url_for('static', filename='icons/milestone.svg') }}" alt="마일스톤 아이콘" class="icon"> 프로젝트 마일스톤</a>
         </li>
         <li class="{% if request.path == '/userstory' %}active{% endif %}">
-            <a href="{{ url_for('userstory') }}"><img src="{{ url_for('static', filename='icons/userstory.svg') }}" alt="유저스토리 아이콘" class="icon"> 유저스토리</a>
+            <a href="{{ url_for('userstory.view_stories_route', project_id=project_id)}}"><img src="{{ url_for('static', filename='icons/userstory.svg') }}" alt="유저스토리 아이콘" class="icon"> 유저스토리</a>
         </li>
         <li class="{% if request.path == '/backlog' %}active{% endif %}">
             <a href="{{ url_for('backlog') }}"><img src="{{ url_for('static', filename='icons/backlog.svg') }}" alt="백로그 아이콘" class="icon"> 프로덕트 백로그</a>
