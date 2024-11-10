@@ -44,19 +44,24 @@
               <p>마일스톤 추가</p>
             </button>
           </div>
-          <div class="milestone-lists-wrapper">
-            <div class="milestone-list">
-              <p>마일스톤 이름</p>
-              <div class="b2-regular">마감날짜: 2022.22.22</div>
-              <div class="milestone-button-wrapper">
-                <!-- <button class="modify-milestone-btn" id="openModifyButton">
-                  수정
-                </button> -->
-                <button class="delete-milestone-btn">삭제</button>
-                <input type="checkbox" id="check" /><label for="check"></label>
-              </div>
-            </div>
-          </div>
+          <ul class="milestone-lists-wrapper">
+            {% for milestone in milestones %}
+              <li class="milestone-list">
+                <p>{{ milestone.milestone_content }}</p>
+                <div class="b2-regular">마감 날짜 : {{ milestone.due_date }}</div>
+                <div class="milestone-button-wrapper">
+                  <!-- <button class="modify-milestone-btn" id="openModifyButton">
+                    수정
+                  </button> -->
+                  <form action="{{ url_for('milestone.delete_milestone_view', project_id=project.project_id, milestone_id=milestone.milestone_id) }}" method="POST">
+                    <button type="submit" class="delete-milestone-btn">삭제</button>
+                  </form>
+                </div>
+              </li>
+            {% else %}
+              <li class="milestone-list">마일스톤이 없습니다.</li>
+            {% endfor %}
+          </ul>
 
           <!-- 모달 관련 코드 -->
           <!-- 모달 생성 시 배경화면 어둡게(기본속성: none) -->
@@ -64,34 +69,38 @@
           <!-- 마일스톤 생성 모달창 -->
           <div class="milestone-modal" id="createMilestoneModal">
             <h1>마일스톤 생성</h1>
-            <div class="milestone-input-wrapper">
-              <div class="b2-semibold">마일스톤 이름</div>
-              <input
-                class="input-box"
-                type="text"
-                placeholder="마일스톤을 입력하세요"
-              />
-            </div>
-            <div class="milestone-input-wrapper">
-              <div class="b2-semibold">마감 기한</div>
-              <input
-                class="input-box"
-                type="date"
-                placeholder="마감기한을 선택하세요"
-              />
-            </div>
-            <div class="modal-buttons-wrapper">
-              <button class="create-button" id="createProjectButton">
-                <div class="b2-regular">마일스톤 추가</div>
-              </button>
-              <button
-                class="cancel-button"
-                id="cancelButton"
-                onclick="closeModal('createMilestoneModal');"
-              >
-                <div class="b2-regular">취소하기</div>
-              </button>
-            </div>
+            <form action="{{ url_for('milestone.create_milestone_view', project_id=project.project_id) }}" method="POST">
+              <div class="milestone-input-wrapper">
+                <div class="b2-semibold">마일스톤 이름</div>
+                <input
+                  class="input-box"
+                  type="text"
+                  id="milestone_content" name="milestone_content" required
+                  placeholder="마일스톤을 입력하세요"
+                />
+              </div>
+              <div class="milestone-input-wrapper">
+                <div class="b2-semibold">마감 기한</div>
+                <input
+                  class="input-box"
+                  type="date"
+                  id="due_date" name="due_date" required
+                  placeholder="마감기한을 선택하세요"
+                />
+              </div>
+              <div class="modal-buttons-wrapper">
+                <button class="create-button" type="submit" id="createProjectButton">
+                  <div class="b2-regular">마일스톤 추가</div>
+                </button>
+                <button
+                  class="cancel-button"
+                  id="cancelButton"
+                  onclick="closeModal('createMilestoneModal');"
+                >
+                  <div class="b2-regular">취소하기</div>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
 
@@ -129,7 +138,11 @@
         </div> -->
         {% endblock %}
       </div>
-    </div>
+    </div> 
+    <script>
+      const totalMilestones = "{{ total_count }}";
+      const completedMilestones = "{{ completed_count }}";
+    </script>
     <script src="{{ url_for('static', filename='js/milestone.js') }}"></script>
   </body>
 </html>

@@ -1,8 +1,5 @@
 // 모달 요소와 배경 요소 선택
 const modalBackground = document.getElementById("modalBackground");
-// 전체 마일스톤과 완료된 마일스톤 갯수 (데이터에서 받아와야 함)
-const totalMilestones = 7; // 예시 값
-const completedMilestones = 2; // 예시 값
 
 // 마일스톤 라인 요소 선택
 const line = document.getElementById("line");
@@ -13,29 +10,30 @@ completedSection.classList.add("completed-section");
 completedSection.style.width = `${(completedMilestones / totalMilestones) * 100}%`;
 line.appendChild(completedSection);
 
-// sprint 아이콘 생성 및 위치 설정
-const sprintIcon = document.createElement("img");
-sprintIcon.src = "/static/icons/sprint.svg"; // sprint.svg 이미지 경로 설정
-sprintIcon.classList.add("sprint-icon");
-sprintIcon.style.left = `${(completedMilestones / totalMilestones) * 100}%`; // 초록색 선 끝에 위치
-line.appendChild(sprintIcon);
-
 // 마일스톤 점 생성 및 배치
-for (let i = 0; i < totalMilestones; i++) {
+for (let i = 0; i < totalMilestones+1; i++) {
     const dot = document.createElement("div");
     dot.classList.add("milestone-dot");
 
     // 완료된 마일스톤 갯수만큼 초록색 적용
-    if (i < completedMilestones) {
+    if (i <= completedMilestones) {
         dot.classList.add("completed");
+
+        // 마지막으로 완료된 점에 sprint.svg 아이콘 추가
+        if (i == completedMilestones) {
+          const sprintIcon = document.createElement("img");
+          sprintIcon.src = "/static/icons/sprint.svg"; // sprint.svg 이미지 경로 설정
+          sprintIcon.classList.add("sprint-icon");
+          dot.appendChild(sprintIcon);
+        }
     }
 
     // 점 위치 조정
-    dot.style.left = `${(i / (totalMilestones - 1)) * 100}%`;
+    dot.style.left = `${(i / (totalMilestones)) * 100}%`;
     line.appendChild(dot);
 
     // 마지막 점에 milestone.svg 추가
-    if (i === totalMilestones - 1) {
+    if (i == totalMilestones) {
         const milestoneIcon = document.createElement("img");
         milestoneIcon.src = "/static/icons/milestone.svg"; // milestone.svg 이미지 경로 설정
         milestoneIcon.classList.add("milestone-icon");
