@@ -26,18 +26,7 @@ def create_project_view():
 @login_required
 def project_created_view():
     project_id = request.args.get('project_id')
-    return render_template('project_created_back.html', project=Project.find_by_id(project_id))
-
-# 프로젝트 참여 로직
-# @manage_project_bp.route('/join', methods=['GET', 'POST'])
-# @login_required
-# def join_project_view():
-#     if request.method == 'POST':
-#         project_link = request.form.get('project_link')
-#         message = join_project_by_link(project_link)
-#         flash(message)
-#         return redirect(url_for('manage_project.set_profile_view', project_id=Project.find_by_link(project_link).project_id))
-#     return render_template('join_project_back.html')
+    return render_template('project_created.html', project=Project.find_by_id(project_id))
 
 # 프로젝트 링크 유효성 검사 로직
 @manage_project_bp.route('/link_check', methods=['GET', 'POST'])
@@ -83,4 +72,4 @@ def set_profile_view(project_id):
         message = set_profile(project_id, user_name, user_role)
         flash(message)
         return redirect(url_for('project_main.project_main_view', project_id=project_id))
-    return render_template('profile.html', userproject=UserProject.find_by_user_and_project(current_user.id, project_id), project_name=Project.find_by_id(project_id).project_name)
+    return render_template('profile.html', userproject=UserProject.find_by_user_and_project(current_user.id, project_id), project=Project.find_by_id(project_id))

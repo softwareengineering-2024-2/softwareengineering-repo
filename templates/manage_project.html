@@ -30,7 +30,10 @@
             <img src="../static/icons/circle-plus.svg" alt="프로젝트 생성" />
             <h1>프로젝트 생성하기</h1>
           </button>
-          <form action="{{ url_for('manage_project.link_check_view') }}" method="GET">
+          <form
+            action="{{ url_for('manage_project.link_check_view') }}"
+            method="GET"
+          >
             <button class="project-attend-button" id="openJoinButton">
               <img src="../static/icons/link.svg" alt="프로젝트 참여" />
               <h1>프로젝트 참여하기</h1>
@@ -38,38 +41,59 @@
           </form>
         </div>
         <h1 class="project-list-title">프로젝트 목록</h1>
-        <div class="project-lists">
-          <ul>
-            {% for userproject in userprojects %}
-              <li class="project-list" style="list-style-type: none;">
-                <a href="{{ url_for('project_main.project_main_view', project_id=userproject.project_id) }}"><p>{{ userproject.project_name }}</p></a>
-                <div class="project-list-options">
-                  <button class="normal-button"><p>링크복사</p></button>
-                  <form action="{{ url_for('manage_project.set_profile_view', project_id=userproject.project_id) }}" method="GET">
-                    <button class="normal-button"><p>프로필수정</p></button>
-                  </form>
-                  <form action="{{ url_for('manage_project.delete_project_view', project_id=userproject.project_id) }}" method="POST">
-                    <button class="exit-button" type="submit"><p>나가기</p></button>
-                  </form>
-                </div>
-              </li>
-            {% else %}
-              <li style="list-style-type: none;"><h1>프로젝트가 없습니다.</h1></li>
-            {% endfor %}
-        </div>
+        <ul class="project-lists">
+          {% for userproject in userprojects %}
+          <li class="project-list" style="list-style-type: none">
+            <a
+              href="{{ url_for('project_main.project_main_view', project_id=userproject.project_id) }}"
+              ><p>{{ userproject.project_name }}</p></a
+            >
+            <div class="project-list-options">
+              <button class="normal-button" onclick="copyToClipboard('{{ userproject.project_link }}')"><p>링크복사</p></button>
+              <form
+                action="{{ url_for('manage_project.set_profile_view', project_id=userproject.project_id) }}"
+                method="GET"
+              >
+                <button class="normal-button"><p>프로필수정</p></button>
+              </form>
+              <form
+                action="{{ url_for('manage_project.delete_project_view', project_id=userproject.project_id) }}"
+                method="POST"
+              >
+                <button class="exit-button" type="submit"><p>나가기</p></button>
+              </form>
+            </div>
+          </li>
+          {% else %}
+          <li style="list-style-type: none"><h1>프로젝트가 없습니다.</h1></li>
+          {% endfor %}
+        </ul>
       </div>
       <!-- 모달 생성 시 배경화면 어둡게(기본속성: none) -->
       <div class="modal-background" id="modalBackground"></div>
       <!-- 프로젝트 생성 모달 -->
       <div class="project-modal" id="createProjectModal">
         <h1>프로젝트 생성</h1>
-        <form action="{{ url_for('manage_project.create_project_view') }}" method="POST">
+        <form
+          action="{{ url_for('manage_project.create_project_view') }}"
+          method="POST"
+        >
           <div class="project-input-wrapper">
             <div class="b2-regular">프로젝트 명</div>
-            <input type="text" id="project_name" name="project_name" required placeholder="프로젝트명을 입력해주세요" />
+            <input
+              type="text"
+              id="project_name"
+              name="project_name"
+              required
+              placeholder="프로젝트명을 입력해주세요"
+            />
           </div>
           <div class="modal-buttons-wrapper">
-            <button class="create-button" id="createProjectButton" type="submit">
+            <button
+              class="create-button"
+              id="createProjectButton"
+              type="submit"
+            >
               <div class="b2-regular">생성하기</div>
             </button>
             <button
@@ -82,9 +106,21 @@
           </div>
         </form>
       </div>
-      
+
       {% endblock %}
     </div>
     <script src="{{ url_for('static', filename='js/manage_project.js') }}"></script>
+    <script>
+      function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(
+          function () {
+            alert("링크가 클립보드에 복사되었습니다.");
+          },
+          function (err) {
+            alert("링크 복사에 실패했습니다.");
+          }
+        );
+      }
+    </script>
   </body>
 </html>

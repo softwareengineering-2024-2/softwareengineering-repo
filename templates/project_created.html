@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='global.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='manage_project.css') }}"
+    />
+    <title>프로젝트 생성 완료</title>
+  </head>
+  <body>
+    <div class="project-link-content">
+      {% block content %}
+      <div class="project-link-modal">
+        <h1>프로젝트 생성 완료</h1>
+
+        <div class="link-content">
+          <div class="b2-regular">
+            "{{ project.project_name }}" 프로젝트가 생성되었습니다.
+            <br />참가링크를 팀원들에게 공유해주세요!
+          </div>
+          <div class="link-element-wrapper">
+            <p class="b2-semibold">프로젝트 참여코드</p>
+            <div class="link-wrapper">
+              <div class="small">{{ project.project_link }}</div>
+              <button
+                onclick="copyToClipboard('{{ project.project_link }}')"
+                class="copy-button"
+              >
+                링크 복사
+              </button>
+            </div>
+          </div>
+          <a
+            class="profile-set-btn"
+            href="{{ url_for('manage_project.set_profile_view', project_id=project.project_id) }}"
+            >프로필 설정하기</a
+          >
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+
+    <script>
+      function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(
+          function () {
+            alert("링크가 클립보드에 복사되었습니다.");
+          },
+          function (err) {
+            alert("링크 복사에 실패했습니다.");
+          }
+        );
+      }
+    </script>
+  </body>
+</html>

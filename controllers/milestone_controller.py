@@ -30,3 +30,10 @@ def delete_milestone(milestone_id):
         milestone.delete_from_db()
         return "마일스톤이 삭제되었습니다."
     return "마일스톤을 찾을 수 없습니다."
+
+# 마일스톤 수를 계산하는 로직
+def get_milestone_counts(project_id):
+    milestones = Milestone.find_by_project_ordered_by_due_date(project_id)
+    total_count = len(milestones)
+    completed_count = sum(1 for milestone in milestones if milestone.check)
+    return total_count, completed_count

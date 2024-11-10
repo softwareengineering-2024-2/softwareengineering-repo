@@ -1,47 +1,29 @@
-{% set has_project = False %} <!-- 프로젝트를 가지고 있는가?-> 프로젝트 생성으로 -->
-{% set profile_completed = False %} <!-- 프로젝트에 대한 프로필을 가지고 있는가? ->프로필 설정으로 -->
-{% set project_name = "A.T.M" %} <!-- 참여한 프로젝트 이름 -->
-{% set project_role = "PM" %} <!-- 해당 프로젝트의 역할 PM, Member -->
 <div class="sidebar">
-    {% if not has_project %}
-        <!-- 로그인 후 프로젝트가 없는 경우 -->
-        <div class="sidebar-header">
-            <p>참여 중인 프로젝트가 없습니다.</p>
-            <p class="action">프로젝트 생성, 참여하기</p>
-        </div>
-    {% elif has_project and not profile_completed %}
-        <!-- 프로젝트 선택 후 프로필 설정이 필요한 경우 -->
-        <div class="sidebar-header">
-            <p>프로젝트 프로필 설정하기</p>
-        </div>
-    {% else %}
-        <!-- 프로필 설정이 완료된 경우 -->
-        <h2 class="sidebar-header">{{ project_name }}</h2>
-    {% endif %}
+    <h2 class="sidebar-header">{{ project.project_name }}</h2>
     <ul>
-        <li class="{% if request.path == '/main' %}active{% endif %}">
-            <a href="{{ url_for('main') }}"><img src="{{ url_for('static', filename='icons/home.svg') }}" alt="메인 아이콘" class="icon"> 메인</a>
+        <li>
+            <a href="{{ url_for('project_main.project_main_view', project_id=project.project_id) }}"><img src="{{ url_for('static', filename='icons/home.svg') }}" alt="메인 아이콘" class="icon"> 메인</a>
         </li>
-        <li class="{% if request.path == '/milestone' %}active{% endif %}">
-            <a href="{{ url_for('milestone') }}"><img src="{{ url_for('static', filename='icons/milestone.svg') }}" alt="마일스톤 아이콘" class="icon"> 프로젝트 마일스톤</a>
+        <li>
+            <a href="{{ url_for('milestone.milestone_view', project_id=project.project_id) }}"><img src="{{ url_for('static', filename='icons/milestone.svg') }}" alt="마일스톤 아이콘" class="icon"> 프로젝트 마일스톤</a>
         </li>
-        <li class="{% if request.path == '/userstory' %}active{% endif %}">
-            <a href="{{ url_for('userstory.view_stories_route', project_id=project_id)}}"><img src="{{ url_for('static', filename='icons/userstory.svg') }}" alt="유저스토리 아이콘" class="icon"> 유저스토리</a>
+        <li class="{% if request.path == '/userstory/<int:project_id>' %}active{% endif %}">
+            <a href="{{ url_for('userstory.view_stories_route', project_id=project.project_id) }}"><img src="{{ url_for('static', filename='icons/userstory.svg') }}" alt="유저스토리 아이콘" class="icon"> 유저스토리</a>
         </li>
-        <li class="{% if request.path == '/backlog' %}active{% endif %}">
-            <a href="{{ url_for('backlog') }}"><img src="{{ url_for('static', filename='icons/backlog.svg') }}" alt="백로그 아이콘" class="icon"> 프로덕트 백로그</a>
+        <li class="{% if request.path == '/productbacklog/product_backlog/<int:project_id>' %}active{% endif %}">
+            <a href="{{ url_for('productbacklog.product_backlog_view', project_id=project.project_id) }}"><img src="{{ url_for('static', filename='icons/backlog.svg') }}" alt="백로그 아이콘" class="icon"> 프로덕트 백로그</a>
         </li>
-        <li class="{% if request.path == '/sprint' %}active{% endif %}">
-            <a href="{{ url_for('sprint') }}"><img src="{{ url_for('static', filename='icons/sprint.svg') }}" alt="스프린트 아이콘" class="icon"> 스프린트</a>
+        <li class="{% if request.path == '/sprint/sprint/<int:project_id>' %}active{% endif %}">
+            <a href="{{ url_for('sprint.get_product_backlogs_view', project_id=project.project_id) }}"><img src="{{ url_for('static', filename='icons/sprint.svg') }}" alt="스프린트 아이콘" class="icon"> 스프린트</a>
         </li>
-        <li class="{% if request.path == '/board' %}active{% endif %}">
+        <!-- <li class="{% if request.path == '/board' %}active{% endif %}">
             <a href="{{ url_for('board') }}"><img src="{{ url_for('static', filename='icons/board.svg') }}" alt="보드 아이콘" class="icon"> 스크럼 보드</a>
         </li>
         <li class="{% if request.path == '/review' %}active{% endif %}">
             <a href="{{ url_for('review') }}"><img src="{{ url_for('static', filename='icons/review.svg') }}" alt="회고 아이콘" class="icon"> 스프린트 회고</a>
-        </li>
+        </li> -->
     </ul>
 </div>
 <script>
-    const projectRole = "{{ project_role }}";
+    const role = "{{ userproject.user_role }}"; // 프로젝트 사용자 역할
 </script>

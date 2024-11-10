@@ -26,38 +26,40 @@
     />
   </head>
   <body>
-    {% include 'topbar.html' %}
-    <div class="main-container">
-      {% include 'sidebar.html' %}
-      <div class="content">
-        <!-- 메인 콘텐츠가 들어갈 부분 -->
-        {% block content %}
-        <div class="profile-box">
-          <h1>사용자 프로필 수정</h1>
-          <form method="POST">
-            <div class="b2-regular">프로젝트 이름: {{ project_name }}</div>
-            <div class="name-input-wrapper">
-              <div class="b2-regular">이름</div>
-              <input type="text" id="name" name="name" value="{{ userproject.user_name }}" placeholder="이름을 입력하세요." />
+    <div class="content">
+      <!-- 메인 콘텐츠가 들어갈 부분 -->
+      {% block content %}
+      <div class="profile-box">
+        <h1>사용자 프로필 수정</h1>
+        <form method="POST" class="profile-form">
+          <div class="b2-regular">프로젝트 이름: {{ project.project_name }}</div>
+          <div class="name-input-wrapper">
+            <div class="b2-regular">이름</div>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value="{{ userproject.user_name }}"
+              placeholder="이름을 입력하세요."
+            />
+          </div>
+          <div class="role-input-wrapper">
+            <div class="b2-regular">역할 선택</div>
+            <div class="selectBox">
+              <div class="label">역할을 선택해주세요</div>
+              <ul class="optionList">
+                <li class="optionItem">PM(기획자)</li>
+                <li class="optionItem">Member</li>
+              </ul>
+              <img src="/static/icons/chevron-down.svg" />
             </div>
-            <div class="role-input-wrapper">
-              <div class="b2-regular">역할 선택</div>
-              <div class="selectBox">
-                <div class="label">역할을 선택해주세요</div>
-                <ul class="optionList">
-                  <li class="optionItem">PM(기획자)</li>
-                  <li class="optionItem">Member</li>
-                </ul>
-                <img src="../static/icons/chevron-down.svg" />
-              </div>
-            </div>
-            <button class="profile-btn" type="submit">
-              <div class="b2-regular">프로필 수정하기</div>
-            </button>
-          </form>
-        </div>
-        {% endblock %}
+          </div>
+          <button class="profile-btn" type="submit">
+            <div class="b2-regular">프로필 수정하기</div>
+          </button>
+        </form>
       </div>
+      {% endblock %}
     </div>
     <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
   </body>

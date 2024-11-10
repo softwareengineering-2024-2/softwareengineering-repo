@@ -33,7 +33,7 @@ app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(project_main_bp, url_prefix='/project_main')
 app.register_blueprint(manage_project_bp, url_prefix='/manage_project')
 app.register_blueprint(milestone_bp, url_prefix='/milestone')
-app.register_blueprint(productbacklog_bp, url_prefix='/backlog')  # /backlog 경로에 등록
+app.register_blueprint(productbacklog_bp, url_prefix='/productbacklog')
 app.register_blueprint(sprint_bp, url_prefix='/sprint')
 app.register_blueprint(userstory_bp, url_prefix='/userstory')
 app.register_blueprint(calendar_bp, url_prefix='/calendar')
@@ -52,17 +52,17 @@ def main():
     progress_percentage = (completed_tasks / total_tasks) * 100 if total_tasks > 0 else 0
     return render_template('main.html', progress_percentage=progress_percentage)
 
-@app.route("/milestone")
-def milestone():
-    return render_template("milestone.html")
+# @app.route("/milestone")
+# def milestone():
+#     return render_template("milestone.html")
 
-@app.route("/backlog")
-def backlog():
-    return render_template("backlog.html")
+# @app.route("/backlog")
+# def backlog():
+#     return render_template("backlog.html")
 
-@app.route("/sprint")
-def sprint():
-    return render_template("sprint.html")
+# @app.route("/sprint")
+# def sprint():
+#     return render_template("sprint.html")
 
 @app.route("/board")
 def board():
@@ -72,9 +72,9 @@ def board():
 def review():
     return render_template("review.html")
 
-@app.route('/project')
-def project():
-    return render_template('manage_project.html')
+# @app.route('/project')
+# def project():
+#     return render_template('manage_project.html')
 
 @app.route('/calendar')
 def calendar():

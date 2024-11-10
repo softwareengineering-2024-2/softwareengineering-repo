@@ -1,5 +1,3 @@
-{% set role = "PM" %}
-{% set username = "이서준" %}
 <div class="topbar">
     <ul>
         <li>
@@ -27,7 +25,7 @@
                     <ul>
                         {% for i in range(5) %}
                         <li>
-                            <span class="project-name">프로젝트 명</span>
+                            <span class="project-name">{{ project.project_name }}</span>
                             <span class="task">프로덕트 백로그 할 일 추가</span>
                         </li>
                         {% endfor %}
@@ -43,10 +41,10 @@
                 <h3>마이페이지</h3>
                 <!-- 프로필 사진 -->
                 <div class="profile-picture">
-                    <img src="{{ profile_picture or url_for('static', filename='icons/mypage_default.svg') }}" alt="프로필 사진" />
+                    <img src="{{ current_user.profile_pic }}" alt="프로필 사진" />
                 </div>
                 <!-- 역할과 사용자 이름 -->
-                <p>{{ role }} {{ username }}</p>
+                <p>{{ userproject.user_role }} {{ userproject.user_name }}</p>
                 <!-- 버튼들 -->
                 <button class="btn btn-edit-profile">프로필 변경하기</button>
                 <button class="btn btn-logout">로그아웃 하기</button>
