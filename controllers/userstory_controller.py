@@ -1,5 +1,5 @@
 from models.userstory_model import UserStory
-
+from sqlalchemy.exc import IntegrityError
 from database import db
 
 # 유저스토리 보여주기
@@ -33,6 +33,10 @@ def update_story(story_id, user_story_content):
 # 유저스토리 삭제
 def delete_story(story_id):
     story = UserStory.query.filter_by(story_id=story_id).first_or_404()
-    if story:
-        story.delete_from_db()
-    return None
+    try:
+        if story:
+            story.delete_from_db()
+        return None
+    except IntegrityError:
+        db.session.rollback()
+        return "이 유저스토리는 프로덕트 백로그에서 참조 중이므로 삭제할 수 없습니다."
