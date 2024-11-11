@@ -1,6 +1,6 @@
 .content {
     margin-top: 2vh; /* 탑바 밑 여백 추가 */
-    margin-left: 25vh;
+    margin-left: 25vh; /*사이드바 여백 추가*/
 }
 
 /* Not List와 User Story, Input Section 간의 여백 설정 */
@@ -12,7 +12,7 @@
     margin-right: 2vh;/* 각 섹션 간 2vh의 여백 추가 */
 }
 
-
+/* not list 가 들어가는 박스 css */
 .not-list-box {
     background-color: var(--color-white);
     padding: 15px;
@@ -24,32 +24,14 @@
     min-height: 15vh; /* 최소 높이 설정 */
 }
 
-.not-list-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.settings-icon {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-}
-
+/* 각 not list keyword의 css */
 .not-list-keywords {
     display: flex;
     gap: 10px;
     flex-wrap: wrap; /* 줄바꿈 설정 */
 }
 
-.keyword {
-    background-color: var(--color-green-200);
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-weight: bold;
-}
-
-
+/* 유저스토리가 들어가는 전체 div */
 .userstory-container {
     background-color: var(--color-white);
     padding: 20px;
@@ -64,6 +46,7 @@
     margin-bottom: 10px;
 }
 
+/* 유저스토리 ul css */
 .userstory-list {
     display: flex;
     flex-direction: column;
@@ -73,6 +56,7 @@
     padding-right: 10px; /* 스크롤바와 아이템 간의 패딩 추가 */
 }
 
+/* 각각의 유저스토리 li */
 .userstory-item {
     background-color: var(--color-grey-50);
     padding: 10px;
@@ -83,6 +67,7 @@
     height: 50px;
 }
 
+/* 수정 버튼, 삭제 버튼 감싸기 */
 .button-wrapper{
     display: flex;
     gap: 16px;
@@ -91,17 +76,26 @@
 
 }
 
+
 .userstory-item .buttons {
     display: flex;
     gap: 10px;
 }
-.edit-story, .delete-story, .complete-edit {
+
+/* 유저스토리 수정 버튼 삭제 버튼 */
+.edit-story, .delete-story {
     background-color: transparent;
     border: none;
     cursor: pointer;
     font-size: 0.9em;
 }
 
+/* 삭제버튼 빨강 */
+.delete-story {
+    color: var(--color-red);
+}
+
+/* 수정 버튼 눌렀을 때 텍스트 박스로 바꾸는 */
 .edit-input {
     flex: 1;
     margin-right: 10px;
@@ -110,15 +104,13 @@
     padding: 5px;
 }
 
-.delete-story {
-    color: var(--color-red);
-}
-
+/* 유저스토리 초기 입력창 */
 .userstory-input-container {
     background-color: var(--color-white);
     padding: 15px;
     border-radius: 8px;
 }
+
 
 .userstory-input-container input[type="text"] {
     width: 100%;
@@ -141,57 +133,7 @@
     z-index: 999;
 }
 
-/* 모달 창 */
-.not-list-modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 55%;
-    transform: translate(-50%, -50%);
-    width: 48vh;
-    background-color: var(--color-white);
-    border-radius: 8px;
-    padding: 20px; /* 하단 여백을 더 주기 위해 padding-bottom을 40px로 설정 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    text-align: center;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 20px 40px;
-}
-
-.modal-header h1 {
-    font-size: 18px;
-    margin: 0;
-}
-
-.close-icon {
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-}
-
-.modal-keyword-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-height: 300px; /* 최대 높이 설정 */
-    overflow-y: auto; /* 스크롤바 추가 */
-    padding-right: 10px; /* 스크롤바가 생길 때 오른쪽 여백 추가 */
-    margin-bottom: 20px; /* 입력란과 키워드 목록 사이 여백 */
-}
-
-
-
-.modal-keyword-item .delete {
-    color: var(--color-red);
-    cursor: pointer;
-}
-
+/* not list 키워드랑 삭제 버튼을 묶기 */
 .keyword-wrapper{
     gap: 4px;
     display: flex;
@@ -201,23 +143,7 @@
     border-radius: 5px;
 }
 
-.add-keyword-input {
-    margin-top: 15px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid var(--color-grey-200);
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.modal-close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 20px;
-    cursor: pointer;
-}
-
+/* 키워드 감지 모달 */
 .keyword-warning-modal {
     display: none;
     position: fixed;
@@ -233,6 +159,7 @@
     text-align: center;
 }
 
+/* 감지 모달에서 빨간색 표시 */
 .highlight {
     color: var(--color-red);
     font-weight: bold;
@@ -249,6 +176,7 @@
     margin-bottom: 20px;
 }
 
+/* 감지 모달 확인 취소 */
 .confirm-button, .cancel-button {
     padding: 10px 20px;
     margin: 5px;
@@ -258,11 +186,11 @@
 }
 
 .confirm-button {
-    background-color: var(--color-green-500); /* Green button */
+    background-color: var(--color-green-500);
 }
 
 .cancel-button {
-    background-color: var(--color-grey-100); /* Gray button */
+    background-color: var(--color-grey-100);
 }
 
 /* Not List가 비어 있을 때 표시할 스타일 */
@@ -289,9 +217,6 @@
     width: 100%; /* 전체 너비 차지 */
 }
 
-
-
-/* 모달 배경 */
 .modal {
     display: none; /* 기본은 숨김 */
     position: fixed;
@@ -324,25 +249,6 @@
     margin-bottom: 20px;
 }
 
-.modal-content label {
-    display: block;
-    font-weight: bold;
-    margin-top: 15px;
-    font-size: 0.9em;
-}
-
-.modal-content input[type="text"],
-.modal-content input[type="date"],
-.modal-content select {
-    width: calc(100% - 10px);
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border: 1px solid var(--color-grey-300);
-    border-radius: 5px;
-    font-size: 0.9em;
-}
-
 #modalMessage {
     text-align: center; /* 텍스트 중앙 정렬 */
 }
@@ -358,7 +264,7 @@
     float: right; /* 버튼을 오른쪽으로 정렬 */
 }
 
-/* 강조된 키워드 스타일 */
+/* not list 강조된 키워드 유저스토리 스타일 */
 .highlight-keyword {
     color: var(--color-red);
 }

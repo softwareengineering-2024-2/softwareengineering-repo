@@ -95,30 +95,12 @@
                 <button onclick="closeMessageModal()" class="modal-close-btn">닫기</button>
                 </div>
             </div>
-            
-
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const messages = {{ messages | tojson }};
-                        messages.forEach(([category, message]) => {
-                        if (category === 'error') {
-                            openMessageModal("오류", message);
-                        } else if (category === 'success') {
-                            openMessageModal("성공", message);
-                        }
-                        });
-                    });
-                    </script>
-                {% endif %}
-                {% endwith %}
         </div>
     </div>
     <script>
         // Python 리스트를 JSON 배열로 변환하여 JavaScript에서 사용
         const keywordList = JSON.parse('{{ keyword_list | tojson | safe }}');
-        console.log(keywordList);  // 출력 확인용
+        const messages = {{ messages | tojson }};
     </script>
     
     <script src="{{ url_for('static', filename='js/userstory.js') }}"></script>

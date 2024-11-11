@@ -4,6 +4,19 @@ const keywordWarningBackground = document.getElementById("keywordWarningBackgrou
 const storyInputField = document.querySelector('.userstory-input-container input[name="content"]');
 const editForms = document.querySelectorAll('.edit-input');
 
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof messages !== 'undefined' && messages.length > 0) {
+        messages.forEach(([category, message]) => {
+            if (category === 'error') {
+                openMessageModal("오류", message);
+            } else if (category === 'success') {
+                openMessageModal("성공", message);
+            }
+        });
+    }
+});
+//삭제시 오류, 성공 메시지
+
 // 유저스토리 수정
 function enableEdit(storyId) {
     var storyContent = document.getElementById('story-content-' + storyId);

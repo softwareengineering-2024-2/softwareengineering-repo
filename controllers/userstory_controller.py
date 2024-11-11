@@ -25,10 +25,19 @@ def create_story(user_story_content, project_id):
 
 # 유저스토리 수정
 def update_story(story_id, user_story_content):
-    story = UserStory.query.get_or_404(story_id)    
-    story.update_in_db(user_story_content=user_story_content)
+    story = UserStory.query.get_or_404(story_id)
     
-    return story
+    # product_backlog_id가 NULL이 아닌 경우 수정 불가 처리
+    if story.product_backlog_id is not None:
+        return "이 유저스토리는 프로덕트 백로그에서 사용 중이므로 수정할 수 없습니다."
+    
+    try:
+        # product_backlog_id가 NULL인 경우에만 수정
+        story.update_in_db(user_story_content=user_story_content)
+        return story
+    except IntegrityError:
+        db.session.rollback()
+        return "유저스토리 수정 중 오류가 발생했습니다."
 
 # 유저스토리 삭제
 def delete_story(story_id):
