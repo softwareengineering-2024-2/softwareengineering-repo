@@ -41,8 +41,15 @@ def create_story_route(project_id):
 @userstory_bp.route('/userstory/<int:project_id>/<int:story_id>', methods=['POST'])
 def update_story_route(project_id, story_id):
     content = request.form.get('content')
-    update_story(story_id, content)
-
+    
+    # update_story 함수 호출 및 결과 확인
+    result = update_story(story_id, content)
+    
+    if isinstance(result, str):  # 반환값이 문자열인 경우, 오류 메시지로 처리
+        flash(result, "error")
+    else:
+        flash("유저스토리가 성공적으로 수정되었습니다.", "success")
+    
     return redirect(url_for('userstory.view_stories_route', project_id=project_id))
 
 # 유저스토리 삭제
