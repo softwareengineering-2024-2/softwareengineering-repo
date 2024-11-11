@@ -30,7 +30,7 @@
       <!-- 메인 콘텐츠가 들어갈 부분 -->
       {% block content %}
       <div class="profile-box">
-        <h1>사용자 프로필 수정</h1>
+        <h1>사용자 프로필 설정</h1>
         <form method="POST" class="profile-form">
           <div class="b2-regular">프로젝트 이름: {{ project.project_name }}</div>
           <div class="name-input-wrapper">
@@ -45,17 +45,17 @@
           <div class="role-input-wrapper">
             <div class="b2-regular">역할 선택</div>
             <div class="selectBox">
-              <div class="label">역할을 선택해주세요</div>
+              <div class="label">{{userproject.user_role}}</div>
               <ul class="optionList">
                 <li class="optionItem">PM(기획자)</li>
                 <li class="optionItem">Member</li>
               </ul>
               <img src="/static/icons/chevron-down.svg" />
             </div>
-            <input type="hidden" class="roleSubmit" name="role">
+            <input type="hidden" class="roleSubmit" name="role" value="{{userproject.user_role}}">
           </div>
           <button class="profile-btn" type="submit">
-            <div class="b2-regular">프로필 수정하기</div>
+            <div class="b2-regular">프로필 설정하기</div>
           </button>
         </form>
       </div>
