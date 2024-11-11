@@ -19,7 +19,15 @@ def view_stories_route(project_id):
    
     keyword_list = [keyword.keyword for keyword in not_list]
 
-    return render_template('userstory.html', project=Project.find_by_id(project_id), userproject=UserProject.find_by_user_and_project(current_user.id, project_id), stories=stories, not_list=not_list,keyword_list=keyword_list)
+    return render_template(
+        'userstory.html', 
+        project=Project.find_by_id(project_id), 
+        userproject=UserProject.find_by_user_and_project(current_user.id, project_id), 
+        stories=stories, 
+        not_list=not_list,
+        keyword_list=keyword_list,
+        messages=session.get('_flashes', [])  # 빈 리스트로 대체하여 에러 방지
+    )
 
 # 유저스토리 작성
 @userstory_bp.route('/userstory/<int:project_id>', methods=['POST'])
@@ -68,5 +76,12 @@ def create_keywords_route(project_id):
 # 키워드 삭제 라우트
 @userstory_bp.route('/notlist/<int:project_id>/<int:not_list_id>/delete', methods=['POST'])
 def delete_keyword_route(project_id, not_list_id):
-    delete_keyword(not_list_id)      
+    error_message = delete_keyword(not_list_id)
+    
+    if error_message:
+        flash(error_message, "error")
+    else:
+        flash("키워드가 성공적으로 삭제되었습니다.", "success")
+    
     return redirect(url_for('userstory.view_stories_route', project_id=project_id))
+
