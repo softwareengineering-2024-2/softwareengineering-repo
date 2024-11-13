@@ -55,7 +55,7 @@
               <div class="sprint-actions">
                 <button
                   class="header-options-btn"
-                  onclick="toggleSprintOptionsModal(event, {{ sprint.sprint_id }}, '{{ sprint.sprint_name }}', '{{ sprint.start_date }}', '{{ sprint.end_date }}', '{{ url_for('sprint.edit_sprint', sprint_id=sprint.sprint_id) }}')"
+                  onclick="toggleSprintOptionsModal(event, {{ sprint.sprint_id }}, '{{ sprint.sprint_name }}', '{{ sprint.start_date }}', '{{ sprint.end_date }}', '{{ url_for('sprint.edit_sprint', sprint_id=sprint.sprint_id, project_id=project.project_id) }}')"
                 >
                   <img
                     src="{{ url_for('static', filename='icons/dotdotdot.svg') }}"

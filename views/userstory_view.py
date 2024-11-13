@@ -19,6 +19,10 @@ def view_stories_route(project_id):
    
     keyword_list = [keyword.keyword for keyword in not_list]
 
+    # 플래시 메시지를 한 번만 표시하고 세션에서 제거
+    messages = session.get('_flashes', [])
+    session['_flashes'] = []
+
     return render_template(
         'userstory.html', 
         project=Project.find_by_id(project_id), 
@@ -26,7 +30,8 @@ def view_stories_route(project_id):
         stories=stories, 
         not_list=not_list,
         keyword_list=keyword_list,
-        messages=session.get('_flashes', [])  # 빈 리스트로 대체하여 에러 방지
+        # messages=session.get('_flashes', [])  # 빈 리스트로 대체하여 에러 방지
+        messages=messages
     )
 
 # 유저스토리 작성

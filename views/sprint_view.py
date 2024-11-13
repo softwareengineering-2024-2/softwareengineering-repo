@@ -46,8 +46,8 @@ def add_sprint():
         return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id, status=-1, error_message=error))
 
 # 스프린트 수정
-@sprint_bp.route('/edit-sprint/<int:sprint_id>', methods=['POST'])
-def edit_sprint(sprint_id):
+@sprint_bp.route('/edit-sprint/<int:sprint_id>/<int:project_id>', methods=['POST'])
+def edit_sprint(sprint_id, project_id):
     sprint_name = request.form['sprint_name']
     start_date = request.form['start_date']
     end_date = request.form['end_date']
@@ -62,7 +62,7 @@ def edit_sprint(sprint_id):
     if updated_sprint:
         assign_backlogs_to_sprint(sprint_id, selected_backlogs)
         flash('스프린트가 성공적으로 수정되었습니다.')
-        project_id = updated_sprint.project_id
+        #project_id = updated_sprint.project_id
     else:
         flash('스프린트 수정에 실패했습니다.')
 
