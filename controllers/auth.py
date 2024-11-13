@@ -1,6 +1,6 @@
 import json
 import os
-from flask import Blueprint, redirect, request, session, url_for
+from flask import Blueprint, redirect, request, session, url_for, render_template, flash
 from flask_login import (
     LoginManager,
     current_user,
@@ -55,7 +55,7 @@ def init_login_manager(app):
 
     @login_manager.unauthorized_handler
     def unauthorized():
-        return "로그인 하여야 접근 가능합니다.", 403
+        return render_template("login.html")
 
 @auth_bp.route("/login")
 def login():
