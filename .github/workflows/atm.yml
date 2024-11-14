@@ -1,0 +1,96 @@
+name: flask-ci
+
+# main과 develop 브랜치에 푸시되거나 풀 리퀘스트가 열렸을 때 워크플로우 실행
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+permissions:
+  contents: read # 레포의 콘텐츠를 읽을 수 있는 권한
+  checks: write # 워크플로우가 Github Checks API를 통해 체크를 생성하거나 업데이트
+  issues: write # 이슈에 댓글을 달 수 있는 권한
+  pull-requests: write # 풀 리퀘스트에 댓글을 달 수 있는 권한
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+        # Step 1: 리포지토리의 코드를 체크아웃
+      - uses: actions/checkout@v4
+        # Step 2: Python 환경을 설정
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.8"
+        env:
+          PYTHONPATH: ${{ github.workspace }} # PYTHONPATH 환경 변수를 현재 작업공간으로 설정
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Create Test Results Directory
+        run: mkdir -p test-results
+        # flake8(코드 린팅)과 pytest(테스트 실행)를 설치
+      - name: Lint with flake8 
+        run: |
+          # flake8을 사용하여 코드 린팅을 수행하고 결과를 출력
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Check for test files
+        id: check_tests
+        run: |
+          echo "::set-output name=has_tests::$(find . -name 'test_*.py' | wc -l)"
+      - name: Test with pytest
+        if: steps.check_tests.outputs.has_tests != '0'
+        run: |
+          pytest --junitxml=test-results/results.xml
+      - name: Publish test results as PR comment
+        if: steps.check_tests.outputs.has_tests != '0'
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        with:
+          files: 'test-results/results.xml'
+          check_name: 'Unit Tests Results'
+      - name: Comment on PR for failed test lines
+        if: steps.check_tests.outputs.has_tests != '0'
+        uses: mikepenz/action-junit-report@v3
+        with:
+          report_paths: 'test-results/results.xml'
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Comment on PR if no tests
+        if: steps.check_tests.outputs.has_tests == '0'  # 테스트 파일이 없는 경우에만 이 스텝이 실행됩니다.
+        uses: actions/github-script@v6
+        with:
+          script: |
+            # 테스트 파일이 없을 경우 PR에 코멘트를 남깁니다.
+            const comments = ["LGTM", "GOOD", "PERFECT"];  // 가능한 코멘트 목록입니다.
+            const comment = comments[Math.floor(Math.random() * comments.length)];
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
+      - name: Comment on related issue  # 관련된 이슈에 코멘트를 남기는 스텝입니다.
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == true }}  # PR이 병합된 경우에만 이 스텝이 실행됩니다.
+        uses: actions/github-script@v6
+        with:
+          script: |
+            # PR 본문에서 연관된 이슈(#숫자) 정보를 추출한 후, 해당 이슈에 무작위 코멘트를 남깁니다.
+            const prBody = github.event.pull_request.body || "";
+            const comments = ["LGTM", "GOOD", "PERFECT"];  # 남길 코멘트 목록입니다.
+            const issueRegex = /#(\d+)/g;  # 이슈 번호 패턴을 찾기 위한 정규식입니다.
+            let match;
+            while ((match = issueRegex.exec(prBody)) !== null) {
+              const issueNumber = parseInt(match[1]);
+              const comment = comments[Math.floor(Math.random() * comments.length)];
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: comment
+              });
+            }
