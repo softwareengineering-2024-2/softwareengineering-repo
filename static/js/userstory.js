@@ -76,7 +76,7 @@ async function saveToDB(alertMessage) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 message: alertMessage ,
-                project_id: project_id                
+                project_id: project_id          
             })
         });
         

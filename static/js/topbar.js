@@ -5,7 +5,10 @@ function fetchAlerts(projectId) {
     .then(data => {
         const alertList = document.querySelector('.notification-content ul');
         alertList.innerHTML = '';  // 기존 리스트 초기화
-        data.forEach(alert => {
+
+        // 최대 5개의 알림만 표시
+        const alertsToShow = data.slice(0, 5);
+        alertsToShow.forEach(alert => {
             const alertItem = document.createElement('li');
             alertItem.className = 'notification-item';
             alertItem.textContent = `${alert.content}`;

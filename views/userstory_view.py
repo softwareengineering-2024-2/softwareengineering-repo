@@ -108,6 +108,7 @@ def save_alert_to_db():
     
     user_id = current_user.id
     message = request.json.get('message')
+
     
     # 프로젝트 이름을 조회합니다.
     project_name = get_project_name(project_id)

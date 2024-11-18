@@ -20,7 +20,7 @@ def get_alerts(project_id):
     user_role = UserProject.query.filter_by(user_id=user_id, project_id=project_id).first().user_role
 
     if user_role  == 'PM(기획자)':
-        alerts = Alert.query.filter_by(project_id=project_id).all()
+        alerts = Alert.query.filter_by(project_id=project_id).order_by(Alert.alert_id.desc()).all()
         return [{
         'content': alert.alert_content
     } for alert in alerts]
