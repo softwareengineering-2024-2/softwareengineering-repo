@@ -3,6 +3,7 @@ from flask_login import current_user
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session,jsonify
 from controllers.userstory_controller import show_stories, create_story, update_story, delete_story
 from controllers.notlist_controller import create_keywords, delete_keyword, show_notlist 
+from controllers.alert_controller import get_project_name, save_alert, get_alerts
 
 userstory_bp = Blueprint('userstory', __name__)
 
@@ -35,7 +36,7 @@ def view_stories_route(project_id):
     )
 
 # 유저스토리 작성
-@userstory_bp.route('/userstory/<int:project_id>', methods=['POST'])
+@userstory_bp.route('/<int:project_id>', methods=['POST'])
 def create_story_route(project_id):
     content = request.form.get('content')
     create_story(content, project_id)
@@ -43,7 +44,7 @@ def create_story_route(project_id):
     return redirect(url_for('userstory.view_stories_route', project_id=project_id))
 
 # 유저스토리 수정
-@userstory_bp.route('/userstory/<int:project_id>/<int:story_id>', methods=['POST'])
+@userstory_bp.route('/<int:project_id>/<int:story_id>', methods=['POST'])
 def update_story_route(project_id, story_id):
     content = request.form.get('content')
     
@@ -58,7 +59,7 @@ def update_story_route(project_id, story_id):
     return redirect(url_for('userstory.view_stories_route', project_id=project_id))
 
 # 유저스토리 삭제
-@userstory_bp.route('/userstory/<int:project_id>/<int:story_id>/delete', methods=['POST'])
+@userstory_bp.route('/<int:project_id>/<int:story_id>/delete', methods=['POST'])
 def delete_story_route(project_id, story_id):
     error_message = delete_story(story_id)
     if error_message:
@@ -97,3 +98,30 @@ def delete_keyword_route(project_id, not_list_id):
     
     return redirect(url_for('userstory.view_stories_route', project_id=project_id))
 
+# 확인 버튼 누르면 알림 저장
+@userstory_bp.route('/alert/save_alert_to_db', methods=['POST'])
+def save_alert_to_db():
+    data = request.json    
+    project_id = data.get('project_id')
+    if not project_id:
+        return jsonify({"status": "error", "message": "Project ID is missing"}), 400
+    
+    user_id = current_user.id
+    message = request.json.get('message')
+    
+    # 프로젝트 이름을 조회합니다.
+    project_name = get_project_name(project_id)
+    
+    full_alert = f"{project_name} 프로젝트에 {message}"
+    
+    # 메시지를 데이터베이스에 저장합니다.
+    save_alert(user_id, project_id, full_alert, False) # 누가 확인을 눌렀는지
+
+    return jsonify({"status": "success", "message": "Message sent to PM"})
+
+# 메시지 조회
+@userstory_bp.route('/get_alerts/<int:project_id>', methods=['GET'])
+def get_messages(project_id):
+    alerts = get_alerts(project_id)
+    return jsonify(alerts)
+    

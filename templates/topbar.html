@@ -17,18 +17,13 @@
         </li>
         <li class="notification-dropdown">
             <div class="notification-dropdown">
-                <a href="#" onclick="toggleNotificationDropdown(event)">
+                <a href="#" onclick="toggleNotificationDropdown(event, '{{ project.project_id }}')">
                     <img src="{{ url_for('static', filename='icons/alarm.svg') }}" alt="알림 아이콘"> 알림
                 </a>
-                <div class="notification-content">
+                <div class="notification-content" style="display: none;">
                     <h3>알림</h3>
                     <ul>
-                        {% for i in range(5) %}
-                        <li>
-                            <span class="project-name">{{ project.project_name }}</span>
-                            <span class="task">프로덕트 백로그 할 일 추가</span>
-                        </li>
-                        {% endfor %}
+                        <!-- 알림 항목들이 여기에 동적으로 추가됩니다 -->
                     </ul>
                 </div>
             </div>
