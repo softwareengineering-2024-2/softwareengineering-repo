@@ -6,7 +6,7 @@
             </a>
         </li>
         <li>
-            <a href="{{ url_for('calendar') }}">
+            <a href="{{ url_for('calendar.calendar_view', project_id=project.project_id) }}">
                 <img src="{{ url_for('static', filename='icons/calendar.svg') }}" alt="캘린더 아이콘"> 캘린더
             </a>
         </li>

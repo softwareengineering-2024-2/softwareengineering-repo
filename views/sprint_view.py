@@ -4,6 +4,7 @@ from controllers.sprint_controller import (
     assign_backlogs_to_sprint, create_sprint, delete_backlog, get_sprints_with_backlogs, get_unassigned_product_backlogs, get_users_by_project_id, update_backlog_details, update_backlog_status, update_sprint, delete_sprint,
     get_all_product_backlogs, create_sprint_backlog
 )
+from controllers.calendar_controller import create_schedule
 from models.project_model import Project, UserProject
 from flask_login import current_user, login_required
 
@@ -28,7 +29,6 @@ def get_product_backlogs_view(project_id):
                            backlogs=backlogs, sprints=sprints, users=users, project_id=project_id)
 
 # 스프린트 추가
-# 스프린트 추가
 @sprint_bp.route('/add-sprint', methods=['POST'])
 def add_sprint():
     project_id = request.form['project_id']
@@ -39,6 +39,7 @@ def add_sprint():
     selected_backlogs = request.form.getlist('backlogs')
 
     new_sprint, error = create_sprint(project_id, sprint_name, start_date, end_date, status)
+    create_schedule(project_id, sprint_name, None, start_date, end_date, True, 0, None, True)
     if new_sprint:
         assign_backlogs_to_sprint(new_sprint.sprint_id, selected_backlogs)
         return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id, status=1))

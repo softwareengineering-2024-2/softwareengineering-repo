@@ -65,6 +65,9 @@
             <form action="{{ url_for('calendar.delete_schedule_view', project_id=project.project_id, calendar_id=schedule.calendar_id) }}" method="POST">
                 <button type="submit" class="cancel-button">일정 삭제</button>
             </form>
+            <form action="{{ url_for('calendar.calendar_view', project_id=project.project_id) }}" method="GET">
+                <button type="submit" class="back-button">취소</button>
+            </form>
         </div>
     </form>
 </div>
