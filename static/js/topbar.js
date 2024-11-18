@@ -8,7 +8,7 @@ function fetchAlerts(projectId) {
         data.forEach(alert => {
             const alertItem = document.createElement('li');
             alertItem.className = 'notification-item';
-            alertItem.textContent = `${alert.timestamp}: ${alert.content}`;
+            alertItem.textContent = `${alert.content}`;
             alertList.appendChild(alertItem);
         });
     })

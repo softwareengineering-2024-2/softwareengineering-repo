@@ -112,7 +112,7 @@ def save_alert_to_db():
     # 프로젝트 이름을 조회합니다.
     project_name = get_project_name(project_id)
     
-    full_alert = f"{project_name} 프로젝트에 {message}"
+    full_alert = f" 프로젝트[{project_name}] : 해당 프로젝트에 {message}"
     
     # 메시지를 데이터베이스에 저장합니다.
     save_alert(user_id, project_id, full_alert, False) # 누가 확인을 눌렀는지
