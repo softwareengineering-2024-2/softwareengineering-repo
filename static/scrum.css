@@ -1,0 +1,145 @@
+@import url("global.css");
+
+.main-container {
+  margin-top: 2vh; /* 탑바 밑 여백 추가 */
+  margin-left: 25vh; /* 사이드바 너비만큼 왼쪽 여백 추가 */
+}
+
+.content {
+  display: flex;
+  padding: 20px;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.scrum-title-wrapper {
+  justify-content: space-between;
+  display: flex;
+  margin: 0px 20px;
+}
+
+.title-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  cursor: pointer;
+}
+
+.sprint-change-btn {
+  display: flex;
+  border: none;
+  cursor: pointer;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+
+.sprint-percentage-container {
+  background-color: var(--color-white);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 20px;
+  width: 50%;
+  border-radius: 10px;
+  border: 1px solid var(--color-grey-100);
+}
+
+.scrum-board-container {
+  margin: 20px;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between; /* Distributes space evenly */
+  align-items: flex-start; /* Aligns them to the top */
+}
+
+.todo-container,
+.inprogress-container,
+.done-container {
+  padding: 20px;
+  width: 28vw;
+  height: 70vh;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.todo-container {
+  background: #c8e4f2;
+}
+
+.inprogress-container {
+  background: #fefbd1;
+}
+
+.done-container {
+  background: #ffdada;
+}
+
+.scrum-board-title {
+  text-align: left;
+  margin-bottom: 3vh;
+}
+
+.todo-container h1 {
+  color: #7accf4;
+}
+
+.inprogress-container h1 {
+  color: #ede13a;
+}
+
+.done-container h1 {
+  color: #ff8e8e;
+}
+
+.scrum-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.scrum-sprint-item {
+  display: flex;
+  width: 100%;
+  padding: 16px 18px;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+  border: 1px solid var(--color-grey-50);
+  background-color: var(--color-white);
+  margin-bottom: 8px;
+}
+
+/* 드롭다운 기본 숨김 */
+.sprint-dropdown {
+  display: none;
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ddd;
+  z-index: 100;
+  margin-top: 10px;
+  padding: 5px;
+  top: 100%;
+}
+
+.sprint-dropdown ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sprint-dropdown ul li {
+  text-align: left;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.sprint-dropdown ul li:hover {
+  background-color: var(--color-grey-50);
+}
