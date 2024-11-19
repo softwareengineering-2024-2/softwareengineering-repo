@@ -102,13 +102,23 @@
               ondragover="allowDrop(event)"
             >
               <div
-                class="scrum-sprint-item"
-                id="item-3"
-                draggable="true"
-                ondragstart="drag(event)"
+                class="scrum-content"
+                id="done"
+                ondrop="drop(event)"
+                ondragover="allowDrop(event)"
               >
-                <p>작업 이름</p>
-                <span class="user-circle"> 이름 </span>
+                {% for i in range(3, 9) %}
+                <!-- 1부터 8까지 반복 -->
+                <div
+                  class="scrum-sprint-item"
+                  id="item-{{ i }}"
+                  draggable="true"
+                  ondragstart="drag(event)"
+                >
+                  <p>작업 이름 {{ i }}</p>
+                  <span class="user-circle">사용자 {{ i }}</span>
+                </div>
+                {% endfor %}
               </div>
             </div>
           </div>

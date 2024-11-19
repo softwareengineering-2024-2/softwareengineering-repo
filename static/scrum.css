@@ -65,7 +65,6 @@
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
 }
 
 .todo-container {
@@ -102,6 +101,33 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  overflow-y: auto;
+}
+
+/* 스크롤바 설정*/
+.scrum-content::-webkit-scrollbar {
+  background-color: transparent;
+  width: 6px;
+}
+/* 스크롤바 막대 설정*/
+.scrum-content::-webkit-scrollbar-thumb {
+  background-color: #babac0;
+  border-radius: 16px;
+}
+.scrum-content::-webkit-scrollbar-thumb:hover {
+  background-color: #a0a0a5;
+}
+
+/* 스크롤바 뒷 배경 설정*/
+.scrum-content::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: transparent;
+}
+.scrum-content::-webkit-scrollbar-track:hover {
+  background-color: transparent;
+}
+.scrum-content::-webkit-scrollbar-button {
+  display: none;
 }
 
 .scrum-sprint-item {
@@ -114,6 +140,10 @@
   border: 1px solid var(--color-grey-50);
   background-color: var(--color-white);
   margin-bottom: 8px;
+}
+
+.scrum-sprint-item:active {
+  cursor: grabbing;
 }
 
 /* 드롭다운 기본 숨김 */
