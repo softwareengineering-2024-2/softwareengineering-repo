@@ -41,17 +41,27 @@
             <div class="retrospect-cards">
                 {% for retrospect in retrospects.items %}
                 <div class="card">
-                    <div class="card-header {{ 'risk' if retrospect.label == '리스크' else 'retrospect' }}">
-                        {{ retrospect.label }}
+                    <div class="card-header {{ 'retrospect' if retrospect.label == 'retrospect' else 'risk' }}">
+                        {% if retrospect.label == 'retrospect' %}
+                            회고
+                        {% else %}
+                            리스크
+                        {% endif %}
                     </div>
                     <div class="card-content">
-                        <h3>{{ retrospect.retrospect_title }}</h3>
+                        <!-- 제목을 클릭하면 조회 페이지로 이동 -->
+                        <a href="{{ url_for('retrospect.view_retrospect_view', project_id=project.project_id, retrospect_id=retrospect.retrospect_id) }}">
+                            <h3>{{ retrospect.retrospect_title }}</h3>
+                        </a>
                         <p>작성자: {{ user_map[retrospect.user_id] if retrospect.user_id in user_map else 'Unknown User' }}</p>
                         <p>스프린트: {{ retrospect.sprint_name }}</p>
                     </div>
                     <div class="card-actions">
-                        <button onclick="location.href='{{ url_for('retrospect.get_edit_retrospect_view', project_id=project.project_id, retrospect_id=retrospect.retrospect_id) }}'">수정</button>
-                        <button class="btn-danger" onclick="return confirm('회고를 삭제하시겠습니까?')">삭제</button>
+                        <img
+                            src="{{ url_for('static', filename='icons/dotdotdot.svg') }}"
+                            alt="설정 버튼"
+                            class="options-btn"
+                            onclick="openOptions(event, {{ retrospect.retrospect_id }})"/>
                     </div>
                 </div>
                 {% endfor %}
@@ -73,7 +83,17 @@
                 <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=retrospects.next_num) }}">다음 &gt;</a>
                 {% endif %}
             </div>
+            <!-- 수정/삭제 모달 -->
+            {% for retrospect in retrospects.items %}
+            <div id="options-modal-{{ retrospect.retrospect_id }}" class="modal hidden">
+                <div class="modal-content">
+                    <button onclick="editRetrospect({{ retrospect.retrospect_id }})">수정</button>
+                    <button class="btn-danger" onclick="deleteRetrospect({{ retrospect.retrospect_id }})">삭제</button>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
+    <script src="{{ url_for('static', filename='js/retrospect.js') }}"></script>
 </body>
 </html>
