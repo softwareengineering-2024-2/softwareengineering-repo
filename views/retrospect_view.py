@@ -67,6 +67,7 @@ def get_edit_retrospect_view(project_id, retrospect_id):
     project = Project.query.get_or_404(project_id)
     retrospect = Retrospect.query.get_or_404(retrospect_id)
     sprints = get_sprints(project_id)
+    # 수정해야해요! userproject 부분
     return render_template('create_retrospect.html', project=project, retrospect=retrospect, sprints=sprints,userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
 
 # 회고 수정
@@ -92,12 +93,12 @@ def view_retrospect_view(project_id, retrospect_id):
     retrospect = get_retrospect_by_id(retrospect_id)
     if not retrospect:
         return render_template("404.html"), 404
-    
+    project = Project.query.get_or_404(project_id)
     sprints = get_sprints(project_id)
 
     user_name = get_user_name_by_project_and_user(project_id, retrospect.user_id)
-
-    return render_template('view_retrospect_back.html', retrospect=retrospect, sprints=sprints, user_name=user_name)
+    # 수정해야해요! userproject 부분
+    return render_template('view_retrospect_back.html', project=project, retrospect=retrospect, sprints=sprints, user_name=user_name,userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
 
 # 회고 삭제
 @retrospect_bp.route('/<int:project_id>/delete/<int:retrospect_id>', methods=["POST"])
