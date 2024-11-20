@@ -83,8 +83,8 @@
             <div class="keyword-warning-modal" id="keywordWarningModal">
                 <h2>Not List 키워드 발견</h2>
                 <p>해당 유저스토리에 <span class="highlight">Not List 키워드</span>가 포함되어 있습니다.<br>확인을 누를 시 PM에게 알림이 갑니다.</p>
-                <button class="confirm-button" onclick="confirmKeywordWarning()">확인</button>
-                <button class="cancel-button" onclick="cancelKeywordWarning()">취소</button>
+                <button class="confirm-button" >확인</button>
+                <button class="cancel-button" >취소</button>
             </div>
 
             <!-- 메시지 모달 -->
@@ -98,6 +98,7 @@
         </div>
     </div>
     <script>
+        const project_id = {{ project.project_id }};
         // Python 리스트를 JSON 배열로 변환하여 JavaScript에서 사용
         const keywordList = JSON.parse('{{ keyword_list | tojson | safe }}');
         const messages = {{ messages | tojson }};
