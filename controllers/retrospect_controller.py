@@ -1,8 +1,7 @@
 # retrospect_controller.py
 
 from models.retrospect_model import Retrospect
-from models.user_model import Users
-from models.project_model import Project, UserProject
+from models.project_model import UserProject
 from models.sprint_model import Sprint
 from database import db
 
@@ -61,3 +60,15 @@ def delete_retrospect(retrospect_id):
     db.session.delete(retrospect)
     db.session.commit()
     return True
+
+# # 회고를 필터링하는 함수
+# def get_filtered_retrospects(project_id, category=None, sprint_id=None, page=1, per_page=12):
+#     query = Retrospect.query.filter_by(project_id=project_id)
+
+#     if category and category != 'all':
+#         query = query.filter_by(label=category)
+    
+#     if sprint_id and sprint_id != 'all':
+#         query = query.filter_by(sprint_id=sprint_id)
+
+#     return query.order_by(Retrospect.retrospect_id.desc()).paginate(page=page, per_page=per_page, error_out=False)

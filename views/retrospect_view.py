@@ -13,7 +13,7 @@ from database import db
 retrospect_bp = Blueprint('retrospect', __name__)
 
 # retrospect 관리 페이지
-@retrospect_bp.route('/retrospect/<int:project_id>', methods=['GET'])
+@retrospect_bp.route('/<int:project_id>', methods=['GET'])
 @login_required
 def retrospect_view(project_id):
     project = Project.query.get_or_404(project_id)
@@ -35,7 +35,7 @@ def retrospect_view(project_id):
     return render_template('retrospect_back.html', project=project, project_id=project_id, sprints=sprints, retrospects=retrospects, user_map=user_map)
 
 # 회고 생성 페이지
-@retrospect_bp.route('/retrospect/<int:project_id>/create', methods=['GET'])
+@retrospect_bp.route('/<int:project_id>/create', methods=['GET'])
 @login_required
 def get_create_retrospect_view(project_id):
     project = Project.query.get_or_404(project_id)
@@ -43,7 +43,7 @@ def get_create_retrospect_view(project_id):
     return render_template('create_retrospect_back.html', project=project, sprints=sprints)
 
 # 회고 생성
-@retrospect_bp.route('/retrospect/<int:project_id>/create', methods=['POST'])
+@retrospect_bp.route('/<int:project_id>/create', methods=['POST'])
 @login_required
 def create_retrospect_view(project_id):
     data = {
@@ -61,7 +61,7 @@ def create_retrospect_view(project_id):
     return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
 
 # 회고 수정 페이지
-@retrospect_bp.route('/retrospect/<int:project_id>/edit/<int:retrospect_id>', methods=['GET'])
+@retrospect_bp.route('/<int:project_id>/edit/<int:retrospect_id>', methods=['GET'])
 @login_required
 def get_edit_retrospect_view(project_id, retrospect_id):
     project = Project.query.get_or_404(project_id)
@@ -70,7 +70,7 @@ def get_edit_retrospect_view(project_id, retrospect_id):
     return render_template('create_retrospect_back.html', project=project, retrospect=retrospect, sprints=sprints)
 
 # 회고 수정
-@retrospect_bp.route('/retrospect/<int:project_id>/edit/<int:retrospect_id>', methods=["POST"])
+@retrospect_bp.route('/<int:project_id>/edit/<int:retrospect_id>', methods=["POST"])
 @login_required
 def edit_retrospect_view(project_id, retrospect_id):
     data = {
@@ -86,7 +86,7 @@ def edit_retrospect_view(project_id, retrospect_id):
     return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
 
 # 회고 조회 페이지
-@retrospect_bp.route('/retrospect/<int:project_id>/view/<int:retrospect_id>', methods=["GET"])
+@retrospect_bp.route('/<int:project_id>/view/<int:retrospect_id>', methods=["GET"])
 @login_required
 def view_retrospect_view(project_id, retrospect_id):
     retrospect = get_retrospect_by_id(retrospect_id)
@@ -100,7 +100,7 @@ def view_retrospect_view(project_id, retrospect_id):
     return render_template('view_retrospect_back.html', retrospect=retrospect, sprints=sprints, user_name=user_name)
 
 # 회고 삭제
-@retrospect_bp.route('/retrospect/<int:project_id>/delete/<int:retrospect_id>', methods=["POST"])
+@retrospect_bp.route('/<int:project_id>/delete/<int:retrospect_id>', methods=["POST"])
 @login_required
 def delete_retrospect_view(project_id, retrospect_id):
     if delete_retrospect(retrospect_id):

@@ -19,7 +19,7 @@
         <li class="{% if request.path == '/board' %}active{% endif %}">
             <a href="{{ url_for('board') }}"><img src="{{ url_for('static', filename='icons/board.svg') }}" alt="보드 아이콘" class="icon"> 스크럼 보드</a>
         </li> 
-        <li class="{% if request.path == '/retrospect/retrospect/<int:project_id>' %}active{% endif %}">
+        <li class="{% if request.path == '/retrospect/<int:project_id>' %}active{% endif %}">
             <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id) }}"><img src="{{ url_for('static', filename='icons/review.svg') }}" alt="회고 아이콘" class="icon"> 스프린트 회고</a>
         </li>
     </ul>
