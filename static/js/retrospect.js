@@ -15,6 +15,12 @@ function openOptions(event, retrospectId) {
     const modal = document.getElementById(`options-modal-${retrospectId}`);
     const targetRect = event.target.getBoundingClientRect();
 
+    // 모달이 이미 열려 있는 경우 닫기
+    if (!modal.classList.contains('hidden')) {
+        modal.classList.add('hidden'); // hidden 클래스 추가로 닫기
+        return;
+    }
+
     // 모달을 버튼의 좌하단에 배치
     modal.style.position = 'absolute';
     modal.style.top = `${targetRect.bottom + window.scrollY}px`; // 버튼의 아래쪽
