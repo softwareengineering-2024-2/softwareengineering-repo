@@ -22,19 +22,26 @@ function openOptions(event, retrospectId) {
     modal.classList.remove('hidden'); // hidden 클래스 제거로 표시
 }
 
-// 수정 동작
+// 수정 함수
 function editRetrospect(retrospectId) {
-    location.href = `/retrospect/${projectId}/edit/${retrospectId}`;
+    // 수정 페이지로 이동
+    const editUrl = `/retrospect/${projectId}/edit/${retrospectId}`;
+    location.href = editUrl;
 }
 
 // 삭제 동작
 function deleteRetrospect(retrospectId) {
     if (confirm('정말 삭제하시겠습니까?')) {
-        fetch(`/retrospect/${projectId}/delete/${retrospectId}`, { method: 'POST' })
+        fetch(`/retrospect/${projectId}/delete/${retrospectId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
             .then((response) => {
                 if (response.ok) {
                     alert('삭제되었습니다.');
-                    location.reload();
+                    location.reload(); // 페이지 새로고침
                 } else {
                     alert('삭제에 실패했습니다.');
                 }
@@ -44,12 +51,6 @@ function deleteRetrospect(retrospectId) {
                 alert('오류가 발생했습니다.');
             });
     }
-}
-
-// 모달 닫기
-function closeOptions() {
-    const modals = document.querySelectorAll('.modal');
-    modals.forEach((modal) => modal.classList.add('hidden'));
 }
 
 // 모달 바깥 클릭 시 닫기

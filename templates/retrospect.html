@@ -94,6 +94,9 @@
             {% endfor %}
         </div>
     </div>
+    <script>
+        const projectId = {{ project_id }};
+    </script>
     <script src="{{ url_for('static', filename='js/retrospect.js') }}"></script>
 </body>
 </html>
