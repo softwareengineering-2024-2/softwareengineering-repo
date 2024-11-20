@@ -98,7 +98,7 @@ def view_retrospect_view(project_id, retrospect_id):
 
     user_name = get_user_name_by_project_and_user(project_id, retrospect.user_id)
     # 수정해야해요! userproject 부분
-    return render_template('view_retrospect_back.html', project=project, retrospect=retrospect, sprints=sprints, user_name=user_name,userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
+    return render_template('view_retrospect.html', project=project, retrospect=retrospect, sprints=sprints, user_name=user_name,userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
 
 # 회고 삭제
 @retrospect_bp.route('/<int:project_id>/delete/<int:retrospect_id>', methods=["POST"])
