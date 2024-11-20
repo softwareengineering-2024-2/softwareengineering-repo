@@ -27,7 +27,9 @@ class TodoList(db.Model):
         db.session.commit()
 
     # 데이터베이스에서 수정하는 메서드
-    def update_in_db(self, keyword=None):
-        if keyword is not None:
-            self.keyword = keyword
+    def update_in_db(self, todo_content=None, status=None):
+        if todo_content is not None:
+            self.todo_content = todo_content
+        if status is not None:
+            self.status = status
         db.session.commit()

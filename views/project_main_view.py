@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, render_template, request
 from flask_login import login_required, current_user
-from controllers.todolist_controller import change_todo_status, show_todos, write_todo
+from controllers.todolist_controller import change_todo_status, delete_todos, show_todos, update_todos, write_todo
 from models.project_model import UserProject, Project
 from controllers.sprint_controller import get_current_sprint_backlogs
 
@@ -43,24 +43,23 @@ def create_todo(project_id):
 @project_main_bp.route('/get_todo/<int:project_id>', methods=['GET'])
 def get_todos(project_id):
     todos = show_todos(project_id, current_user.id)
-    print(todos)
     return todos
 
 # 투두리스트 수정
-@project_main_bp.route('/update_todo/<int:todo_id>', methods=['PUT'])
+@project_main_bp.route('/update_todo/<int:todo_id>', methods=['POST'])
 def update_todo(todo_id):
     todo_content = request.json.get('todo_content')
-    todo = update_todo(todo_id, todo_content)
-    return jsonify(todo)
+    todo = update_todos(todo_id, todo_content)
+    return todo
 
 # 투두리스트 삭제
 @project_main_bp.route('/delete_todo/<int:todo_id>', methods=['DELETE'])
 def delete_todo(todo_id):
-    delete_todo(todo_id)
+    delete_todos(todo_id)
     return jsonify({"message": "success"})
 
 # 투두리스트 상태 변경
-@project_main_bp.route('/change_status/<int:todo_id>', methods=['PUT'])
+@project_main_bp.route('/change_status/<int:todo_id>', methods=['POST'])
 def change_status(todo_id):
     todo = change_todo_status(todo_id)
     return jsonify(todo)

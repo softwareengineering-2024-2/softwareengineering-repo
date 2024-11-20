@@ -9,17 +9,20 @@ def write_todo(user_id, project_id, todo_content, status):
 # 투두리스트 조회
 def show_todos(project_id, user_id):
     todos = TodoList.query.filter_by(project_id=project_id, user_id=user_id).all()
-    return [{'todo' : todo.todo_content} for todo in todos]
+    return [{'todo' : todo.todo_content,
+             'todo_id' : todo.todo_id,
+             'status':todo.status} for todo in todos]
 
 
 # 투두리스트 수정
-def update_todo(todo_id, todo_content):
+def update_todos(todo_id, todo_content):
     todo = TodoList.query.get_or_404(todo_id)
     todo.update_in_db(todo_content=todo_content)
-    return todo
+    return [{'todo' : todo.todo_content,
+             'todo_id' : todo.todo_id}]
 
 # 투두리스트 삭제
-def delete_todo(todo_id):
+def delete_todos(todo_id):
     todo = TodoList.query.filter_by(todo_id=todo_id).first_or_404()
     todo.delete_from_db()
     return None
@@ -28,4 +31,5 @@ def delete_todo(todo_id):
 def change_todo_status(todo_id):
     todo = TodoList.query.get_or_404(todo_id)
     todo.update_in_db(status=not todo.status)
-    return todo
+    return [{'todo' : todo.todo_content,
+             'status' : todo.status}]
