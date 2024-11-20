@@ -68,6 +68,33 @@ function openKeywordWarningModal(confirmCallback) {
     document.querySelector('.confirm-button').addEventListener('click', handleConfirmClick);
 }
 
+// 알림 내용을 서버에 저장하는 함수
+async function saveToDB(alertMessage) {
+    try {
+        const response = await fetch('/userstory/alert/save_alert_to_db', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: alertMessage ,
+                project_id: project_id          
+            })
+        });
+        
+        // if (response.ok) {
+        //     alert("알림이 저장되었습니다!");
+        //     return true; // 성공 시 true 반환
+        // } else {
+        //     alert("알림 저장에 실패했습니다.");
+        //     return false; // 실패 시 false 반환
+        // }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("오류가 발생했습니다.");
+        return false; // 오류 발생 시 false 반환
+    }
+}
+
+
 // 모달 닫기 함수
 function closeKeywordWarningModal() {
     keywordWarningModal.style.display = 'none';
@@ -126,10 +153,13 @@ function highlightKeywords(storyContent) {
 }
 
 // 모달 내 버튼 동작 설정
-document.querySelector('.confirm-button').addEventListener('click', function() {
-    // 확인을 눌렀을 때 모달 닫기 및 폼 제출
-    closeKeywordWarningModal();
-    storyInputField.form.submit();  // 무시하고 추가 진행
+document.querySelector('.confirm-button').addEventListener('click', async function() {
+    const alertMessage = "키워드가 포함된 유저스토리가 있습니다.";
+    const isSaved = await saveToDB(alertMessage); //saveToDB 함수 호출
+    if (isSaved) {
+        closeKeywordWarningModal();
+    }
+    // storyInputField.form.submit();
 });
 
 document.querySelector('.cancel-button').addEventListener('click', function() {
