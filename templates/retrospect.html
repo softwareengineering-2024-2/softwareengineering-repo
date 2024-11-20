@@ -52,7 +52,15 @@
                     </div>
                     <h3>{{ retrospect.retrospect_title }}</h3>
                     <p>작성자: {{ user_map[retrospect.user_id] }}</p>
-                    <p>스프린트: {{ retrospect.sprint_name if retrospect.sprint_name else '미지정' }}</p>
+                    <p>스프린트: {% if retrospect.sprint_id %}
+                        {% for sprint in sprints %}
+                            {% if sprint.sprint_id == retrospect.sprint_id %}
+                                {{ sprint.sprint_name }}
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        없음
+                    {% endif %}</p>
                     </div>
                     <!-- 수정/삭제 버튼 -->
                     <div class="card-actions">
