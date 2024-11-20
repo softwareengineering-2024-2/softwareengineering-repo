@@ -1,3 +1,13 @@
+function navigateToRetrospect(event, projectId, retrospectId) {
+    // 버튼 클릭인 경우 이동 중지
+    if (event.target.closest('.options-btn')) {
+        return;
+    }
+
+    // 회고 조회 페이지로 이동
+    window.location.href = `/retrospect/${projectId}/view/${retrospectId}`;
+}
+
 // 모달 열기
 function openOptions(event, retrospectId) {
     event.stopPropagation();
@@ -51,3 +61,4 @@ document.addEventListener('click', (event) => {
         }
     });
 });
+
