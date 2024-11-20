@@ -40,7 +40,7 @@ def retrospect_view(project_id):
 def get_create_retrospect_view(project_id):
     project = Project.query.get_or_404(project_id)
     sprints = get_sprints(project_id)
-    return render_template('create_retrospect_back.html', project=project, sprints=sprints)
+    return render_template('create_retrospect_back.html', project=project, sprints=sprints,userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
 
 # 회고 생성
 @retrospect_bp.route('/<int:project_id>/create', methods=['POST'])
