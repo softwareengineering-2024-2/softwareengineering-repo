@@ -8,6 +8,7 @@ from views.milestone_view import milestone_bp
 from views.productbacklog_view import productbacklog_bp
 from views.sprint_view import sprint_bp
 from views.calendar_view import calendar_bp
+from views.retrospect_view import retrospect_bp
 from dotenv import load_dotenv
 from database import init_db
 
@@ -37,6 +38,7 @@ app.register_blueprint(productbacklog_bp, url_prefix='/productbacklog')
 app.register_blueprint(sprint_bp, url_prefix='/sprint')
 app.register_blueprint(userstory_bp, url_prefix='/userstory')
 app.register_blueprint(calendar_bp, url_prefix='/calendar')
+app.register_blueprint(retrospect_bp, url_prefix='/retrospect')
 
 @app.route("/")
 def index():
@@ -68,9 +70,9 @@ def main():
 def board():
     return render_template("board.html")
 
-@app.route("/review")
-def review():
-    return render_template("review.html")
+# @app.route("/review")
+# def review():
+#     return render_template("review.html")
 
 # @app.route('/project')
 # def project():
