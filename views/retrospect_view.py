@@ -69,12 +69,20 @@ def get_edit_retrospect_view(project_id, retrospect_id):
     project = Project.query.get_or_404(project_id)
     retrospect = Retrospect.query.get_or_404(retrospect_id)
     sprints = get_sprints(project_id)
+    if retrospect.user_id != current_user.id:
+        flash("본인이 작성한 글만 수정할 수 있습니다.", "error")
+        return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
     return render_template('create_retrospect_back.html', project=project, retrospect=retrospect, sprints=sprints)
 
 # 회고 수정
 @retrospect_bp.route('/<int:project_id>/edit/<int:retrospect_id>', methods=["POST"])
 @login_required
 def edit_retrospect_view(project_id, retrospect_id):
+    retrospect = Retrospect.query.get_or_404(retrospect_id)
+    if retrospect.user_id != current_user.id:
+        flash("본인이 작성한 글만 수정할 수 있습니다.", "error")
+        return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
+    
     data = {
         "retrospect_title": request.form.get("retrospect_title"),
         "retrospect_content": request.form.get("retrospect_content"),
@@ -105,6 +113,10 @@ def view_retrospect_view(project_id, retrospect_id):
 @retrospect_bp.route('/<int:project_id>/delete/<int:retrospect_id>', methods=["POST"])
 @login_required
 def delete_retrospect_view(project_id, retrospect_id):
+    retrospect = Retrospect.query.get_or_404(retrospect_id)
+    if retrospect.user_id != current_user.id:
+        flash("본인이 작성한 글만 삭제할 수 있습니다.", "error")
+        return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
     if delete_retrospect(retrospect_id):
         flash("회고가 성공적으로 삭제되었습니다.", "success")
     else:

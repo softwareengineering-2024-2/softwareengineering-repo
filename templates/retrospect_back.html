@@ -67,9 +67,11 @@
                     {% endfor %}
                 </td>
                 <td>
-                    <button onclick="location.href='{{ url_for('retrospect.get_edit_retrospect_view', project_id=project.project_id, retrospect_id=retrospect.retrospect_id) }}'">수정</button>
-                    <form method="POST" action="{{ url_for('retrospect.delete_retrospect_view', project_id=project.project_id, retrospect_id=retrospect.retrospect_id) }}" style="display:inline;">
-                        <button type="submit" onclick="return confirm('회고를 삭제하시겠습니까?')">삭제</button>
+                    <!-- <button onclick="location.href='{{ url_for('retrospect.get_edit_retrospect_view', project_id=project.project_id, retrospect_id=retrospect.retrospect_id) }}'">수정</button> -->
+                    <!-- <form method="POST" action="{{ url_for('retrospect.delete_retrospect_view', project_id=project.project_id, retrospect_id=retrospect.retrospect_id) }}" style="display:inline;">    -->
+                    <!-- <button type="submit" onclick="return confirm('회고를 삭제하시겠습니까?')">삭제</button> -->
+                    <button onclick="confirmEdit({{ retrospect.user_id }}, {{ current_user.id }}, '{{ url_for('retrospect.get_edit_retrospect_view', project_id=project.project_id, retrospect_id=retrospect.retrospect_id) }}')">수정</button>
+                    <button onclick="confirmDeletion({{ retrospect.user_id }}, {{ current_user.id }}, '{{ url_for('retrospect.delete_retrospect_view', project_id=project.project_id, retrospect_id=retrospect.retrospect_id) }}')">삭제</button>
                     </form>
                 </td>
             </tr>
@@ -106,3 +108,30 @@
 
 </body>
 </html>
+
+<script>
+
+    // 수정 버튼 클릭 시 작성자 확인
+    function confirmEdit(writerId, currentUserId, editUrl) {
+        if (writerId !== currentUserId) {
+            alert("자신이 작성한 글이 아니면 수정할 수 없습니다.");
+            return false; // 수정 페이지로 이동 차단
+        }
+        window.location.href = editUrl; // 작성자인 경우 수정 페이지로 이동
+    }
+
+    function confirmDeletion(writerId, currentUserId, deleteUrl) {
+        if (writerId !== currentUserId) {
+            alert("자신이 작성한 글이 아니면 삭제할 수 없습니다.");
+            return false; // 삭제 요청 중단
+        }
+        if (confirm("회고를 삭제하시겠습니까?")) {
+            // 사용자가 삭제 확인을 누른 경우 삭제 요청
+            const form = document.createElement('form');
+            form.method = "POST";
+            form.action = deleteUrl;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>
