@@ -29,6 +29,13 @@
 
     <hr>
 
+    <p><strong>첨부 파일</strong> 
+        {% for filename in retrospect_files %}
+            <a href="{{ url_for('static', filename='static/uploads/' ~ retrospect.file_name) }}" download>{{ retrospect.file_name }}</a>
+        {% else %}
+            <p>첨부된 파일이 없습니다.</p>
+        {% endfor %}
+        </p>
     <button onclick="location.href='{{ url_for('retrospect.retrospect_view', project_id=retrospect.project_id) }}'">목록으로 돌아가기</button>
 </body>
 </html>

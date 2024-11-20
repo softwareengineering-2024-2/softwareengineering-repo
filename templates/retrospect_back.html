@@ -101,5 +101,8 @@
         {% endif %}
     </div>
 
+    <a href="{{ url_for('project_main.project_main_view', project_id=project.project_id) }}"><img src="{{ url_for('static', filename='icons/home.svg') }}" alt="메인 아이콘" class="icon"> 메인</a>
+
+
 </body>
 </html>
