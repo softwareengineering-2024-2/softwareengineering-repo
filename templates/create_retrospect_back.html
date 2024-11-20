@@ -7,7 +7,7 @@
 </head>
 <body>
 
-    <h2>회고 작성하기</h2>
+    <h2>회고 등록하기</h2>
     <!-- <form method="POST" action="{{ url_for('retrospect.create_retrospect_view', project_id=project.project_id) }}"> -->
     <form method="POST" action="{{ retrospect and url_for('retrospect.edit_retrospect_view', project_id=project.project_id, retrospect_id=retrospect.retrospect_id) or url_for('retrospect.create_retrospect_view', project_id=project.project_id) }}">
         <label for="title">제목:</label>

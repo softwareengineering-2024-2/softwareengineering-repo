@@ -31,8 +31,8 @@ def retrospect_view(project_id):
 
     user_projects = UserProject.query.filter_by(project_id=project_id).all()
     user_map = {user_project.user_id: user_project.user_name for user_project in user_projects}    
-
-    return render_template('retrospect_back.html', project=project, project_id=project_id, sprints=sprints, retrospects=retrospects, user_map=user_map)
+    # 수정해야해요! userproject 부분
+    return render_template('retrospect.html', project=project, project_id=project_id, sprints=sprints, retrospects=retrospects, user_map=user_map,userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
 
 # 회고 생성 페이지
 @retrospect_bp.route('/<int:project_id>/create', methods=['GET'])
