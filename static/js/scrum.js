@@ -24,6 +24,34 @@ function drop(ev) {
   // 드롭 대상이 scrum-content이고, 드래그된 항목이 해당 scrum-content의 자식이 아닐 경우 항목을 추가
   if (dropTarget && dropTarget !== draggedItem.parentNode) {
     dropTarget.appendChild(draggedItem); // 드래그된 항목을 드롭된 scrum-content에 추가
+    // 상태 업데이트
+    var newStatus = dropZone.id.replace("-", " ").titleCase();
+    var backlogId = draggedItem.getAttribute("data-backlog-id");
+
+    // 서버에 상태 업데이트 요청 보내기
+    fetch("/update_sprint_backlog_status", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrf_token"), // CSRF 토큰이 필요한 경우
+      },
+      body: JSON.stringify({
+        backlog_id: backlogId,
+        new_status: newStatus,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (!data.success) {
+          alert("상태 업데이트에 실패했습니다.");
+          location.reload();
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("상태 업데이트 중 오류가 발생했습니다.");
+        location.reload();
+      });
   }
 }
 
@@ -84,3 +112,37 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+// 스프린트 변경 함수
+function changeSprint(sprint_id) {
+  const urlParams = new URLSearchParams(window.location.search);
+  urlParams.set("sprint_id", sprint_id);
+  window.location.search = urlParams.toString();
+}
+
+// 문자열의 첫 글자를 대문자로 변환하는 함수
+String.prototype.titleCase = function () {
+  return this.toLowerCase()
+    .split(" ")
+    .map(function (word) {
+      return word.replace(word[0], word[0].toUpperCase());
+    })
+    .join(" ");
+};
+
+// CSRF 토큰을 가져오는 함수 (Flask-WTF를 사용하는 경우)
+function getCookie(name) {
+  var cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    var cookies = document.cookie.split(";");
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i].trim();
+      // 쿠키 이름이 일치하는지 확인
+      if (cookie.substring(0, name.length + 1) === name + "=") {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}

@@ -1,29 +1,94 @@
 <div class="sidebar">
-    <h2 class="sidebar-header">{{ project.project_name }}</h2>
-    <ul>
-        <li>
-            <a href="{{ url_for('project_main.project_main_view', project_id=project.project_id) }}"><img src="{{ url_for('static', filename='icons/home.svg') }}" alt="메인 아이콘" class="icon"> 메인</a>
-        </li>
-        <li>
-            <a href="{{ url_for('milestone.milestone_view', project_id=project.project_id) }}"><img src="{{ url_for('static', filename='icons/milestone.svg') }}" alt="마일스톤 아이콘" class="icon"> 프로젝트 마일스톤</a>
-        </li>
-        <li class="{% if request.path == '/userstory/<int:project_id>' %}active{% endif %}">
-            <a href="{{ url_for('userstory.view_stories_route', project_id=project.project_id) }}"><img src="{{ url_for('static', filename='icons/userstory.svg') }}" alt="유저스토리 아이콘" class="icon"> 유저스토리</a>
-        </li>
-        <li class="{% if request.path == '/productbacklog/product_backlog/<int:project_id>' %}active{% endif %}">
-            <a href="{{ url_for('productbacklog.product_backlog_view', project_id=project.project_id) }}"><img src="{{ url_for('static', filename='icons/backlog.svg') }}" alt="백로그 아이콘" class="icon"> 프로덕트 백로그</a>
-        </li>
-        <li class="{% if request.path == '/sprint/sprint/<int:project_id>' %}active{% endif %}">
-            <a href="{{ url_for('sprint.get_product_backlogs_view', project_id=project.project_id) }}"><img src="{{ url_for('static', filename='icons/sprint.svg') }}" alt="스프린트 아이콘" class="icon"> 스프린트</a>
-        </li>
-        <li class="{% if request.path == '/board' %}active{% endif %}">
-            <a href="{{ url_for('board') }}"><img src="{{ url_for('static', filename='icons/board.svg') }}" alt="보드 아이콘" class="icon"> 스크럼 보드</a>
-        </li> 
-        <li class="{% if request.path == '/retrospect/<int:project_id>' %}active{% endif %}">
-            <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id) }}"><img src="{{ url_for('static', filename='icons/review.svg') }}" alt="회고 아이콘" class="icon"> 스프린트 회고</a>
-        </li>
-    </ul>
+  <h2 class="sidebar-header">{{ project.project_name }}</h2>
+  <ul>
+    <li>
+      <a
+        href="{{ url_for('project_main.project_main_view', project_id=project.project_id) }}"
+        ><img
+          src="{{ url_for('static', filename='icons/home.svg') }}"
+          alt="메인 아이콘"
+          class="icon"
+        />
+        메인</a
+      >
+    </li>
+    <li>
+      <a
+        href="{{ url_for('milestone.milestone_view', project_id=project.project_id) }}"
+        ><img
+          src="{{ url_for('static', filename='icons/milestone.svg') }}"
+          alt="마일스톤 아이콘"
+          class="icon"
+        />
+        프로젝트 마일스톤</a
+      >
+    </li>
+    <li
+      class="{% if request.path == '/userstory/<int:project_id>' %}active{% endif %}"
+    >
+      <a
+        href="{{ url_for('userstory.view_stories_route', project_id=project.project_id) }}"
+        ><img
+          src="{{ url_for('static', filename='icons/userstory.svg') }}"
+          alt="유저스토리 아이콘"
+          class="icon"
+        />
+        유저스토리</a
+      >
+    </li>
+    <li
+      class="{% if request.path == '/productbacklog/product_backlog/<int:project_id>' %}active{% endif %}"
+    >
+      <a
+        href="{{ url_for('productbacklog.product_backlog_view', project_id=project.project_id) }}"
+        ><img
+          src="{{ url_for('static', filename='icons/backlog.svg') }}"
+          alt="백로그 아이콘"
+          class="icon"
+        />
+        프로덕트 백로그</a
+      >
+    </li>
+    <li
+      class="{% if request.path == '/sprint/sprint/<int:project_id>' %}active{% endif %}"
+    >
+      <a
+        href="{{ url_for('sprint.get_product_backlogs_view', project_id=project.project_id) }}"
+        ><img
+          src="{{ url_for('static', filename='icons/sprint.svg') }}"
+          alt="스프린트 아이콘"
+          class="icon"
+        />
+        스프린트</a
+      >
+    </li>
+    <li
+      class="{% if request.path == '/scrum/<int:project_id>' %}active{% endif %}"
+    >
+      <a href="{{ url_for('scrum.scrum_view', project_id=project.project_id) }}"
+        ><img
+          src="{{ url_for('static', filename='icons/board.svg') }}"
+          alt="보드 아이콘"
+          class="icon"
+        />
+        스크럼 보드</a
+      >
+    </li>
+    <li
+      class="{% if request.path == '/retrospect/<int:project_id>' %}active{% endif %}"
+    >
+      <a
+        href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id) }}"
+        ><img
+          src="{{ url_for('static', filename='icons/review.svg') }}"
+          alt="회고 아이콘"
+          class="icon"
+        />
+        스프린트 회고</a
+      >
+    </li>
+  </ul>
 </div>
 <script>
-    const role = "{{ userproject.user_role }}"; // 프로젝트 사용자 역할
+  const role = "{{ userproject.user_role }}"; // 프로젝트 사용자 역할
 </script>
