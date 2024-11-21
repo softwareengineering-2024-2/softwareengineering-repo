@@ -37,59 +37,60 @@
                 </div>
                 <button class="btn-register" onclick="location.href='{{ url_for('retrospect.create_retrospect_view', project_id=project.project_id) }}'">회고 등록</button>
             </header>
-
-            <div class="retrospect-cards">
-                {% for retrospect in retrospects.items %}
-                <div class="card">
-                    <div class="card-content"
-                    onclick="navigateToRetrospect(event, {{ project.project_id }}, {{ retrospect.retrospect_id }})">
-                    <div class="card-header {{ 'retrospect' if retrospect.label == 'retrospect' else 'risk' }}">
-                        {% if retrospect.label == 'retrospect' %}
-                            회고
-                        {% else %}
-                            리스크
-                        {% endif %}
-                    </div>
-                    <h3>{{ retrospect.retrospect_title }}</h3>
-                    <p>작성자: {{ user_map[retrospect.user_id] }}</p>
-                    <p>스프린트: {% if retrospect.sprint_id %}
-                        {% for sprint in sprints %}
-                            {% if sprint.sprint_id == retrospect.sprint_id %}
-                                {{ sprint.sprint_name }}
+            <div class="content-body">
+                <div class="retrospect-cards">
+                    {% for retrospect in retrospects.items %}
+                    <div class="card">
+                        <div class="card-content"
+                        onclick="navigateToRetrospect(event, {{ project.project_id }}, {{ retrospect.retrospect_id }})">
+                        <div class="card-header {{ 'retrospect' if retrospect.label == 'retrospect' else 'risk' }}">
+                            {% if retrospect.label == 'retrospect' %}
+                                회고
+                            {% else %}
+                                리스크
                             {% endif %}
-                        {% endfor %}
-                    {% else %}
-                        없음
-                    {% endif %}</p>
+                        </div>
+                        <h3>{{ retrospect.retrospect_title }}</h3>
+                        <p>작성자: {{ user_map[retrospect.user_id] }}</p>
+                        <p>스프린트: {% if retrospect.sprint_id %}
+                            {% for sprint in sprints %}
+                                {% if sprint.sprint_id == retrospect.sprint_id %}
+                                    {{ sprint.sprint_name }}
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            없음
+                        {% endif %}</p>
+                        </div>
+                        <!-- 수정/삭제 버튼 -->
+                        <div class="card-actions">
+                        <img
+                            src="{{ url_for('static', filename='icons/dotdotdot.svg') }}"
+                            alt="설정 버튼"
+                            class="options-btn"
+                            onclick="openOptions(event, {{ retrospect.retrospect_id }})"
+                        />
+                        </div>
                     </div>
-                    <!-- 수정/삭제 버튼 -->
-                    <div class="card-actions">
-                    <img
-                        src="{{ url_for('static', filename='icons/dotdotdot.svg') }}"
-                        alt="설정 버튼"
-                        class="options-btn"
-                        onclick="openOptions(event, {{ retrospect.retrospect_id }})"
-                    />
-                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
 
-            <div class="pagination">
-                {% if retrospects.has_prev %}
-                <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=retrospects.prev_num) }}">&lt; 이전</a>
-                {% endif %}
-                {% for page_num in retrospects.iter_pages(left_edge=2, right_edge=2, left_current=1, right_current=1) %}
-                {% if page_num %}
-                <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=page_num) }}"
-                   class="{{ 'active' if page_num == retrospects.page else '' }}">{{ page_num }}</a>
-                {% else %}
-                <span>…</span>
-                {% endif %}
-                {% endfor %}
-                {% if retrospects.has_next %}
-                <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=retrospects.next_num) }}">다음 &gt;</a>
-                {% endif %}
+                <div class="pagination">
+                    {% if retrospects.has_prev %}
+                    <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=retrospects.prev_num) }}">&lt; 이전</a>
+                    {% endif %}
+                    {% for page_num in retrospects.iter_pages(left_edge=2, right_edge=2, left_current=1, right_current=1) %}
+                    {% if page_num %}
+                    <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=page_num) }}"
+                    class="{{ 'active' if page_num == retrospects.page else '' }}">{{ page_num }}</a>
+                    {% else %}
+                    <span>…</span>
+                    {% endif %}
+                    {% endfor %}
+                    {% if retrospects.has_next %}
+                    <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=retrospects.next_num) }}">다음 &gt;</a>
+                    {% endif %}
+                </div>
             </div>
             <!-- 수정/삭제 모달 -->
             {% for retrospect in retrospects.items %}

@@ -71,6 +71,14 @@
     background-color: var(--color-grey-50);
 }
 
+/* content-body는 페이지 하단까지 늘어나도록 설정 */
+.content-body {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 200px); /* 화면 높이에서 헤더와 기타 요소 높이를 뺀 값 */
+    position: relative;
+}
+
 .retrospect-cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -118,6 +126,41 @@
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    gap: 10px; /* 숫자 간격 */
+    font-size: 18px; /* 숫자 크기 */
+    font-weight: bold; /* 숫자 강조 */
+}
+
+.pagination a {
+    text-decoration: none;
+    color: var(--color-grey-800);
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.pagination a:hover {
+    background-color: var(--color-grey-200);
+    color: var(--color-black);
+}
+
+.pagination a.active {
+    background-color: var(--color-green-400);
+    color: var(--color-white);
+    border-radius: 4px;
+    padding: 5px 10px;
 }
 
 /* 옵션 버튼 스타일 */
