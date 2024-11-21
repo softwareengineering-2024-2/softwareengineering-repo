@@ -4,17 +4,17 @@ class Alert(db.Model):
     __tablename__ = 'alert'
 
     alert_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.String(255), db.ForeignKey('User.user_id', ondelete='CASCADE'),nullable=False)
+    #user_id = db.Column(db.String(255), db.ForeignKey('User.user_id', ondelete='CASCADE'),nullable=False)
     project_id = db.Column(db.Integer, db.ForeignKey('Project.project_id', ondelete='CASCADE'),nullable=False)
     alert_content = db.Column(db.String(255))
-    status = db.Column(db.Boolean, nullable=True, default=False)
+    #status = db.Column(db.Boolean, nullable=True, default=False)
 
     # 생성자
-    def __init__(self, user_id, project_id, alert_content, status):
-        self.user_id = user_id
+    def __init__(self, project_id, alert_content):
+        #self.user_id = user_id
         self.project_id = project_id
         self.alert_content = alert_content
-        self.status = status
+        #self.status = status
 
     # 데이터베이스에 저장하는 메서드
     def save_to_db(self):
