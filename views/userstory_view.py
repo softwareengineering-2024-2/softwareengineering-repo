@@ -106,7 +106,6 @@ def save_alert_to_db():
     if not project_id:
         return jsonify({"status": "error", "message": "Project ID is missing"}), 400
     
-    user_id = current_user.id
     message = request.json.get('message')
 
     
@@ -116,7 +115,7 @@ def save_alert_to_db():
     full_alert = f" 프로젝트[{project_name}] : 해당 프로젝트에 {message}"
     
     # 메시지를 데이터베이스에 저장합니다.
-    save_alert(user_id, project_id, full_alert, False) # 누가 확인을 눌렀는지
+    save_alert(project_id, full_alert)
 
     return jsonify({"status": "success", "message": "Message sent to PM"})
 

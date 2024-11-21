@@ -79,14 +79,7 @@ async function saveToDB(alertMessage) {
                 project_id: project_id          
             })
         });
-        
-        // if (response.ok) {
-        //     alert("알림이 저장되었습니다!");
-        //     return true; // 성공 시 true 반환
-        // } else {
-        //     alert("알림 저장에 실패했습니다.");
-        //     return false; // 실패 시 false 반환
-        // }
+      
     } catch (error) {
         console.error("Error:", error);
         alert("오류가 발생했습니다.");
