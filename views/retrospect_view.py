@@ -5,7 +5,7 @@ from models.project_model import Project, UserProject
 from models.sprint_model import Sprint
 from models.user_model import Users
 from models.retrospect_model import Retrospect
-from controllers.retrospect_controller import get_sprints, create_retrospect, update_retrospect, delete_retrospect, get_retrospect_by_id, get_user_name_by_project_and_user
+from controllers.retrospect_controller import get_sprints, create_retrospect, update_retrospect, delete_retrospect, get_retrospect_by_id, get_user_name_by_project_and_user, get_filtered_retrospects
 from flask_login import current_user, login_required
 from database import db
 
@@ -18,16 +18,18 @@ retrospect_bp = Blueprint('retrospect', __name__)
 def retrospect_view(project_id):
     project = Project.query.get_or_404(project_id)
     sprints = get_sprints(project_id)
-    label = request.args.get('label', 'all')
+
+    label = request.args.get('category', 'all')
     sprint_id = request.args.get('sprint', 'all')
+    page = request.args.get('page', 1, type=int)
 
-    query = Retrospect.query.filter_by(project_id=project_id)
-    if label != 'all':
-        query = query.filter_by(label=label)
-    if sprint_id != 'all':
-        query = query.filter_by(sprint_id=sprint_id)
-
-    retrospects = query.order_by(Retrospect.retrospect_id.desc()).paginate(page=request.args.get('page', 1, type=int), per_page=12)
+    retrospects = get_filtered_retrospects( # 필터링
+        project_id=project_id,
+        category=label,
+        sprint_id=sprint_id,
+        page=page,
+        per_page=12
+    )
 
     user_projects = UserProject.query.filter_by(project_id=project_id).all()
     user_map = {user_project.user_id: user_project.user_name for user_project in user_projects}    
@@ -67,13 +69,20 @@ def get_edit_retrospect_view(project_id, retrospect_id):
     project = Project.query.get_or_404(project_id)
     retrospect = Retrospect.query.get_or_404(retrospect_id)
     sprints = get_sprints(project_id)
-    # 수정해야해요! userproject 부분
-    return render_template('create_retrospect.html', project=project, retrospect=retrospect, sprints=sprints,userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
+    if retrospect.user_id != current_user.id:
+        flash("본인이 작성한 글만 수정할 수 있습니다.", "error")
+        return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
+    return render_template('create_retrospect.html', project=project, retrospect=retrospect, sprints=sprints, userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
 
 # 회고 수정
 @retrospect_bp.route('/<int:project_id>/edit/<int:retrospect_id>', methods=["POST"])
 @login_required
 def edit_retrospect_view(project_id, retrospect_id):
+    retrospect = Retrospect.query.get_or_404(retrospect_id)
+    if retrospect.user_id != current_user.id:
+        flash("본인이 작성한 글만 수정할 수 있습니다.", "error")
+        return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
+    
     data = {
         "retrospect_title": request.form.get("retrospect_title"),
         "retrospect_content": request.form.get("retrospect_content"),
@@ -104,6 +113,10 @@ def view_retrospect_view(project_id, retrospect_id):
 @retrospect_bp.route('/<int:project_id>/delete/<int:retrospect_id>', methods=["POST"])
 @login_required
 def delete_retrospect_view(project_id, retrospect_id):
+    retrospect = Retrospect.query.get_or_404(retrospect_id)
+    if retrospect.user_id != current_user.id:
+        flash("본인이 작성한 글만 삭제할 수 있습니다.", "error")
+        return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
     if delete_retrospect(retrospect_id):
         flash("회고가 성공적으로 삭제되었습니다.", "success")
     else:
