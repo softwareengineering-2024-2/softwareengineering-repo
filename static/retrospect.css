@@ -1,0 +1,183 @@
+.main-container {
+    margin-top: 3vh; /* 탑바 밑 여백 추가 */
+    margin-left: 30vh; /* 사이드바 너비만큼 왼쪽 여백 추가 */
+    margin-right: 5vh;
+}
+
+.content-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.content-header h2 {
+    font-size: var(--font-size-h1);
+    font-weight: var(--font-weight-semibold);
+}
+
+.btn-register {
+    padding: 8px 16px;
+    background-color: var(--color-green-500);
+    color: var(--color-white);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-register:hover {
+    background-color: var(--color-green-600);
+}
+
+.filter {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* 선택 박스 간 간격 */
+    margin-left: 2vh;
+    margin-right: auto; /* 필터를 "스프린트 회고" 글씨 오른쪽에 배치 */
+}
+
+.filter select {
+    padding: 6px 12px;
+    border: 1px solid var(--color-grey-300);
+    border-radius: 4px;
+    background-color: var(--color-white);
+    cursor: pointer;
+}
+
+.filter .btn-filter {
+    padding: 6px 12px;
+    border: 1px solid var(--color-grey-300);
+    border-radius: 4px;
+    background-color: var(--color-grey-100);
+    cursor: pointer;
+}
+
+.filter .btn-filter:hover {
+    background-color: var(--color-grey-200);
+}
+
+/* 회고 등록 버튼 스타일 */
+.btn-register {
+    margin-left: auto; /* 회고 등록 버튼을 오른쪽 끝으로 배치 */
+    padding: 8px 16px;
+    background-color: var(--color-white);
+    color: var(--color-black);
+    border: 1px solid var(--color-black);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-register:hover {
+    background-color: var(--color-grey-50);
+}
+
+.retrospect-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-grey-200);
+    border-radius: 8px;
+    padding: 16px;
+    position: relative;
+}
+
+.card-header {
+    font-size: var(--font-size-b2);
+    font-weight: var(--font-weight-semibold);
+    padding: 2px 8px; /* 내부 여백 */
+    border-radius: 12px; /* 둥근 모서리 */
+    text-align: center;
+    color: var(--color-white);
+    display: inline-block; /* 텍스트 크기에 맞게 크기 조정 */
+    margin-bottom: 8px;
+}
+
+.card-header.risk {
+    background-color: var(--color-red);
+}
+
+.card-header.retrospect {
+    background-color: var(--color-green-500);
+}
+
+.card-content h3 {
+    font-size: var(--font-size-b2);
+    margin-bottom: 10px;
+}
+
+.card-content p {
+    font-size: var(--font-size-small);
+    margin-bottom: 4px;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* 옵션 버튼 스타일 */
+.options-btn {
+    width: 24px; /* 아이콘 크기 */
+    height: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+/* 모달 스타일 */
+.modal {
+    position: absolute;
+    background: var(--color-white);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px; /* 둥근 모서리 */
+    padding: 5px 10px; /* 내부 여백 감소 */
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* 버튼 간 간격 */
+    min-width: 80px; /* 최소 너비 감소 */
+    border: 1px solid var(--color-grey-200); /* 경계선 추가 */
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: var(--color-white);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* 수정 버튼 */
+.modal button:first-child {
+    background-color: transparent;
+    border: none;
+    color: var(--color-black);
+    font-size: var(--font-size-b2);
+    font-weight: var(--font-weight-regular);
+    cursor: pointer;
+    text-align: center;
+    padding: 5px;
+    border-bottom: 1px solid var(--color-grey-100); /* 버튼 사이 구분선 */
+}
+
+/* 삭제 버튼 */
+.modal button.btn-danger {
+    background-color: transparent;
+    border: none;
+    color: var(--color-red);
+    font-size: var(--font-size-b2);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    text-align: center;
+    padding: 5px;
+}

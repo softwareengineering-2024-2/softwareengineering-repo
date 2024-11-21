@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회고 작성</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='topbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='c_retrospect.css') }}">
+</head>
+<body>
+    {% include 'topbar.html' %}
+    <div class="main-container">
+        {% include 'sidebar.html' %}
+        <div class="content">
+            <h2 class="page-title">회고 작성하기</h2>
+            <form 
+                method="POST"
+                class="retrospect-form"
+                action="{{ retrospect and url_for('retrospect.edit_retrospect_view', project_id=project.project_id, retrospect_id=retrospect.retrospect_id) or url_for('retrospect.create_retrospect_view', project_id=project.project_id) }}"
+            >
+                <!-- 제목 입력 -->
+                <div class="form-group">
+                    <label for="title" class="form-label">제목</label>
+                    <input 
+                        type="text" 
+                        id="title" 
+                        name="retrospect_title" 
+                        value="{{ retrospect.retrospect_title if retrospect else '' }}" 
+                        class="form-input" 
+                        placeholder="제목을 입력해주세요"
+                        required
+                    />
+                </div>
+
+                <!-- 스프린트 선택 -->
+                <div class="form-group">
+                    <label for="sprint" class="form-label">스프린트</label>
+                    <select id="sprint" name="sprint_id" class="form-input" required>
+                        <option value="" disabled selected>스프린트를 선택해주세요</option>
+                        {% for sprint in sprints %}
+                        <option 
+                            value="{{ sprint.sprint_id }}" 
+                            {% if retrospect and sprint.sprint_id == retrospect.sprint_id %}selected{% endif %}
+                        >
+                            {{ sprint.sprint_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- 카테고리 선택 -->
+                <div class="form-group">
+                    <label for="category" class="form-label">카테고리</label>
+                    <select id="category" name="label" class="form-input" required>
+                        <option value="" disabled selected>카테고리를 선택해주세요</option>
+                        <option value="retrospect" {% if retrospect and retrospect.label == 'retrospect' %}selected{% endif %}>
+                            회고
+                        </option>
+                        <option value="risk" {% if retrospect and retrospect.label == 'risk' %}selected{% endif %}>
+                            리스크
+                        </option>
+                    </select>
+                </div>
+
+                <!-- 내용 입력 -->
+                <div class="form-group">
+                    <label for="content" class="form-label">내용</label>
+                    <textarea 
+                        id="content" 
+                        name="retrospect_content" 
+                        class="form-textarea" 
+                        placeholder="내용을 입력해주세요"
+                        required
+                    >{{ retrospect.retrospect_content if retrospect else '' }}</textarea>
+                </div>
+
+                <!-- 파일 첨부 -->
+                <div class="form-group">
+                    <label for="file" class="form-label">파일 첨부</label>
+                    <div class="file-upload-container">
+                        <input 
+                            type="text" 
+                            class="file-upload-input" 
+                            placeholder="버튼을 클릭해 첨부파일을 업로드 해주세요" 
+                            readonly
+                        />
+                        <button type="button" class="file-upload-btn">파일 업로드</button>
+                    </div>
+                </div>
+
+                <!-- 버튼 그룹 -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">작성 완료하기</button>
+                    <button 
+                        type="button" 
+                        class="btn btn-secondary" 
+                        onclick="window.history.back()"
+                    >
+                        취소
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

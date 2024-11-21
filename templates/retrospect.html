@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스프린트 회고</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='topbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='retrospect.css') }}">
+</head>
+<body>
+    {% include 'topbar.html' %}
+    <div class="main-container">
+        {% include 'sidebar.html' %}
+        <div class="content">
+            <header class="content-header">
+                <h2>스프린트 회고</h2>
+                <div class="filter">
+                    <form method="GET" action="{{ url_for('retrospect.retrospect_view', project_id=project.project_id) }}">
+                        <select id="category" name="category">
+                            <option value="all" {% if request.args.get('category') == 'all' %}selected{% endif %}>카테고리</option>
+                            <option value="retrospect" {% if request.args.get('category') == 'retrospect' %}selected{% endif %}>회고</option>
+                            <option value="risk" {% if request.args.get('category') == 'risk' %}selected{% endif %}>리스크</option>
+                        </select>
+            
+                        <select id="sprint" name="sprint">
+                            <option value="all" {% if request.args.get('sprint') == 'all' %}selected{% endif %}>스프린트 선택</option>
+                            {% for sprint in sprints %}
+                            <option value="{{ sprint.sprint_id }}" {% if request.args.get('sprint') == sprint.sprint_id|string %}selected{% endif %}>{{ sprint.sprint_name }}</option>
+                            {% endfor %}
+                        </select>
+            
+                        <button type="submit" class="btn-filter">필터</button>
+                    </form>
+                </div>
+                <button class="btn-register" onclick="location.href='{{ url_for('retrospect.create_retrospect_view', project_id=project.project_id) }}'">회고 등록</button>
+            </header>
+
+            <div class="retrospect-cards">
+                {% for retrospect in retrospects.items %}
+                <div class="card">
+                    <div class="card-content"
+                    onclick="navigateToRetrospect(event, {{ project.project_id }}, {{ retrospect.retrospect_id }})">
+                    <div class="card-header {{ 'retrospect' if retrospect.label == 'retrospect' else 'risk' }}">
+                        {% if retrospect.label == 'retrospect' %}
+                            회고
+                        {% else %}
+                            리스크
+                        {% endif %}
+                    </div>
+                    <h3>{{ retrospect.retrospect_title }}</h3>
+                    <p>작성자: {{ user_map[retrospect.user_id] }}</p>
+                    <p>스프린트: {% if retrospect.sprint_id %}
+                        {% for sprint in sprints %}
+                            {% if sprint.sprint_id == retrospect.sprint_id %}
+                                {{ sprint.sprint_name }}
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        없음
+                    {% endif %}</p>
+                    </div>
+                    <!-- 수정/삭제 버튼 -->
+                    <div class="card-actions">
+                    <img
+                        src="{{ url_for('static', filename='icons/dotdotdot.svg') }}"
+                        alt="설정 버튼"
+                        class="options-btn"
+                        onclick="openOptions(event, {{ retrospect.retrospect_id }})"
+                    />
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="pagination">
+                {% if retrospects.has_prev %}
+                <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=retrospects.prev_num) }}">&lt; 이전</a>
+                {% endif %}
+                {% for page_num in retrospects.iter_pages(left_edge=2, right_edge=2, left_current=1, right_current=1) %}
+                {% if page_num %}
+                <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=page_num) }}"
+                   class="{{ 'active' if page_num == retrospects.page else '' }}">{{ page_num }}</a>
+                {% else %}
+                <span>…</span>
+                {% endif %}
+                {% endfor %}
+                {% if retrospects.has_next %}
+                <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=retrospects.next_num) }}">다음 &gt;</a>
+                {% endif %}
+            </div>
+            <!-- 수정/삭제 모달 -->
+            {% for retrospect in retrospects.items %}
+            <div id="options-modal-{{ retrospect.retrospect_id }}" class="modal hidden">
+                <div class="modal-content">
+                    <button onclick="editRetrospect({{ retrospect.retrospect_id }})">수정</button>
+                    <button class="btn-danger" onclick="deleteRetrospect({{ retrospect.retrospect_id }})">삭제</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script>
+        const projectId = {{ project_id }};
+    </script>
+    <script src="{{ url_for('static', filename='js/retrospect.js') }}"></script>
+</body>
+</html>
