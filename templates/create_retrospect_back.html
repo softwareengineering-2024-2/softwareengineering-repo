@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회고 등록</title>
+</head>
+<body>
+
+    <h2>회고 작성하기</h2>
+    <!-- <form method="POST" action="{{ url_for('retrospect.create_retrospect_view', project_id=project.project_id) }}"> -->
+    <form method="POST" action="{{ retrospect and url_for('retrospect.edit_retrospect_view', project_id=project.project_id, retrospect_id=retrospect.retrospect_id) or url_for('retrospect.create_retrospect_view', project_id=project.project_id) }}">
+        <label for="title">제목:</label>
+        <input type="text" id="title" name="retrospect_title" value="{{ retrospect.retrospect_title if retrospect else '' }}" required>
+
+        <label for="sprint">스프린트:</label>
+        <select id="sprint" name="sprint_id" required>
+            {% for sprint in sprints %}
+            <option value="{{ sprint.sprint_id }}" {% if retrospect and sprint.sprint_id == retrospect.sprint_id %}selected{% endif %}>
+                {{ sprint.sprint_name }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label for="category">카테고리:</label>
+        <select id="category" name="label" required>
+            <option value="retrospect" {% if retrospect and retrospect.label == 'retrospect' %}selected{% endif %}>회고</option>
+            <option value="risk" {% if retrospect and retrospect.label == 'risk' %}selected{% endif %}>리스크</option>
+        </select>
+
+        <label for="content">내용:</label>
+        <textarea id="content" name="retrospect_content" required>{{ retrospect.retrospect_content if retrospect else '' }}</textarea>
+
+        <button type="submit">작성 완료하기</button>
+        <button type="cancel">취소</button>
+    </form>
+
+</body>
+</html>

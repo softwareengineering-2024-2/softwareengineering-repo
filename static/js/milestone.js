@@ -11,7 +11,7 @@ completedSection.style.width = `${(completedMilestones / totalMilestones) * 100}
 line.appendChild(completedSection);
 
 // 마일스톤 점 생성 및 배치
-for (let i = 0; i < totalMilestones+1; i++) {
+for (let i = 0; i <= totalMilestones; i++) {
     const dot = document.createElement("div");
     dot.classList.add("milestone-dot");
 
@@ -20,7 +20,7 @@ for (let i = 0; i < totalMilestones+1; i++) {
         dot.classList.add("completed");
 
         // 마지막으로 완료된 점에 sprint.svg 아이콘 추가
-        if (i == completedMilestones) {
+        if (i == completedMilestones && totalMilestones > 0) {
           const sprintIcon = document.createElement("img");
           sprintIcon.src = "/static/icons/sprint.svg"; // sprint.svg 이미지 경로 설정
           sprintIcon.classList.add("sprint-icon");
@@ -33,7 +33,7 @@ for (let i = 0; i < totalMilestones+1; i++) {
     line.appendChild(dot);
 
     // 마지막 점에 milestone.svg 추가
-    if (i == totalMilestones) {
+    if (i == totalMilestones && totalMilestones > 0) {
         const milestoneIcon = document.createElement("img");
         milestoneIcon.src = "/static/icons/milestone.svg"; // milestone.svg 이미지 경로 설정
         milestoneIcon.classList.add("milestone-icon");

@@ -1,45 +1,33 @@
 # views/sprint_view.py
-from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from controllers.sprint_controller import (
-    assign_backlogs_to_sprint, create_sprint, delete_backlog, get_current_sprint_backlogs, get_sprints_with_backlogs, get_unassigned_product_backlogs, get_users_by_project_id, update_backlog_details, update_backlog_status, update_sprint, delete_sprint,
+    assign_backlogs_to_sprint, create_sprint, delete_backlog, get_sprints_with_backlogs, get_unassigned_product_backlogs, get_users_by_project_id, update_backlog_details, update_backlog_status, update_sprint, delete_sprint,
     get_all_product_backlogs, create_sprint_backlog
 )
+from controllers.calendar_controller import create_schedule
 from models.project_model import Project, UserProject
 from flask_login import current_user, login_required
 
 # 블루프린트 생성
 sprint_bp = Blueprint('sprint', __name__)
 
-@sprint_bp.route('/sprint/<int:project_id>/', defaults={'sprint_id': None}, methods=['GET'])
-@sprint_bp.route('/sprint/<int:project_id>/<int:sprint_id>', methods=['GET'])
+@sprint_bp.route('/sprint/<int:project_id>', methods=['GET'])
 @login_required 
-def get_product_backlogs_view(project_id, sprint_id):
+def get_product_backlogs_view(project_id):
     if not current_user.is_authenticated:
-        flash('로그인이 필요합니다.')
-        return redirect(url_for('auth.login'))
-
+        flash('로그인이 필요합니다.')  # 사용자에게 로그인이 필요하다는 메시지를 표시
+        return redirect(url_for('auth.login'))  # 로그인 페이지로 리디렉트
     sprints = get_sprints_with_backlogs(project_id)
-    all_backlogs = get_all_product_backlogs(project_id)
-    unassigned_backlogs = get_unassigned_product_backlogs(project_id)
+    backlogs = {
+        'all_backlogs': get_all_product_backlogs(project_id),
+        'unassigned_backlogs': get_unassigned_product_backlogs(project_id)
+    } 
     users = get_users_by_project_id(project_id)
-
-    if sprint_id:
-        current_sprint = next((s for s in sprints if s['sprint_id'] == sprint_id), None)
-        assigned_backlogs = get_current_sprint_backlogs(project_id)
-    else:
-        current_date = datetime.now().date()
-        current_sprint = next((s for s in sprints if datetime.strptime(s['start_date'], '%Y-%m-%d').date() <= current_date <= datetime.strptime(s['end_date'], '%Y-%m-%d').date()), None)
-        assigned_backlogs = []
-
-    return render_template('sprint.html',
+    return render_template('sprint.html', 
                            project=Project.find_by_id(project_id),
                            userproject=UserProject.find_by_user_and_project(current_user.id, project_id),
-                           backlogs={'all_backlogs': all_backlogs, 'unassigned_backlogs': unassigned_backlogs, 'assigned_backlogs': assigned_backlogs},
-                           sprints=sprints,
-                           users=users,
-                           project_id=project_id,
-                           current_sprint=current_sprint)
+                           backlogs=backlogs, sprints=sprints, users=users, project_id=project_id)
+
 # 스프린트 추가
 @sprint_bp.route('/add-sprint', methods=['POST'])
 def add_sprint():
@@ -51,15 +39,16 @@ def add_sprint():
     selected_backlogs = request.form.getlist('backlogs')
 
     new_sprint, error = create_sprint(project_id, sprint_name, start_date, end_date, status)
+    create_schedule(project_id, sprint_name, None, start_date, end_date, True, 0, None, True)
     if new_sprint:
         assign_backlogs_to_sprint(new_sprint.sprint_id, selected_backlogs)
         return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id, status=1))
     else:
-        return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id, status=-1))
+        return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id, status=-1, error_message=error))
 
 # 스프린트 수정
-@sprint_bp.route('/edit-sprint/<int:sprint_id>', methods=['POST'])
-def edit_sprint(sprint_id):
+@sprint_bp.route('/edit-sprint/<int:sprint_id>/<int:project_id>', methods=['POST'])
+def edit_sprint(sprint_id, project_id):
     sprint_name = request.form['sprint_name']
     start_date = request.form['start_date']
     end_date = request.form['end_date']
@@ -74,7 +63,7 @@ def edit_sprint(sprint_id):
     if updated_sprint:
         assign_backlogs_to_sprint(sprint_id, selected_backlogs)
         flash('스프린트가 성공적으로 수정되었습니다.')
-        project_id = updated_sprint.project_id
+        #project_id = updated_sprint.project_id
     else:
         flash('스프린트 수정에 실패했습니다.')
 

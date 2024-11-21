@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ retrospect.retrospect_title }}</title>
+</head>
+<body>
+    <h2>{{ retrospect.retrospect_title }}</h2>
+    <p><strong>작성자:</strong> {{ user_name }}</p>
+    <p><strong>스프린트:</strong>
+        {% if retrospect.sprint_id %}
+            {% for sprint in sprints %}
+                {% if sprint.sprint_id == retrospect.sprint_id %}
+                    {{ sprint.sprint_name }}
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            None
+        {% endif %}
+    </p>
+    <p><strong>카테고리:</strong> {{ retrospect.label }}</p>
+    
+
+    <hr>
+
+    <h3>내용</h3>
+    <p>{{ retrospect.retrospect_content }}</p>
+
+    <hr>
+
+    <button onclick="location.href='{{ url_for('retrospect.retrospect_view', project_id=retrospect.project_id) }}'">목록으로 돌아가기</button>
+</body>
+</html>

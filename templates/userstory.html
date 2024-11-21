@@ -9,112 +9,101 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='topbar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='userstory.css') }}">
-
-
-
 </head>
-<script>
-    // 유저스토리 수정
-function enableEdit(storyId) {
-    var storyContent = document.getElementById('story-content-' + storyId);
-    var editForm = document.getElementById('edit-form-' + storyId);
-    storyContent.style.display = 'none';
-    editForm.style.display = 'inline';
-    var inputField = editForm.querySelector('input[name="content"]');
-    inputField.focus();
-    inputField.addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            editForm.submit();
-        }
-    });
-}
-</script>
 <body>
     {% include 'topbar.html' %}
     <div class="main-container">
         {% include 'sidebar.html' %}
         <div class="content">
-            <!-- Not List -->
+            <!-- Not List Section -->
             <div class="not-list-box">
-                <div class="not-list-header">
-                    <h2>Not List</h2>
-                </div>
+                <h2>Not List</h2>
                 <div class="not-list-keywords">
                     {% for item in not_list %}
                     <div class="keyword-wrapper">
-                        <span class="modal-keyword-item">
-                            {{ item.keyword }}
-                        </span>
-
+                        <span class="modal-keyword-item">{{ item.keyword }}</span>
                         <form action="{{ url_for('userstory.delete_keyword_route', project_id=project.project_id, not_list_id=item.not_list_id) }}" method="POST" style="display:inline;" onsubmit="return confirmDelete();">
                             <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit"  class="delete-story">삭제</button>
+                            {% if userproject.user_role == 'PM(기획자)' %}
+                            <button type="submit" class="delete-story">삭제</button>
+                            {% endif %}
                         </form>
                     </div>
-
-                {% else %}
+                    {% else %}
                     <p class="not-list-keywords">not list 키워드가 없습니다.</p>
-                {% endfor %}
+                    {% endfor %}
                 </div>
             </div>
 
-             <!-- not list 입력 -->
+            <!-- Not List Input -->
             <div class="userstory-input-container">
                 <form action="{{ url_for('userstory.create_keywords_route', project_id=project.project_id) }}" method="POST">
-                    <input type="text" name="keyword" placeholder="not list를 작성해주세요. 엔터를 누를 시 자동으로 유저스토리에 등록됩니다.">
+                    <input type="text" name="keyword" placeholder="not list를 작성해주세요. 엔터를 누를 시 자동으로 not list에 등록됩니다.">
                 </form>
             </div>
-            
-            <!-- 유저스토리 -->
+
+            <!-- User Story Section -->
             <div class="userstory-container">
                 <h2>유저스토리</h2>
-                <div class="userstory-list" id="userStoryList">
+                <ul class="userstory-list" id="userStoryList">
                     {% for story in stories %}
                     <li class="userstory-item">
                         <span id="story-content-{{ story.story_id }}">{{ story.user_story_content }}</span>
                         <form id="edit-form-{{ story.story_id }}" action="{{ url_for('userstory.update_story_route', project_id=project.project_id, story_id=story.story_id) }}" method="POST" style="display:none;" class="edit-input">
                             <input type="hidden" name="_method" value="PUT">
-                            <input type="hidden" name="story_id" value="{{ story.story_id }}">
                             <input type="text" name="content" value="{{ story.user_story_content }}">
-                            
                         </form>
                         <div class="button-wrapper">
-                            <button class="edit-story" type="button" onclick="enableEdit('{{ story.story_id }}')">수정</button>
                             
+                            <button class="edit-story" type="button" onclick="enableEdit('{{ story.story_id }}')">수정</button>
                             <form action="{{ url_for('userstory.delete_story_route', project_id=project.project_id, story_id=story.story_id) }}" method="POST" style="display:inline;">
                                 <input type="hidden" name="_method" value="DELETE">
-                                <button type="submit"  class="delete-story">삭제</button>
-                                
+                                {% if userproject.user_role == 'PM(기획자)' %}
+                                <button type="submit" class="delete-story">삭제</button>
+                                {% endif %}
                             </form>
+                            
                         </div>
-                    </li>    
-                    
-                {% else %}
+                    </li>
+                    {% else %}
                     <p class="userstory-list">유저스토리가 없습니다.</p>
-                
-                {% endfor %}
-                       
-                </div>
+                    {% endfor %}
+                </ul>
             </div>
-            
-            <!-- 유저 스토리 입력 섹션 -->
+
+            <!-- User Story Input Section -->
             <div class="userstory-input-container">
                 <form action="{{ url_for('userstory.create_story_route', project_id=project.project_id) }}" method="POST">
                     <input type="text" name="content" placeholder="유저스토리를 작성해주세요. 엔터를 누를 시 자동으로 유저스토리에 등록됩니다.">
-                    </form>
+                </form>
             </div>
 
-            <!-- 경고 모달창 -->
+            <!-- Keyword Warning Modal -->
             <div class="modal-background" id="keywordWarningBackground"></div>
             <div class="keyword-warning-modal" id="keywordWarningModal">
                 <h2>Not List 키워드 발견</h2>
                 <p>해당 유저스토리에 <span class="highlight">Not List 키워드</span>가 포함되어 있습니다.<br>확인을 누를 시 PM에게 알림이 갑니다.</p>
-                <button class="confirm-button" onclick="confirmKeywordWarning()">확인</button>
-                <button class="cancel-button" onclick="cancelKeywordWarning()">취소</button>
+                <button class="confirm-button" >확인</button>
+                <button class="cancel-button" >취소</button>
+            </div>
+
+            <!-- 메시지 모달 -->
+            <div id="messageModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                <h2 id="modalTitle">알림</h2>
+                <p id="modalMessage">메시지 내용이 여기에 표시됩니다.</p>
+                <button onclick="closeMessageModal()" class="modal-close-btn">닫기</button>
+                </div>
             </div>
         </div>
     </div>
-                           
-</body> 
+    <script>
+        const project_id = {{ project.project_id }};
+        // Python 리스트를 JSON 배열로 변환하여 JavaScript에서 사용
+        const keywordList = JSON.parse('{{ keyword_list | tojson | safe }}');
+        const messages = {{ messages | tojson }};
+    </script>
+    
+    <script src="{{ url_for('static', filename='js/userstory.js') }}"></script>
+</body>
 </html>

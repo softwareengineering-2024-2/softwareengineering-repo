@@ -61,8 +61,9 @@
         </ul>
     </div>
 
-    <!-- 일정 추가 버튼 -->
     <a href="{{ url_for('calendar.create_schedule_view', project_id=project_id) }}">일정 추가하기</a>
+
+    <a href="{{ url_for('project_main.project_main_view', project_id=project_id) }}" style="display: block;">프로젝트 메인으로 돌아가기</a>
 </div>
 
 </body>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스프린트 회고</title>
+</head>
+<body>
+
+    <header>
+        <h2>스프린트 회고</h2>
+        <button onclick="location.href='{{ url_for('retrospect.create_retrospect_view', project_id=project.project_id) }}'">회고 등록</button>
+    </header>
+
+    <div class="filter">
+        <form method="GET" action="{{ url_for('retrospect.retrospect_view', project_id=project.project_id) }}">
+            <label for="category">카테고리:</label>
+            <select id="category" name="category">
+                <option value="all" {% if request.args.get('category') == 'all' %}selected{% endif %}>전체 보기</option>
+                <option value="retrospect" {% if request.args.get('category') == 'retrospect' %}selected{% endif %}>회고</option>
+                <option value="risk" {% if request.args.get('category') == 'risk' %}selected{% endif %}>리스크</option>
+            </select>
+
+            <label for="sprint">스프린트:</label>
+            <select id="sprint" name="sprint">
+                <option value="all" {% if request.args.get('sprint') == 'all' %}selected{% endif %}>전체 보기</option>
+                {% for sprint in sprints %}
+                    <option value="{{ sprint.sprint_id }}" {% if request.args.get('sprint') == sprint.sprint_id|string %}selected{% endif %}>{{ sprint.sprint_name }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">필터</button>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>카테고리</th>
+                <th>회고 제목</th>
+                <th>작성자</th>
+                <th>스프린트 이름</th>
+                <th>메뉴</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for retrospect in retrospects.items %}
+            <tr>
+                <td>{{ retrospect.label }}</td>
+                <td>
+                    <a href="{{ url_for('retrospect.view_retrospect_view', project_id=project.project_id, retrospect_id=retrospect.retrospect_id) }}">
+                        {{ retrospect.retrospect_title }}
+                    </a>
+                </td>
+                <td>
+                    {% if retrospect.user_id in user_map %}
+                        {{ user_map[retrospect.user_id] }}
+                    {% else %}
+                        Unknown User
+                    {% endif %}
+                </td>   
+                <td>
+                    {% for sprint in sprints %}
+                        {% if sprint.sprint_id == retrospect.sprint_id %}
+                            {{ sprint.sprint_name }}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    <button onclick="location.href='{{ url_for('retrospect.get_edit_retrospect_view', project_id=project.project_id, retrospect_id=retrospect.retrospect_id) }}'">수정</button>
+                    <form method="POST" action="{{ url_for('retrospect.delete_retrospect_view', project_id=project.project_id, retrospect_id=retrospect.retrospect_id) }}" style="display:inline;">
+                        <button type="submit" onclick="return confirm('회고를 삭제하시겠습니까?')">삭제</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5">회고가 없습니다.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        {% if retrospects.has_prev %}
+            <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=retrospects.prev_num) }}">&lt; 이전</a>
+        {% endif %}
+        {% for page_num in retrospects.iter_pages(left_edge=2, right_edge=2, left_current=1, right_current=1) %}
+            {% if page_num %}
+                {% if page_num == retrospects.page %}
+                    <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=page_num) }}" class="active">{{ page_num }}</a>
+                {% else %}
+                    <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=page_num) }}">{{ page_num }}</a>
+                {% endif %}
+            {% else %}
+                <span>…</span>
+            {% endif %}
+        {% endfor %}
+        {% if retrospects.has_next %}
+            <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=retrospects.next_num) }}">다음 &gt;</a>
+        {% endif %}
+    </div>
+
+</body>
+</html>

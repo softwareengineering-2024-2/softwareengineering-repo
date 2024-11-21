@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from controllers.milestone_controller import get_milestones, create_milestone, update_milestone, delete_milestone, get_milestone_counts
+from controllers.calendar_controller import create_schedule
 from models.project_model import UserProject, Project
-from models.milestone_model import Milestone
 from flask_login import login_required, current_user
 
 # Blueprint 객체 생성
@@ -23,11 +23,12 @@ def milestone_view(project_id):
 @milestone_bp.route('/<int:project_id>/create', methods=['POST'])
 @login_required
 def create_milestone_view(project_id):
-        milestone_content = request.form.get('milestone_content')
-        due_date = request.form.get('due_date')
-        message = create_milestone(project_id, milestone_content, due_date)
-        flash(message)
-        return redirect(url_for('milestone.milestone_view', project_id=project_id))
+    milestone_content = request.form.get('milestone_content')
+    due_date = request.form.get('due_date')
+    create_milestone(project_id, milestone_content, due_date)
+    create_schedule(project_id, milestone_content, None, due_date, due_date, True, 0, None, True)
+
+    return redirect(url_for('milestone.milestone_view', project_id=project_id))
 
 # # 마일스톤 수정 로직
 # @milestone_bp.route('/<int:project_id>/<int:milestone_id>/update', methods=['GET', 'POST'])

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>스크럼 보드</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='global.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='scrum.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='topbar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='sidebar.css') }}"
+    />
+  </head>
+  <body>
+    {% include 'topbar.html' %}
+    <div class="main-container">
+      {% include 'sidebar.html' %}
+      <div class="content">
+        <!-- 메인 콘텐츠가 들어갈 부분 -->
+        {% block content %}
+        <div class="scrum-title-wrapper">
+          <div class="title-right">
+            <h1>스크럼 보드</h1>
+            <div class="sprint-change-btn">
+              <h2>스프린트 이름</h2>
+              <img src="/static/icons/chevron-down.svg" />
+              <div class="sprint-dropdown" id="sprintDropdown">
+                <ul>
+                  <li>스프린트 1</li>
+                  <li>스프린트 2</li>
+                  <li>스프린트 3</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="sprint-percentage-container">
+            <p>스프린트 작업 완료율</p>
+            <div class="sprint-bar"></div>
+          </div>
+        </div>
+
+        <div class="scrum-board-container">
+          <div class="todo-container">
+            <h1 class="scrum-board-title">To Do</h1>
+            <div
+              class="scrum-content"
+              id="todo"
+              ondrop="drop(event)"
+              ondragover="allowDrop(event)"
+            >
+              <div
+                class="scrum-sprint-item"
+                id="item-1"
+                draggable="true"
+                ondragstart="drag(event)"
+              >
+                <p>작업 이름</p>
+                <span class="user-circle"> 이름 </span>
+              </div>
+            </div>
+          </div>
+          <div class="inprogress-container">
+            <h1 class="scrum-board-title">In Progress</h1>
+            <div
+              class="scrum-content"
+              id="inprogress"
+              ondrop="drop(event)"
+              ondragover="allowDrop(event)"
+            >
+              <div
+                class="scrum-sprint-item"
+                id="item-2"
+                draggable="true"
+                ondragstart="drag(event)"
+              >
+                <p>작업 이름</p>
+                <span class="user-circle"> 이름 </span>
+              </div>
+            </div>
+          </div>
+          <div class="done-container">
+            <h1 class="scrum-board-title">Done</h1>
+            <div
+              class="scrum-content"
+              id="done"
+              ondrop="drop(event)"
+              ondragover="allowDrop(event)"
+            >
+              <div
+                class="scrum-content"
+                id="done"
+                ondrop="drop(event)"
+                ondragover="allowDrop(event)"
+              >
+                {% for i in range(3, 9) %}
+                <!-- 1부터 8까지 반복 -->
+                <div
+                  class="scrum-sprint-item"
+                  id="item-{{ i }}"
+                  draggable="true"
+                  ondragstart="drag(event)"
+                >
+                  <p>작업 이름 {{ i }}</p>
+                  <span class="user-circle">사용자 {{ i }}</span>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endblock %}
+      </div>
+    </div>
+
+    <!-- 외부 JavaScript 파일 연결 -->
+    <script src="{{ url_for('static', filename='js/scrum.js') }}"></script>
+  </body>
+</html>
