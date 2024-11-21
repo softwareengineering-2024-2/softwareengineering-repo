@@ -60,7 +60,7 @@
 
             <div class="retrospect-content">
                 <h3>내용</h3>
-                <p>{{ retrospect.retrospect_content }}</p>
+                <p>{{ retrospect.retrospect_content.replace('\n', '<br>')|safe }}</p>
             </div>
 
             <hr>
