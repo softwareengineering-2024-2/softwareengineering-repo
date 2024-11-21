@@ -10,8 +10,8 @@ def get_project_name(project_id):
     return project_name
 
 # 알림 저장하기
-def save_alert(user_id,project_id, alert_content, status):
-    alert = Alert(user_id=user_id,project_id=project_id, alert_content=alert_content, status=status)
+def save_alert(project_id, alert_content):
+    alert = Alert(project_id=project_id, alert_content=alert_content)
     alert.save_to_db()
 
 # 알림 조회하기
