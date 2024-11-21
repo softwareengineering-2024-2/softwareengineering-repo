@@ -33,8 +33,8 @@ def retrospect_view(project_id):
 
     user_projects = UserProject.query.filter_by(project_id=project_id).all()
     user_map = {user_project.user_id: user_project.user_name for user_project in user_projects}    
-
-    return render_template('retrospect_back.html', project=project, project_id=project_id, sprints=sprints, retrospects=retrospects, user_map=user_map)
+    # 수정해야해요! userproject 부분
+    return render_template('retrospect.html', project=project, project_id=project_id, sprints=sprints, retrospects=retrospects, user_map=user_map,userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
 
 # 회고 생성 페이지
 @retrospect_bp.route('/<int:project_id>/create', methods=['GET'])
@@ -42,7 +42,7 @@ def retrospect_view(project_id):
 def get_create_retrospect_view(project_id):
     project = Project.query.get_or_404(project_id)
     sprints = get_sprints(project_id)
-    return render_template('create_retrospect_back.html', project=project, sprints=sprints)
+    return render_template('create_retrospect.html', project=project, sprints=sprints,userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
 
 # 회고 생성
 @retrospect_bp.route('/<int:project_id>/create', methods=['POST'])
@@ -72,7 +72,7 @@ def get_edit_retrospect_view(project_id, retrospect_id):
     if retrospect.user_id != current_user.id:
         flash("본인이 작성한 글만 수정할 수 있습니다.", "error")
         return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
-    return render_template('create_retrospect_back.html', project=project, retrospect=retrospect, sprints=sprints)
+    return render_template('create_retrospect.html', project=project, retrospect=retrospect, sprints=sprints, userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
 
 # 회고 수정
 @retrospect_bp.route('/<int:project_id>/edit/<int:retrospect_id>', methods=["POST"])
@@ -102,12 +102,12 @@ def view_retrospect_view(project_id, retrospect_id):
     retrospect = get_retrospect_by_id(retrospect_id)
     if not retrospect:
         return render_template("404.html"), 404
-    
+    project = Project.query.get_or_404(project_id)
     sprints = get_sprints(project_id)
 
     user_name = get_user_name_by_project_and_user(project_id, retrospect.user_id)
-
-    return render_template('view_retrospect_back.html', retrospect=retrospect, sprints=sprints, user_name=user_name)
+    # 수정해야해요! userproject 부분
+    return render_template('view_retrospect.html', project=project, retrospect=retrospect, sprints=sprints, user_name=user_name,userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
 
 # 회고 삭제
 @retrospect_bp.route('/<int:project_id>/delete/<int:retrospect_id>', methods=["POST"])
