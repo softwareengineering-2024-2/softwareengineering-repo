@@ -64,13 +64,15 @@
                                 {% endif %}</p>
                             </div>
                             <div class="card-actions">
-                                <img
-                                    src="{{ url_for('static', filename='icons/dotdotdot.svg') }}"
-                                    alt="설정 버튼"
-                                    class="options-btn"
-                                    onclick="openOptions(event, {{ retrospect.retrospect_id }})"
-                                />
-                            </div>
+                                {% if userproject.user_role == 'PM(기획자)' or current_user.id == retrospect.user_id %}
+                                    <img
+                                        src="{{ url_for('static', filename='icons/dotdotdot.svg') }}"
+                                        alt="설정 버튼"
+                                        class="options-btn"
+                                        onclick="openOptions(event, {{ retrospect.retrospect_id }})"
+                                    />
+                                {% endif %}
+                            </div>                            
                         </div>
                         {% endfor %}
                     {% else %}
@@ -101,7 +103,10 @@
             {% for retrospect in retrospects.items %}
             <div id="options-modal-{{ retrospect.retrospect_id }}" class="modal hidden">
                 <div class="modal-content">
-                    <button onclick="editRetrospect({{ retrospect.retrospect_id }})">수정</button>
+                    <!-- 수정 버튼: 작성자 본인만 표시 -->
+                    {% if current_user.id == retrospect.user_id %}
+                        <button onclick="editRetrospect({{ retrospect.retrospect_id }})">수정</button>
+                    {% endif %}
                     <button class="btn-danger" onclick="deleteRetrospect({{ retrospect.retrospect_id }})">삭제</button>
                 </div>
             </div>
