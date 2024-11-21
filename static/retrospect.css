@@ -240,3 +240,68 @@
     text-align: center;
     padding: 5px;
 }
+
+
+.custom-modal.hidden {
+    display: none;
+}
+
+.custom-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.custom-modal-content {
+    background-color: var(--color-white);
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    max-width: 90%;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.custom-modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.custom-modal-confirm-btn {
+    background-color: var(--color-red);
+    color: var(--color-white);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.custom-modal-cancel-btn,
+.custom-modal-close-btn {
+    background-color: var(--color-grey-100);
+    color: var(--color-black);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.custom-modal-cancel-btn:hover,
+.custom-modal-close-btn:hover {
+    background-color: var(--color-grey-200);
+}
+
+#modalMessage {
+    font-size: 1rem;
+    color: var(--color-grey-700);
+    margin-top: 10px;
+}

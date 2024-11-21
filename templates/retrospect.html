@@ -75,7 +75,7 @@
                         {% endfor %}
                     {% else %}
                         <div class="no-retrospects">
-                            회고를 생성해주세요
+                            아직 생성된 회고가 없습니다.
                         </div>
                     {% endif %}
                 </div>
@@ -106,6 +106,26 @@
                 </div>
             </div>
             {% endfor %}
+            <!-- 삭제 확인 모달 -->
+            <div id="confirmDeleteModal" class="custom-modal hidden">
+                <div class="custom-modal-content">
+                    <h2>확인</h2>
+                    <p id="confirmDeleteMessage">정말로 이 회고를 삭제하시겠습니까?</p>
+                    <div class="custom-modal-buttons">
+                        <button onclick="confirmDelete()" class="custom-modal-confirm-btn">삭제</button>
+                        <button onclick="closeConfirmDeleteModal()" class="custom-modal-cancel-btn">취소</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 메시지 모달 -->
+            <div id="messageModal" class="custom-modal hidden">
+                <div class="custom-modal-content">
+                    <h2 id="modalTitle">알림</h2>
+                    <p id="modalMessage">메시지 내용이 여기에 표시됩니다.</p>
+                    <button onclick="closeMessageModal()" class="custom-modal-close-btn">닫기</button>
+                </div>
+            </div>
         </div>
     </div>
     <script>
