@@ -83,6 +83,22 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
+    height: 100%; /* 전체 영역 차지 */
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+}
+
+.no-retrospects {
+    grid-column: 1 / -1; /* 부모 그리드의 전체 열을 차지 */
+    display: flex;
+    justify-content: center; /* 가로 중앙 */
+    align-items: center; /* 세로 중앙 */
+    height: 100%; /* 부모 높이에 맞추기 */
+    font-size: 24px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-grey-500);
+    text-align: center;
+    margin-top: 30vh;
 }
 
 .card {

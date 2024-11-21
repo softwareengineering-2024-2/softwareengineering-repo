@@ -39,40 +39,45 @@
             </header>
             <div class="content-body">
                 <div class="retrospect-cards">
-                    {% for retrospect in retrospects.items %}
-                    <div class="card">
-                        <div class="card-content"
-                        onclick="navigateToRetrospect(event, {{ project.project_id }}, {{ retrospect.retrospect_id }})">
-                        <div class="card-header {{ 'retrospect' if retrospect.label == 'retrospect' else 'risk' }}">
-                            {% if retrospect.label == 'retrospect' %}
-                                회고
-                            {% else %}
-                                리스크
-                            {% endif %}
+                    {% if retrospects.items %}
+                        {% for retrospect in retrospects.items %}
+                        <div class="card">
+                            <div class="card-content"
+                                onclick="navigateToRetrospect(event, {{ project.project_id }}, {{ retrospect.retrospect_id }})">
+                                <div class="card-header {{ 'retrospect' if retrospect.label == 'retrospect' else 'risk' }}">
+                                    {% if retrospect.label == 'retrospect' %}
+                                        회고
+                                    {% else %}
+                                        리스크
+                                    {% endif %}
+                                </div>
+                                <h3>{{ retrospect.retrospect_title }}</h3>
+                                <p>작성자: {{ user_map[retrospect.user_id] }}</p>
+                                <p>스프린트: {% if retrospect.sprint_id %}
+                                    {% for sprint in sprints %}
+                                        {% if sprint.sprint_id == retrospect.sprint_id %}
+                                            {{ sprint.sprint_name }}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    없음
+                                {% endif %}</p>
+                            </div>
+                            <div class="card-actions">
+                                <img
+                                    src="{{ url_for('static', filename='icons/dotdotdot.svg') }}"
+                                    alt="설정 버튼"
+                                    class="options-btn"
+                                    onclick="openOptions(event, {{ retrospect.retrospect_id }})"
+                                />
+                            </div>
                         </div>
-                        <h3>{{ retrospect.retrospect_title }}</h3>
-                        <p>작성자: {{ user_map[retrospect.user_id] }}</p>
-                        <p>스프린트: {% if retrospect.sprint_id %}
-                            {% for sprint in sprints %}
-                                {% if sprint.sprint_id == retrospect.sprint_id %}
-                                    {{ sprint.sprint_name }}
-                                {% endif %}
-                            {% endfor %}
-                        {% else %}
-                            없음
-                        {% endif %}</p>
+                        {% endfor %}
+                    {% else %}
+                        <div class="no-retrospects">
+                            회고를 생성해주세요
                         </div>
-                        <!-- 수정/삭제 버튼 -->
-                        <div class="card-actions">
-                        <img
-                            src="{{ url_for('static', filename='icons/dotdotdot.svg') }}"
-                            alt="설정 버튼"
-                            class="options-btn"
-                            onclick="openOptions(event, {{ retrospect.retrospect_id }})"
-                        />
-                        </div>
-                    </div>
-                    {% endfor %}
+                    {% endif %}
                 </div>
 
                 <div class="pagination">
