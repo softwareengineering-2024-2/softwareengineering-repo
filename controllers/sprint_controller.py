@@ -19,9 +19,8 @@ def get_all_product_backlogs(project_id):
 # 스프린트 백로그에 할당되지 않은 프로덕트 백로그만 가져오는 함수
 def get_unassigned_product_backlogs(project_id):
     try:
-        # 스프린트에 할당되지 않은 프로덕트 백로그를 필터링
         unassigned_backlogs = ProductBacklog.query.filter_by(project_id=project_id, sprint_id=None).all()
-        return unassigned_backlogs
+        return [backlog.to_dict() for backlog in unassigned_backlogs]
     except SQLAlchemyError as e:
         return str(e)
 
@@ -148,30 +147,38 @@ def get_sprints_with_backlogs(project_id):
 
     
 # 프로덕트 백로그에 스프린트 ID를 할당하는 메서드
-def assign_backlogs_to_sprint(sprint_id, backlog_ids):
+def assign_backlogs_to_sprint(sprint_id, new_backlog_ids):
     try:
-        for backlog_id in backlog_ids:
-            backlog = ProductBacklog.query.get(backlog_id)
-            if backlog:
-                backlog.sprint_id = sprint_id
-        db.session.commit()
-        return True
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        return str(e)
-    
-# 수정할 때 sprintBacklog의 sprint_id 재할당
-def assign_backlogs_to_sprint(sprint_id, backlog_ids):
-    try:
-        # 기존에 해당 스프린트에 할당된 모든 백로그의 sprint_id를 제거
-        ProductBacklog.query.filter_by(sprint_id=sprint_id).update({"sprint_id": None})
-        db.session.commit()
+        # 새로운 백로그 ID를 세트로 변환
+        new_backlog_ids = set(map(int, new_backlog_ids))
         
-        # 새로 선택된 백로그에 sprint_id 할당
-        for backlog_id in backlog_ids:
+        # 현재 스프린트에 할당된 백로그 ID를 가져옴
+        current_backlogs = ProductBacklog.query.filter_by(sprint_id=sprint_id).all()
+        current_backlog_ids = set(backlog.product_backlog_id for backlog in current_backlogs)
+        
+        # 제거해야 할 백로그 (현재 할당되었지만 선택되지 않은 백로그)
+        backlogs_to_unassign = current_backlog_ids - new_backlog_ids
+        
+        # 새로 할당해야 할 백로그 (이전에 할당되지 않았지만 새로 선택된 백로그)
+        backlogs_to_assign = new_backlog_ids - current_backlog_ids
+        
+        # 백로그 할당 해제 및 관련 SprintBacklog 삭제
+        for backlog_id in backlogs_to_unassign:
+            backlog = ProductBacklog.query.get(backlog_id)
+            if backlog:
+                backlog.sprint_id = None
+                # 관련된 SprintBacklog 삭제
+                sprint_backlogs = SprintBacklog.query.filter_by(product_backlog_id=backlog_id).all()
+                for sb in sprint_backlogs:
+                    db.session.delete(sb)
+        
+        # 백로그에 스프린트 ID 할당
+        for backlog_id in backlogs_to_assign:
             backlog = ProductBacklog.query.get(backlog_id)
             if backlog:
                 backlog.sprint_id = sprint_id
+                # 필요한 경우 새로운 SprintBacklog 생성 로직 추가
+                
         db.session.commit()
         return True
     except SQLAlchemyError as e:
