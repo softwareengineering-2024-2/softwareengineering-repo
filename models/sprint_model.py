@@ -43,6 +43,11 @@ class Sprint(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    # id를 통해 스프린트 검색
+    @classmethod
+    def find_by_id(cls, id):
+        return cls.query.get(id)
+
 # Sprint Backlog 모델
 class SprintBacklog(db.Model):
     # Sprint Backlog 테이블 스키마 정의
