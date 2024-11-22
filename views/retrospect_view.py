@@ -1,9 +1,7 @@
 # retrospect_view.py
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models.project_model import Project, UserProject
-from models.sprint_model import Sprint
-from models.user_model import Users
 from models.retrospect_model import Retrospect
 from controllers.retrospect_controller import get_sprints, create_retrospect, update_retrospect, delete_retrospect, get_retrospect_by_id, get_user_name_by_project_and_user, get_filtered_retrospects
 from flask_login import current_user, login_required
@@ -33,7 +31,6 @@ def retrospect_view(project_id):
 
     user_projects = UserProject.query.filter_by(project_id=project_id).all()
     user_map = {user_project.user_id: user_project.user_name for user_project in user_projects}    
-    # 수정해야해요! userproject 부분
     return render_template('retrospect.html', project=project, project_id=project_id, sprints=sprints, retrospects=retrospects, user_map=user_map,userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
 
 # 회고 생성 페이지
@@ -106,7 +103,6 @@ def view_retrospect_view(project_id, retrospect_id):
     sprints = get_sprints(project_id)
 
     user_name = get_user_name_by_project_and_user(project_id, retrospect.user_id)
-    # 수정해야해요! userproject 부분
     return render_template('view_retrospect.html', project=project, retrospect=retrospect, sprints=sprints, user_name=user_name,userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
 
 # 회고 삭제
