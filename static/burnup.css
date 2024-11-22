@@ -1,0 +1,35 @@
+.main-container {
+    margin-top: 2vh; /* 탑바 밑 여백 추가 */
+    margin-left: 25vh; /* 사이드바 너비만큼 왼쪽 여백 추가 */
+}
+
+.content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.burnup-chart-container {
+    border-radius: 10px;
+    border: 1px solid var(--color-grey-100);
+    background: var(--color-white);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    width: 80%;
+    height:83vh;
+    display: inline-block;
+}
+
+#burnupChartContainer {
+    height: 90%;
+    margin-top: 20px;
+    margin-left: 30px;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+}
