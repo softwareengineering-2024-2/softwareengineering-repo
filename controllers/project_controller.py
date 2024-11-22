@@ -1,6 +1,8 @@
 from models.project_model import Project, UserProject
+from models.burnup_model import BacklogChanges
 from uuid import uuid4
 from flask_login import current_user
+from datetime import datetime
 
 # 새로운 프로젝트를 생성하고 저장하는 로직
 def create_project(project_name):
@@ -11,6 +13,10 @@ def create_project(project_name):
     # 새로운 프로젝트 UserProject 테이블에 저장
     new_user_project = UserProject(user_id=current_user.id, project_id=new_project.project_id, user_name=current_user.name, user_role="Member")
     new_user_project.save_to_db()
+
+    # 새로운 프로젝트의 초기 번업 차트 데이터 저장
+    new_change = BacklogChanges(project_id=new_project.project_id, changed_date=datetime.now().date(), total_backlog=0, completed_backlog=0)
+    new_change.save_to_db()
 
     return new_project
 

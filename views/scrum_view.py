@@ -7,6 +7,7 @@ from models.project_model import UserProject
 from controllers.sprint_controller import get_sprints_with_backlogs
 from flask_login import current_user
 from controllers.project_controller import get_user_projects
+from controllers.burnup_controller import update_completed_backlog
 from database import db
 
 # Blueprint 객체 생성
@@ -60,7 +61,8 @@ def scrum_view(project_id):
 def update_sprint_backlog_statuses():
     data = request.get_json()
     updated_backlogs = data.get('updated_backlogs', [])
-    
+    done_count = 0 # 'Done'으로 변경된 백로그 수
+
     for backlog_data in updated_backlogs:
         backlog_id = backlog_data.get('backlog_id')
         new_status = backlog_data.get('new_status')
@@ -68,9 +70,20 @@ def update_sprint_backlog_statuses():
         # 스프린트 백로그 아이템 가져오기
         backlog_item = SprintBacklog.query.get(backlog_id)
         if backlog_item:
+            # 'Done'으로 상태가 변경되었는지 확인
+            if backlog_item.status != 'Done' and new_status == 'Done':
+                done_count += 1
+            # 'Done'에서 다른 상태로 변경되었는지 확인
+            elif backlog_item.status == 'Done' and new_status != 'Done':
+                done_count -= 1
             backlog_item.status = new_status
         else:
             return jsonify({'success': False, 'message': f'Backlog item {backlog_id} not found'}), 404
     
     db.session.commit()
+
+    # 완료된 백로그 수를 업데이트하는 로직 호출
+    sprint_id = SprintBacklog.find_by_id(backlog_id).sprint_id
+    project_id = Sprint.find_by_id(sprint_id).project_id
+    update_completed_backlog(project_id, done_count)
     return jsonify({'success': True})

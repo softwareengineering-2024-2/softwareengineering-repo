@@ -5,6 +5,7 @@ from controllers.sprint_controller import (
     get_all_product_backlogs, create_sprint_backlog
 )
 from controllers.calendar_controller import create_schedule
+from controllers.burnup_controller import increment_total_backlog, decrement_total_backlog
 from models.project_model import Project, UserProject
 from flask_login import current_user, login_required
 
@@ -91,6 +92,7 @@ def add_sprint_backlog(sprint_id, product_backlog_id):
     content = request.form.get('content')
     user_id = request.form.get('user_id')
     backlog, error = create_sprint_backlog(sprint_id, product_backlog_id, content, user_id) 
+    increment_total_backlog(request.form.get('project_id')) # 백로그 생성 시 총 백로그 수 증가
 
     if backlog:
         flash('스프린트 백로그가 성공적으로 추가되었습니다.')
@@ -125,5 +127,6 @@ def delete_backlog_view(backlog_id):
     success, message, project_id = delete_backlog(backlog_id)
     flash(message)
     if success:
+        decrement_total_backlog(project_id) # 백로그 삭제 시 총 백로그 수 감소
         return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id))
     return redirect(url_for('sprint.get_product_backlogs_view')) 
