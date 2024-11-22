@@ -328,7 +328,6 @@ function confirmDelete() { //스프린트 삭제 확인 함수
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRFToken": "{{ csrf_token() }}",
     },
   })
     .then((response) => {
@@ -478,3 +477,26 @@ window.addEventListener("DOMContentLoaded", function() {
       });
   }
 });
+
+function moveBacklogs(sprintId, projectId) {
+  fetch(`/sprint/move-backlogs/${sprintId}/${projectId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({}),
+  })
+    .then(response => {
+      if (response.ok) {
+        showMessageModal('성공', '백로그가 다음 스프린트로 이전되었습니다.');
+        setTimeout(() => location.reload(), 2000);
+      } else {
+        showMessageModal('오류', '백로그 이전에 실패했습니다.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showMessageModal('오류', '백로그 이전 중 오류가 발생했습니다.');
+    });
+}
+

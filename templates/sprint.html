@@ -41,7 +41,7 @@
           </div>
           {% if sprints %} {% for sprint in sprints %}
           <div
-            class="sprint-container"
+            class="sprint-container {% if sprint.is_past_due %}past-due{% endif %}"
             id="sprint-{{ loop.index }}"
             style="display: {% if loop.index == 1 %}block{% else %}none{% endif %};"
           >
@@ -51,7 +51,11 @@
                 <span class="sprint-dates"
                   >{{ sprint.start_date }} - {{ sprint.end_date }}</span
                 >
+                {% if sprint.status == 'Done' %}
+                  <span class="sprint-status-label">스프린트 완료</span>
+                {% endif %}
               </div>
+              {% if not sprint.is_past_due %}
               <div class="sprint-actions">
                 <button
                   class="header-options-btn"
@@ -63,23 +67,36 @@
                   />
                 </button>
               </div>
-            </div>
+              {% else %}
+                <!-- 백로그 이전 버튼 -->
+                <div class="sprint-actions">
+                  <button
+                    class="move-backlog-btn"
+                    onclick="moveBacklogs({{ sprint.sprint_id }}, {{ project.project_id }})"
+                  >
+                    백로그 이전
+                  </button>
+                </div>
+                {% endif %}
+              </div>
             <div class="sprint-backlog-container">
               <!-- 프로덕트 백로그 섹션 -->
               {% for backlog in sprint.product_backlogs %}
               <div class="product-backlog-section">
                 <div class="backlog-header">
                   <h3>{{ backlog.content }}</h3>
+                  {% if not sprint.is_past_due %}
                   <button
                     class="add-backlog-btn"
                     onclick="openSprintBacklogModal({{ sprint.sprint_id }}, {{ backlog.product_backlog_id }})"
                   >
                     스프린트 백로그 추가
                   </button>
+                  {% endif %}
                 </div>
                 <div class="sprint-backlog-list">
-                  {% if backlog.sprint_backlogs %} {% for sprint_backlog in
-                  backlog.sprint_backlogs %}
+                  {% if backlog.sprint_backlogs %}
+                  {% for sprint_backlog in backlog.sprint_backlogs %}
                   <div class="sprint-backlog-item">
                     <p>{{ sprint_backlog.content }}</p>
                     <div class="status-container">
@@ -97,18 +114,21 @@
                       <span class="user-initials">
                         {{ sprint_backlog.user_name[:2] }}</span
                       >
-                      <button
-                        class="options-btn"
-                        onclick="toggleBacklogOptionsModal(event, {{ sprint_backlog.sprint_backlog_id }}, '{{ sprint_backlog.content }}', {{ sprint_backlog.user_id }})"
-                      >
-                        <img
-                          src="{{ url_for('static', filename='icons/dotdotdot.svg') }}"
-                          alt="설정 버튼"
-                        />
-                      </button>
+                      {% if not sprint.is_past_due %}
+                        <button
+                          class="options-btn"
+                          onclick="toggleBacklogOptionsModal(event, {{ sprint_backlog.sprint_backlog_id }}, '{{ sprint_backlog.content }}', {{ sprint_backlog.user_id }})"
+                        >
+                          <img
+                            src="{{ url_for('static', filename='icons/dotdotdot.svg') }}"
+                            alt="설정 버튼"
+                          />
+                        </button>
+                        {% endif %}
+                      </div>
                     </div>
-                  </div>
-                  {%endfor%} {% else %}
+                    {% endfor %}
+                  {% else %}
                   <p>스프린트 백로그가 없습니다.</p>
                   {% endif %}
                 </div>
@@ -352,8 +372,6 @@
     var sprintsData = {{ sprints|tojson }};
     var unassignedBacklogsData = {{ backlogs.unassigned_backlogs|tojson }};
   </script>
-  
-  <!-- JavaScript 파일 로드 -->
   <script src="{{ url_for('static', filename='js/sprint.js') }}"></script>
-  <script></script>
+  
 </html>
