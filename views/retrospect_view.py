@@ -6,7 +6,6 @@ from models.retrospect_model import Retrospect
 from controllers.retrospect_controller import get_sprints, create_retrospect, update_retrospect, delete_retrospect, get_retrospect_by_id, get_user_name_by_project_and_user, get_filtered_retrospects, handle_file_upload
 from flask_login import current_user, login_required
 from database import db
-from drive.drive_init import upload_to_drive
 
 # Blueprint 객체 생성
 retrospect_bp = Blueprint('retrospect', __name__)
@@ -17,19 +16,11 @@ retrospect_bp = Blueprint('retrospect', __name__)
 def retrospect_view(project_id):
     project = Project.query.get_or_404(project_id)
     sprints = get_sprints(project_id)
-
     label = request.args.get('category', 'all')
     sprint_id = request.args.get('sprint', 'all')
     page = request.args.get('page', 1, type=int)
-
-    retrospects = get_filtered_retrospects( # 필터링
-        project_id=project_id,
-        category=label,
-        sprint_id=sprint_id,
-        page=page,
-        per_page=12
-    )
-
+    retrospects = get_filtered_retrospects(project_id=project_id, category=label, sprint_id=sprint_id,
+                                            page=page, per_page=12)
     user_projects = UserProject.query.filter_by(project_id=project_id).all()
     user_map = {user_project.user_id: user_project.user_name for user_project in user_projects}    
     return render_template('retrospect.html', project=project, project_id=project_id, sprints=sprints, retrospects=retrospects, user_map=user_map,userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
@@ -48,7 +39,6 @@ def get_create_retrospect_view(project_id):
 def create_retrospect_view(project_id):
     file = request.files.get('file')
     file_link = handle_file_upload(file)
-
     data = {
         "user_id": current_user.id,
         "project_id": project_id,
@@ -84,10 +74,8 @@ def edit_retrospect_view(project_id, retrospect_id):
     if retrospect.user_id != current_user.id:
         flash("본인이 작성한 글만 수정할 수 있습니다.", "error")
         return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
-    
     file = request.files.get('file')
     file_link = handle_file_upload(file) or retrospect.file_link
-
     data = {
         "retrospect_title": request.form.get("retrospect_title"),
         "retrospect_content": request.form.get("retrospect_content"),
@@ -106,8 +94,6 @@ def edit_retrospect_view(project_id, retrospect_id):
 @login_required
 def view_retrospect_view(project_id, retrospect_id):
     retrospect = get_retrospect_by_id(retrospect_id)
-    if not retrospect:
-        return render_template("404.html"), 404
     project = Project.query.get_or_404(project_id)
     sprints = get_sprints(project_id)
     user_name = get_user_name_by_project_and_user(project_id, retrospect.user_id)

@@ -9,7 +9,6 @@ def init_drive_api():
     service_account_file = os.environ.get('GOOGLE_DRIVE_KEY_PATH')
     if not service_account_file:
         raise ValueError("환경변수 GOOGLE_DRIVE_KEY_PATH가 설정되지 않았습니다.")
-    
     scopes = ["https://www.googleapis.com/auth/drive"]
     credentials = Credentials.from_service_account_file(service_account_file, scopes=scopes)
 
@@ -19,25 +18,21 @@ def init_drive_api():
 # 파일 업로드 함수
 def upload_to_drive(file, file_name, folder_id):
     drive_service = init_drive_api()
-
     # 임시 파일에 업로드된 파일을 저장
     with tempfile.NamedTemporaryFile(delete=False) as temp_file:
         temp_file.write(file.read())
         temp_file_path = temp_file.name
-
     try:
         media = MediaFileUpload(temp_file_path, mimetype=file.content_type, resumable=True)
         file_metadata = {
             "name": file_name,
             "parents": [folder_id]
         }
-
         uploaded_file = drive_service.files().create(
             body=file_metadata,
             media_body=media,
             fields="id, webViewLink"
         ).execute()
-
         return {
             "id": uploaded_file.get("id"),
             "webViewLink": uploaded_file.get("webViewLink")
@@ -45,27 +40,3 @@ def upload_to_drive(file, file_name, folder_id):
     finally:
         # 임시 파일 삭제
         os.remove(temp_file_path)
-
-# def upload_to_drive(file_path, file_name, folder_id):
-#     drive_service = init_drive_api()
-#     file_metadata = {'name': file_name, 'parents': [folder_id]}
-    
-#     media = MediaFileUpload(file_path, resumable=True)
-#     uploaded_file = drive_service.files().create(
-#         body=file_metadata,
-#         media_body=media,
-#         fields='id, webViewLink'
-#     ).execute()
-
-#     return {
-#         'file_id': uploaded_file.get('id'),
-#         'view_link': uploaded_file.get('webViewLink')
-#     }
-
-# if __name__ == "__main__":
-#     file_path = "README.md"
-#     file_name = "README.md"
-#     folder_id = "1FcmKeVM8SaYPcJ8CUfOt6iBkB6tseANk"
-
-#     upload_result = upload_to_drive(file_path, file_name, folder_id)
-#     print(f"file uploaded successfully: {upload_result['view_link']}")
