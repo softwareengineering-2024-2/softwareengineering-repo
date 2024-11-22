@@ -54,6 +54,14 @@
                     <strong>카테고리:</strong>
                     {{ '회고' if retrospect.label == 'retrospect' else '리스크' }}
                 </div>
+                <div class="retrospect-file">
+                    <strong>첨부 파일:</strong>
+                    {% if file_link %}
+                        <a href="{{ file_link }}" target="_blank" download>파일 다운로드</a>
+                    {% else %}
+                        첨부된 파일이 없습니다.
+                    {% endif %}
+                </div>
             </div>
 
             <hr>
@@ -62,7 +70,6 @@
                 <h3>내용</h3>
                 <p>{{ retrospect.retrospect_content.replace('\n', '<br>')|safe }}</p>
             </div>
-
             <hr>
 
             <button class="btn-back" onclick="location.href='{{ url_for('retrospect.retrospect_view', project_id=retrospect.project_id) }}'">

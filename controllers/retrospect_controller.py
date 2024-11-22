@@ -7,11 +7,8 @@ from database import db
 
 # 특정 프로젝트의 스프린트 목록을 가져오는 함수
 def get_sprints(project_id):
-    try:
-        sprints = Sprint.query.filter_by(project_id=project_id).order_by(Sprint.sprint_id).all()
-        return sprints if sprints else []
-    except Exception:
-        return None
+    sprints = Sprint.query.filter_by(project_id=project_id).order_by(Sprint.sprint_id).all()
+    return sprints if sprints else []
 
 # 회고를 생성하고 저장하는 함수
 def create_retrospect(data):
@@ -21,8 +18,9 @@ def create_retrospect(data):
         sprint_id=data.get('sprint_id'),
         retrospect_title=data.get('retrospect_title'),
         retrospect_content=data.get('retrospect_content'),
-        label=data.get('label')
-    )
+        label=data.get('label'),
+        file_link=data.get('file_link'),
+    )  
     db.session.add(retrospect)
     db.session.commit()
     return True
@@ -35,6 +33,8 @@ def update_retrospect(retrospect_id, data):
     retrospect.retrospect_title = data.get("retrospect_title", retrospect.retrospect_title)
     retrospect.retrospect_content = data.get("retrospect_content", retrospect.retrospect_content)
     retrospect.label = data.get("label", retrospect.label)
+    retrospect.file_link = data.get("file_link", retrospect.file_link)
+    retrospect.sprint_id = data.get("sprint_id", retrospect.sprint_id)
     db.session.commit()
     return True
 

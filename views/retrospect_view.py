@@ -6,6 +6,7 @@ from models.retrospect_model import Retrospect
 from controllers.retrospect_controller import get_sprints, create_retrospect, update_retrospect, delete_retrospect, get_retrospect_by_id, get_user_name_by_project_and_user, get_filtered_retrospects
 from flask_login import current_user, login_required
 from database import db
+from drive.drive_init import upload_to_drive
 
 # Blueprint 객체 생성
 retrospect_bp = Blueprint('retrospect', __name__)
@@ -45,13 +46,22 @@ def get_create_retrospect_view(project_id):
 @retrospect_bp.route('/<int:project_id>/create', methods=['POST'])
 @login_required
 def create_retrospect_view(project_id):
+    file = request.files.get('file')
+    if file and file.filename != '':
+        folder_id = "1FcmKeVM8SaYPcJ8CUfOt6iBkB6tseANk"
+        upload_result = upload_to_drive(file, file.filename, folder_id)
+        file_link = upload_result['webViewLink']
+    else:
+        file_link = None
+
     data = {
         "user_id": current_user.id,
         "project_id": project_id,
         "sprint_id": request.form.get("sprint_id"),
         "retrospect_title": request.form.get("retrospect_title"),
         "retrospect_content": request.form.get("retrospect_content"),
-        "label": request.form.get("label")
+        "label": request.form.get("label"),
+        "file_link": file_link
     }
     if create_retrospect(data):
         flash("회고가 성공적으로 생성되었습니다.", "success")
@@ -80,11 +90,20 @@ def edit_retrospect_view(project_id, retrospect_id):
         flash("본인이 작성한 글만 수정할 수 있습니다.", "error")
         return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
     
+    file = request.files.get('file')
+    file_link = retrospect.file_link
+
+    if file and file.filename != '':
+        folder_id = "1FcmKeVM8SaYPcJ8CUfOt6iBkB6tseANk"
+        upload_result = upload_to_drive(file, file.filename, folder_id)
+        file_link = upload_result.get('webViewLink')  # 새 파일 링크로 업데이트
+
     data = {
         "retrospect_title": request.form.get("retrospect_title"),
         "retrospect_content": request.form.get("retrospect_content"),
         "label": request.form.get("label"),
-        "sprint_id": request.form.get("sprint_id")
+        "sprint_id": request.form.get("sprint_id"),
+        "file_link": file_link
     }
     if update_retrospect(retrospect_id, data):
         flash("회고가 성공적으로 수정되었습니다.", "success")
@@ -101,9 +120,9 @@ def view_retrospect_view(project_id, retrospect_id):
         return render_template("404.html"), 404
     project = Project.query.get_or_404(project_id)
     sprints = get_sprints(project_id)
-
     user_name = get_user_name_by_project_and_user(project_id, retrospect.user_id)
-    return render_template('view_retrospect.html', project=project, retrospect=retrospect, sprints=sprints, user_name=user_name,userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
+    file_link = retrospect.file_link if retrospect.file_link else None
+    return render_template('view_retrospect.html', project=project, retrospect=retrospect, sprints=sprints, user_name=user_name, file_link=file_link, userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
 
 # 회고 삭제
 @retrospect_bp.route('/<int:project_id>/delete/<int:retrospect_id>', methods=["POST"])

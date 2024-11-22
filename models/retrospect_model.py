@@ -11,14 +11,16 @@ class Retrospect(db.Model):
     retrospect_title = db.Column(db.String(50), nullable=True)
     retrospect_content = db.Column(db.Text, nullable=True)
     label = db.Column(db.String(10), nullable=True)
+    file_link = db.Column(db.String(2083), nullable=True)
 
-    def __init__(self, user_id, project_id, sprint_id, retrospect_title=None, retrospect_content=None, label=None):
+    def __init__(self, user_id, project_id, sprint_id, retrospect_title=None, retrospect_content=None, label=None, file_link=None):
         self.user_id = user_id
         self.project_id = project_id
         self.sprint_id = sprint_id
         self.retrospect_title = retrospect_title
         self.retrospect_content = retrospect_content
         self.label = label
+        self.file_link = file_link
 
     def save_to_db(self):
         db.session.add(self)

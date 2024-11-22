@@ -108,3 +108,13 @@ function showMessageModal(title, message) {
 function closeMessageModal() {
     document.getElementById("messageModal").classList.add("hidden");
 }
+
+// 파일 선택 시 호출
+function handleFileSelect(input) {
+    if (input.files.length > 0) {
+        const fileName = input.files[0].name;
+        document.querySelector('.file-upload-input').value = fileName;
+    } else {
+        document.querySelector('.file-upload-input').value = '';
+    }
+}
