@@ -10,6 +10,7 @@ from views.sprint_view import sprint_bp
 from views.calendar_view import calendar_bp
 from views.retrospect_view import retrospect_bp
 from views.burnup_view import burnup_bp
+from views.scrum_view import scrum_bp
 from dotenv import load_dotenv
 from database import init_db
 
@@ -41,6 +42,7 @@ app.register_blueprint(userstory_bp, url_prefix='/userstory')
 app.register_blueprint(calendar_bp, url_prefix='/calendar')
 app.register_blueprint(retrospect_bp, url_prefix='/retrospect')
 app.register_blueprint(burnup_bp, url_prefix='/burnup')
+app.register_blueprint(scrum_bp, url_prefix='/scrum')
 
 @app.route("/")
 def index():
@@ -68,9 +70,9 @@ def index():
 # def sprint():
 #     return render_template("sprint.html")
 
-@app.route("/board")
-def board():
-    return render_template("board.html")
+#@app.route("/board")
+#def board():
+#    return render_template("board.html")
 
 # @app.route("/review")
 # def review():

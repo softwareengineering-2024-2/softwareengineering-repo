@@ -178,8 +178,12 @@
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 5px;
+    cursor: pointer;
 }
-
+.product-backlog-item.assigned {
+    background-color: gray;
+    color: white;
+  }
 
 /* 모달 배경 */
 .modal {

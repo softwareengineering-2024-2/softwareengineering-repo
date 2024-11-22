@@ -84,3 +84,102 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+// 스프린트 변경 함수
+function changeSprint(sprint_id) {
+  const urlParams = new URLSearchParams(window.location.search);
+  urlParams.set("sprint_id", sprint_id);
+  window.location.search = urlParams.toString();
+}
+
+// 스프린트 드롭다운 토글 함수
+function toggleSprintDropdown() {
+  const dropdowns = document.getElementsByClassName('sprint-dropdown');
+  if (dropdowns.length > 0) {
+    const dropdown = dropdowns[0]; 
+    dropdown.classList.toggle('show'); 
+  } else {
+    console.error("No dropdown elements found.");
+  }
+}
+
+// 드롭다운 외부 클릭 시 닫기
+window.onclick = function(event) {
+  const dropdown = document.getElementById('sprintDropdown');
+  if (!event.target.matches('.sprint-change-btn') && !event.target.closest('.sprint-change-btn') && dropdown.classList.contains('show')) {
+    dropdown.classList.remove('show');
+  }
+};
+
+// 문자열의 첫 글자를 대문자로 변환하는 함수
+String.prototype.titleCase = function () {
+  return this.toLowerCase()
+    .split(" ")
+    .map(function (word) {
+      return word.replace(word[0], word[0].toUpperCase());
+    })
+    .join(" ");
+};
+
+// CSRF 토큰을 가져오는 함수 (Flask-WTF를 사용하는 경우)
+function getCookie(name) {
+  var cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    var cookies = document.cookie.split(";");
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i].trim();
+      // 쿠키 이름이 일치하는지 확인
+      if (cookie.substring(0, name.length + 1) === name + "=") {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+function saveStatuses() {
+  // 모든 백로그 아이템의 현재 상태를 수집합니다.
+  var updatedBacklogs = [];
+  document.querySelectorAll('.scrum-sprint-item').forEach(function(item) {
+    var backlogId = item.getAttribute('data-backlog-id');
+    var parentColumn = item.parentElement;
+    var status = '';
+    if (parentColumn.id === 'to-do') {
+      status = 'To Do';
+    } else if (parentColumn.id === 'in-progress') {
+      status = 'In Progress';
+    } else if (parentColumn.id === 'done') {
+      status = 'Done';
+    }
+    updatedBacklogs.push({
+      'backlog_id': backlogId,
+      'new_status': status
+    });
+  });
+
+  // 서버에 업데이트된 상태를 전송합니다.
+  fetch("/scrum/update_sprint_backlog_statuses", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCookie("csrf_token"), // CSRF 토큰이 필요한 경우
+    },
+    body: JSON.stringify({
+      'updated_backlogs': updatedBacklogs
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      alert("상태가 성공적으로 저장되었습니다.");
+      // 필요하다면 페이지를 새로고침하거나 추가 작업을 수행합니다.
+    } else {
+      alert("상태 저장에 실패했습니다: " + data.message);
+    }
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+    alert('상태 저장 중 오류가 발생했습니다.');
+  });
+}
