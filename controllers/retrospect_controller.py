@@ -4,6 +4,7 @@ from models.retrospect_model import Retrospect
 from models.project_model import UserProject
 from models.sprint_model import Sprint
 from database import db
+from drive.drive_init import upload_to_drive
 
 # 특정 프로젝트의 스프린트 목록을 가져오는 함수
 def get_sprints(project_id):
@@ -72,3 +73,11 @@ def get_filtered_retrospects(project_id, category=None, sprint_id=None, page=1, 
         query = query.filter_by(sprint_id=sprint_id)
 
     return query.order_by(Retrospect.retrospect_id.desc()).paginate(page=page, per_page=per_page, error_out=False)
+
+# 파일 업로드하고 링크 반환하는 함수
+def handle_file_upload(file):
+    if file and file.filename != '':
+        folder_id = "1FcmKeVM8SaYPcJ8CUfOt6iBkB6tseANk"
+        upload_result = upload_to_drive(file, file.filename, folder_id)
+        return upload_result.get('webViewLink')
+    return None

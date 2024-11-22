@@ -3,7 +3,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models.project_model import Project, UserProject
 from models.retrospect_model import Retrospect
-from controllers.retrospect_controller import get_sprints, create_retrospect, update_retrospect, delete_retrospect, get_retrospect_by_id, get_user_name_by_project_and_user, get_filtered_retrospects
+from controllers.retrospect_controller import get_sprints, create_retrospect, update_retrospect, delete_retrospect, get_retrospect_by_id, get_user_name_by_project_and_user, get_filtered_retrospects, handle_file_upload
 from flask_login import current_user, login_required
 from database import db
 from drive.drive_init import upload_to_drive
@@ -47,12 +47,7 @@ def get_create_retrospect_view(project_id):
 @login_required
 def create_retrospect_view(project_id):
     file = request.files.get('file')
-    if file and file.filename != '':
-        folder_id = "1FcmKeVM8SaYPcJ8CUfOt6iBkB6tseANk"
-        upload_result = upload_to_drive(file, file.filename, folder_id)
-        file_link = upload_result['webViewLink']
-    else:
-        file_link = None
+    file_link = handle_file_upload(file)
 
     data = {
         "user_id": current_user.id,
@@ -91,12 +86,7 @@ def edit_retrospect_view(project_id, retrospect_id):
         return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
     
     file = request.files.get('file')
-    file_link = retrospect.file_link
-
-    if file and file.filename != '':
-        folder_id = "1FcmKeVM8SaYPcJ8CUfOt6iBkB6tseANk"
-        upload_result = upload_to_drive(file, file.filename, folder_id)
-        file_link = upload_result.get('webViewLink')  # 새 파일 링크로 업데이트
+    file_link = handle_file_upload(file) or retrospect.file_link
 
     data = {
         "retrospect_title": request.form.get("retrospect_title"),
