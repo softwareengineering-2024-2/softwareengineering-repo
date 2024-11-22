@@ -121,23 +121,6 @@ String.prototype.titleCase = function () {
     .join(" ");
 };
 
-// CSRF 토큰을 가져오는 함수 (Flask-WTF를 사용하는 경우)
-function getCookie(name) {
-  var cookieValue = null;
-  if (document.cookie && document.cookie !== "") {
-    var cookies = document.cookie.split(";");
-    for (var i = 0; i < cookies.length; i++) {
-      var cookie = cookies[i].trim();
-      // 쿠키 이름이 일치하는지 확인
-      if (cookie.substring(0, name.length + 1) === name + "=") {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
-}
-
 function saveStatuses() {
   // 모든 백로그 아이템의 현재 상태를 수집합니다.
   var updatedBacklogs = [];
@@ -163,7 +146,7 @@ function saveStatuses() {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRFToken": getCookie("csrf_token"), // CSRF 토큰이 필요한 경우
+      "X-CSRFToken": csrfToken // CSRF 토큰이 필요한 경우
     },
     body: JSON.stringify({
       'updated_backlogs': updatedBacklogs
