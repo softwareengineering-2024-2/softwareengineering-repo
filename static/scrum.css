@@ -199,3 +199,13 @@
   border-radius: 5px;
   transition: width 0.3s ease;
 }
+
+.past-due {
+  opacity: 0.5;
+  pointer-events: none; /* 클릭 불가 */
+  cursor: not-allowed;
+}
+.scrum-board-container.past-due .scrum-sprint-item {
+  pointer-events: none;
+  cursor: not-allowed;
+}

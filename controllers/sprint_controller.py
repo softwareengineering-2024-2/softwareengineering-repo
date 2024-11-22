@@ -1,5 +1,5 @@
 # controllers/sprint_controller.py
-from datetime import datetime
+from datetime import date, datetime
 from models.sprint_model import Sprint, SprintBacklog
 from models.productbacklog_model import ProductBacklog
 from models.project_model import UserProject
@@ -106,6 +106,7 @@ def get_sprints_with_backlogs(project_id):
 
         sprint_details = []
         for sprint in sprints:
+            is_past_due = date.today() > sprint.sprint_end_date
             backlog_details = []
             for backlog in sprint.product_backlog:
                 # SprintBacklog와 UserProject를 조인하여 project_id와 user_id를 모두 검사
@@ -138,7 +139,9 @@ def get_sprints_with_backlogs(project_id):
                 'sprint_name': sprint.sprint_name,
                 'start_date': sprint.sprint_start_date.strftime('%Y-%m-%d'),
                 'end_date': sprint.sprint_end_date.strftime('%Y-%m-%d'),
-                'product_backlogs': backlog_details
+                'status': sprint.status,
+                'product_backlogs': backlog_details,
+                'is_past_due': is_past_due,
             })
 
         return sprint_details
@@ -237,14 +240,28 @@ def update_backlog_status(backlog_id, status):
         if backlog:
             backlog.status = status
             db.session.commit()
-            # 성공시 반환
+
+            # 해당 스프린트의 모든 백로그가 Done인지 확인
+            sprint_id = backlog.sprint_id
+            all_backlogs = SprintBacklog.query.filter_by(sprint_id=sprint_id).all()
+            if all(b.status == 'Done' for b in all_backlogs):
+                # 스프린트의 status를 Done으로 업데이트
+                sprint = Sprint.query.get(sprint_id)
+                if sprint:
+                    sprint.status = 'Done'
+                    db.session.commit()
+            else:
+                # 하나라도 Done이 아니면 스프린트의 status를 In Progress로 설정
+                sprint = Sprint.query.get(sprint_id)
+                if sprint and sprint.status != 'In Progress':
+                    sprint.status = 'In Progress'
+                    db.session.commit()
+
             return True, "Status updated successfully", backlog.sprint.project_id
         else:
-            # 백로그를 찾을 수 없을 때
             return False, "Backlog not found", None
     except Exception as e:
         db.session.rollback()
-        # 데이터베이스 오류 발생시
         return False, str(e), None
 
 
@@ -305,3 +322,59 @@ def get_current_sprint_backlogs(user_id, project_id):
 
     except SQLAlchemyError as e:
         return {'error': str(e)}
+
+def move_incomplete_backlogs_to_next_sprint(sprint_id, project_id):
+    try:
+        # 현재 스프린트 가져오기
+        current_sprint = Sprint.query.get(sprint_id)
+        if not current_sprint:
+            return False, "Current Sprint not found"
+
+        # 다음 스프린트 찾기
+        next_sprint = Sprint.query.filter(
+            Sprint.project_id == project_id,
+            Sprint.sprint_start_date > current_sprint.sprint_end_date
+        ).order_by(Sprint.sprint_start_date).first()
+
+        if not next_sprint:
+            return False, "No next Sprint found"
+
+        # 완료되지 않은 스프린트 백로그 가져오기
+        incomplete_backlogs = SprintBacklog.query.filter(
+            SprintBacklog.sprint_id == sprint_id,
+            SprintBacklog.status != 'Done'
+        ).all()
+
+        # 해당하는 ProductBacklog의 sprint_id를 다음 스프린트로 업데이트
+        for sprint_backlog in incomplete_backlogs:
+            product_backlog = ProductBacklog.query.get(sprint_backlog.product_backlog_id)
+            if product_backlog:
+                product_backlog.sprint_id = next_sprint.sprint_id
+                db.session.add(product_backlog) 
+
+        # SprintBacklog의 sprint_id도 다음 스프린트로 업데이트
+        for sprint_backlog in incomplete_backlogs:
+            sprint_backlog.sprint_id = next_sprint.sprint_id
+            db.session.add(sprint_backlog)
+
+        # 스프린트 백로그가 없는 현재 스프린트의 프로덕트 백로그 가져오기
+        unassigned_product_backlogs = ProductBacklog.query.filter(
+            ProductBacklog.sprint_id == sprint_id,
+            ~ProductBacklog.product_backlog_id.in_(
+                db.session.query(SprintBacklog.product_backlog_id).filter(
+                    SprintBacklog.sprint_id == sprint_id
+                )
+            )
+        ).all()
+
+        # 이 프로덕트 백로그들의 sprint_id를 다음 스프린트로 업데이트
+        for product_backlog in unassigned_product_backlogs:
+            product_backlog.sprint_id = next_sprint.sprint_id
+            db.session.add(product_backlog)
+
+        db.session.commit()
+        return True, "Backlogs moved successfully"
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error in move_incomplete_backlogs_to_next_sprint: {e}")  # 예외 메시지 출력
+        return False, str(e)

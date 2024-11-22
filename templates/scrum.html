@@ -57,7 +57,7 @@
           </div>
         </div>
 
-        <div class="scrum-board-container">
+        <div class="scrum-board-container {% if is_past_due %}past-due{% endif %}">
           <div class="todo-container">
             <h1 class="scrum-board-title">To Do</h1>
             <div
@@ -127,10 +127,11 @@
         </div>
         {% endblock %}
         <div class="save-button-container" style="text-align: right; margin-top: 20px;">
-          <button onclick="saveStatuses()" class="save-button">상태 저장</button>
+          <button onclick="saveStatuses()" class="save-button" {% if is_past_due %}disabled style="cursor: not-allowed; opacity: 0.5;"{% endif %}>상태 저장</button>
         </div>
       </div>
     </div>
+
 
     <!-- 외부 JavaScript 파일 연결 -->
     <script src="{{ url_for('static', filename='js/scrum.js') }}"></script>
