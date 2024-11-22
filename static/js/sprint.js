@@ -328,7 +328,6 @@ function confirmDelete() { //스프린트 삭제 확인 함수
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      'X-CSRFToken': csrfToken,
     },
   })
     .then((response) => {
@@ -480,12 +479,10 @@ window.addEventListener("DOMContentLoaded", function() {
 });
 
 function moveBacklogs(sprintId, projectId) {
-  console.log('CSRF Token:', csrfToken); // CSRF 토큰 확인 로그 추가
   fetch(`/sprint/move-backlogs/${sprintId}/${projectId}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRFToken': csrfToken,  // CSRF 토큰 포함
     },
     body: JSON.stringify({}),
   })

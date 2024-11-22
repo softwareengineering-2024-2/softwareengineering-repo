@@ -104,7 +104,6 @@
                         method="POST"
                         action="{{ url_for('sprint.edit_backlog_status_view', backlog_id=sprint_backlog.sprint_backlog_id) }}"
                       >
-                      <input type="hidden" name="csrf_token" value="{{ csrf_token}}">
                         <input
                           type="hidden"
                           name="backlog_id"
@@ -171,7 +170,6 @@
       <div class="modal-content">
         <h2>스프린트 생성</h2>
         <form action="{{ url_for('sprint.add_sprint') }}" method="post">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
           <label for="sprint-name">스프린트 이름</label>
           <input
             type="text"
@@ -221,7 +219,6 @@
       <div class="modal-content">
         <h2>스프린트 수정</h2>
         <form id="edit-sprint-form" action="" method="post">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token}}">
           <input type="hidden" id="edit-sprint-id" name="sprint_id" />
           <label for="edit-sprint-name">스프린트 이름</label>
           <input
@@ -257,7 +254,6 @@
       <div class="modal-content">
         <h2>스프린트 백로그 생성</h2>
         <form id="add-sprint-backlog-form" method="post">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
           <label for="backlog-name">스프린트 백로그 이름</label>
           <input
             type="text"
@@ -312,7 +308,6 @@
       <div class="modal-content">
         <h2>스프린트 백로그 수정</h2>
         <form id="edit-sprint-backlog-form" method="post">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
           <label for="edit-backlog-name">백로그 이름</label>
           <input type="text" id="edit-backlog-name" name="content" required />
 
@@ -377,10 +372,6 @@
     var sprintsData = {{ sprints|tojson }};
     var unassignedBacklogsData = {{ backlogs.unassigned_backlogs|tojson }};
   </script>
-  <script>
-  var csrfToken = "{{ csrf_token }}"; // CSRF 토큰 변수 추가
-</script>
-  <!-- JavaScript 파일 로드 -->
   <script src="{{ url_for('static', filename='js/sprint.js') }}"></script>
   
 </html>

@@ -146,7 +146,6 @@ function saveStatuses() {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRFToken": csrfToken // CSRF 토큰이 필요한 경우
     },
     body: JSON.stringify({
       'updated_backlogs': updatedBacklogs

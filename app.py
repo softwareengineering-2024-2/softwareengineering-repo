@@ -12,8 +12,6 @@ from views.retrospect_view import retrospect_bp
 from views.scrum_view import scrum_bp
 from dotenv import load_dotenv
 from database import init_db
-from flask_wtf import CSRFProtect
-from flask_wtf.csrf import generate_csrf
 
 # .env 파일 로드
 load_dotenv()
@@ -25,12 +23,6 @@ app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 # MySQL 데이터베이스 연결 설정
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("SQLALCHEMY_DATABASE_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-csrf = CSRFProtect(app)
-
-@app.context_processor
-def inject_csrf_token():
-    return dict(csrf_token=generate_csrf()) 
 
 # 모델 초기화 함수 호출
 init_db(app)
