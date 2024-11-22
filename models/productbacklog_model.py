@@ -31,3 +31,14 @@ class ProductBacklog(db.Model):
     def delete_from_db(self):
         db.session.delete(self)
         db.session.commit()
+
+    def to_dict(self):
+        return {
+            "product_backlog_id": self.product_backlog_id,
+            "story_id": self.story_id,
+            "project_id": self.project_id,
+            "product_backlog_content": self.product_backlog_content,
+            "status": self.status,
+            "backlog_order": self.backlog_order,
+            "sprint_id": self.sprint_id,
+        }

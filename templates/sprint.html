@@ -210,33 +210,24 @@
           />
 
           <label for="edit-sprint-start-date">스프린트 시작일</label>
-        <input type="date" id="edit-sprint-start-date" name="start_date" required />
+          <input type="date" id="edit-sprint-start-date" name="start_date" required />
 
-        <label for="edit-sprint-end-date">스프린트 종료일</label>
-        <input type="date" id="edit-sprint-end-date" name="end_date" required />
+          <label for="edit-sprint-end-date">스프린트 종료일</label>
+          <input type="date" id="edit-sprint-end-date" name="end_date" required />
 
           <label for="edit-product-backlog">프로덕트 백로그</label>
-          <select id="edit-product-backlog" name="backlogs" multiple>
-            {% for backlog in backlogs.all_backlogs %}
-            <option value="{{ backlog.product_backlog_id }}">
-              {{ backlog.product_backlog_content }}
-            </option>
-            {% endfor %}
-          </select>
+          <div id="edit-product-backlog-container" class="product-backlog-list">
+            <!-- 프로덕트 백로그 항목이 동적으로 추가됩니다 -->
+          </div>
 
           <div class="modal-buttons">
             <button type="button" class="add-sprint-btn" onclick="submitEditSprintForm()">저장</button>
-            <button
-              type="button"
-              class="cancel-btn"
-              onclick="closeSprintEditModal()"
-            >
-              취소하기
-            </button>
+            <button type="button" class="cancel-btn" onclick="closeSprintEditModal()">취소하기</button>
           </div>
         </form>
       </div>
     </div>
+
 
     <!-- 스프린트 백로그 생성 모달 -->
     <div id="sprint_backlog_modal" class="modal" style="display: none">
@@ -357,6 +348,11 @@
     </div>
 
   </body>
+  <script>
+    var sprintsData = {{ sprints|tojson }};
+    var unassignedBacklogsData = {{ backlogs.unassigned_backlogs|tojson }};
+  </script>
+  
   <!-- JavaScript 파일 로드 -->
   <script src="{{ url_for('static', filename='js/sprint.js') }}"></script>
   <script></script>
