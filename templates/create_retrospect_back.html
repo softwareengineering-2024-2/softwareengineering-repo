@@ -31,6 +31,9 @@
         <label for="content">내용:</label>
         <textarea id="content" name="retrospect_content" required>{{ retrospect.retrospect_content if retrospect else '' }}</textarea>
 
+        <label for="file">파일 첨부:</label>
+        <input type="file" id="file" name="file">
+        
         <button type="submit">작성 완료하기</button>
         <button type="cancel">취소</button>
     </form>
