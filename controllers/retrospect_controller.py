@@ -5,6 +5,7 @@ from models.project_model import UserProject
 from models.sprint_model import Sprint
 from database import db
 from drive.drive_init import upload_to_drive
+import os
 
 # 특정 프로젝트의 스프린트 목록을 가져오는 함수
 def get_sprints(project_id):
@@ -74,7 +75,9 @@ def get_filtered_retrospects(project_id, category=None, sprint_id=None, page=1, 
 # 파일 업로드하고 링크 반환하는 함수
 def handle_file_upload(file):
     if file and file.filename != '':
-        folder_id = "1FcmKeVM8SaYPcJ8CUfOt6iBkB6tseANk"
+        folder_id = os.getenv("GOOGLE_DRIVE_FOLDER_ID")
+        if not folder_id:
+            raise ValueError("환경변수 GOOGLE_DRIVE_FORDER_ID가 설정되지 않았습니다.")
         upload_result = upload_to_drive(file, file.filename, folder_id)
-        return upload_result.get('webContentLink')
+        return upload_result.get('webViewLink')
     return None
