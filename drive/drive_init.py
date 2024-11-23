@@ -31,11 +31,11 @@ def upload_to_drive(file, file_name, folder_id):
         uploaded_file = drive_service.files().create(
             body=file_metadata,
             media_body=media,
-            fields="id, webViewLink"
+            fields="id, webContentLink"
         ).execute()
         return {
             "id": uploaded_file.get("id"),
-            "webViewLink": uploaded_file.get("webViewLink")
+            "webContentLink": uploaded_file.get("webContentLink")
         }
     finally:
         # 임시 파일 삭제
