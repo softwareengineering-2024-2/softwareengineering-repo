@@ -94,6 +94,9 @@ def edit_retrospect_view(project_id, retrospect_id):
 @login_required
 def view_retrospect_view(project_id, retrospect_id):
     retrospect = get_retrospect_by_id(retrospect_id)
+    print(f"retrieved retrospect: {retrospect}")
+    print(f"file link from retrospect: {retrospect.file_link}")
+    
     project = Project.query.get_or_404(project_id)
     sprints = get_sprints(project_id)
     user_name = get_user_name_by_project_and_user(project_id, retrospect.user_id)
