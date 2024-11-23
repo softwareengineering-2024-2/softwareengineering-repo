@@ -1,9 +1,8 @@
 # productbacklog_view.py
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, jsonify
 from controllers.productbacklog_controller import get_user_stories, update_product_backlog, create_or_update_product_backlog_group, save_all_backlog_groups, delete_product_backlog, save_backlog_order
 from models.productbacklog_model import ProductBacklog
-from models.userstory_model import UserStory
 from models.project_model import Project, UserProject
 from flask_login import current_user
 from database import db

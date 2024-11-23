@@ -17,6 +17,7 @@
             <h2 class="page-title">회고 작성하기</h2>
             <form 
                 method="POST"
+                enctype="multipart/form-data"
                 class="retrospect-form"
                 action="{{ retrospect and url_for('retrospect.edit_retrospect_view', project_id=project.project_id, retrospect_id=retrospect.retrospect_id) or url_for('retrospect.create_retrospect_view', project_id=project.project_id) }}"
             >
@@ -80,13 +81,22 @@
                 <div class="form-group">
                     <label for="file" class="form-label">파일 첨부</label>
                     <div class="file-upload-container">
+                        <input
+                            type="file"
+                            id="file"
+                            name="file"
+                            class="file-upload-hidden"
+                            style="display: none;"
+                            onchange="handleFileSelect(this)"
+                        />
                         <input 
                             type="text" 
                             class="file-upload-input" 
                             placeholder="버튼을 클릭해 첨부파일을 업로드 해주세요" 
+                            value="{{ retrospect.file_link if retrospect and retrospect.file_link else '' }}"
                             readonly
                         />
-                        <button type="button" class="file-upload-btn">파일 업로드</button>
+                        <button type="button" class="file-upload-btn" onclick="document.getElementById('file').click()">파일 업로드</button>
                     </div>
                 </div>
 
@@ -105,4 +115,5 @@
         </div>
     </div>
 </body>
+<script src="{{ url_for('static', filename='js/retrospect.js') }}"></script>
 </html>
