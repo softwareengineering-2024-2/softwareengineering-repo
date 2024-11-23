@@ -28,8 +28,7 @@ def scrum_view(project_id):
             userproject=[],
             sprints=[],
             backlogs_by_status={},
-            completion_percentage=0,
-            csrf_token=generate_csrf()
+            completion_percentage=0
         )
     
     userprojects = get_user_projects()
@@ -44,8 +43,7 @@ def scrum_view(project_id):
             userproject=userprojects,
             sprints=[],
             backlogs_by_status={},
-            completion_percentage=0,
-            csrf_token=generate_csrf()
+            completion_percentage=0
         )
 
     selected_sprint_id = request.args.get('sprint_id', default=(sprints[0]["sprint_id"] if sprints else None))
@@ -62,8 +60,7 @@ def scrum_view(project_id):
             userproject=userprojects,
             sprints=sprints,
             backlogs_by_status={},
-            completion_percentage=0,
-            csrf_token=generate_csrf()
+            completion_percentage=0
         )
     
     # sprints 리스트에서 selected_sprint의 is_past_due 값을 가져옴
@@ -90,9 +87,7 @@ def scrum_view(project_id):
         backlog.user_name = user.user_name
         backlogs_by_status[backlog.status].append(backlog)
 
-    csrf_token = generate_csrf()
-
-    return render_template('scrum.html', project=project, sprints=sprints, selected_sprint=selected_sprint, backlogs_by_status=backlogs_by_status, userproject=userprojects, completion_percentage=completion_percentage, csrf_token=csrf_token, is_past_due=is_past_due)
+    return render_template('scrum.html', project=project, sprints=sprints, selected_sprint=selected_sprint, backlogs_by_status=backlogs_by_status, userproject=userprojects, completion_percentage=completion_percentage, is_past_due=is_past_due)
 
 # 스프린트 백로그 상태 업데이트 API
 @scrum_bp.route('/update_sprint_backlog_statuses', methods=['POST'])
