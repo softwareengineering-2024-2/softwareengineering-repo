@@ -60,3 +60,9 @@ def upload_to_drive(file, file_name, folder_id):
                 os.remove(temp_file_path)
             except PermissionError:
                 print(f"파일 삭제 실패: {temp_file_path}. 다른 프로세스에서 사용 중일 수 있습니다.")
+
+# 파일 삭제 함수
+def delete_file_from_drive(file_id):
+    drive_service = init_drive_api()
+    drive_service.files().delete(fileId=file_id).execute()
+    return True
