@@ -10,7 +10,6 @@ from flask_login import current_user
 from controllers.project_controller import get_user_projects
 from controllers.burnup_controller import update_completed_backlog
 from database import db
-from flask_wtf.csrf import generate_csrf
 
 # Blueprint 객체 생성
 scrum_bp = Blueprint('scrum', __name__)

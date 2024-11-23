@@ -8,15 +8,45 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='topbar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='guide.css') }}">
 </head>
 <body>
     {% include 'topbar.html' %}
     <div class="main-container">
         {% include 'sidebar.html' %}
         <div class="content">
-            <!-- 메인 콘텐츠가 들어갈 부분 -->
-            {% block content %}{% endblock %}
+            <!-- 가이드 콘텐츠 -->
+            <div class="guide-container">
+                <aside class="sidebar">
+                    <h2>가이드 목차</h2>
+                    <ul>
+                        <li><a href="#" data-section="intro">애자일 소개</a></li>
+                        <li><a href="#" data-section="scrum">스크럼</a></li>
+                        <li><a href="#" data-section="kanban">칸반</a></li>
+                        <li><a href="#" data-section="benefits">애자일의 장점</a></li>
+                    </ul>
+                </aside>
+                <main class="guide-content">
+                    <section id="intro" class="guide-section active">
+                        <h1>애자일 소개</h1>
+                        <p>애자일은 프로젝트 관리 방법론으로...</p>
+                    </section>
+                    <section id="scrum" class="guide-section">
+                        <h1>스크럼</h1>
+                        <p>스크럼은 애자일의 한 프레임워크로...</p>
+                    </section>
+                    <section id="kanban" class="guide-section">
+                        <h1>칸반</h1>
+                        <p>칸반은 작업의 흐름을 시각화하여...</p>
+                    </section>
+                    <section id="benefits" class="guide-section">
+                        <h1>애자일의 장점</h1>
+                        <p>애자일은 팀의 유연성을 높이고...</p>
+                    </section>
+                </main>
+            </div>
         </div>
     </div>
+    <script src="{{ url_for('static', filename='js/guide.js') }}"></script>
 </body>
 </html>
