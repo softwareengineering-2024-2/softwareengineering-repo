@@ -1,0 +1,101 @@
+<section id="faq" class="guide-section">
+    <style>
+        /* 섹션 컨테이너 */
+        .faq-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: var(--color-white);
+            position: relative; /* 자식 요소를 기준으로 위치를 조정하기 위해 설정 */
+        }
+
+        /* 제목 스타일 */
+        .faq-container h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--color-grey-900);
+            text-align: center;
+        }
+
+        .faq-container p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: var(--color-grey-700);
+            text-align: center;
+        }
+
+        /* FAQ 카드 스타일 */
+        .faq-card {
+            width: 100%; /* 카드가 전체 컨테이너 너비를 채우도록 */
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: var(--color-green-100);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .faq-card:hover {
+            background-color: var(--color-green-200);
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* FAQ 리스트 스타일 */
+        .faq-list {
+            margin: 0;
+            padding: 0;
+        }
+
+        .faq-list dt {
+            font-size: 1.2rem;
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-green-600);
+            margin-bottom: 10px;
+        }
+
+        .faq-list dd {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--color-grey-700);
+            margin-left: 0; /* 텍스트 들여쓰기 제거 */
+        }
+    </style>
+
+    <div class="faq-container">
+        <h1>FAQ</h1>
+        <p>자주 묻는 질문에 대한 답변을 확인하세요.</p>
+
+        <!-- FAQ 카드 -->
+        <div class="faq-card">
+            <dl class="faq-list">
+                <dt>금지 키워드는 어디서 설정하나요?</dt>
+                <dd>[Not 리스트 관리] 페이지에서 설정할 수 있습니다.</dd>
+            </dl>
+        </div>
+        <div class="faq-card">
+            <dl class="faq-list">
+                <dt>프로젝트 역할은 어떻게 변경하나요?</dt>
+                <dd>[마이페이지] - [프로필 변경하기]에서 변경할 수 있습니다.</dd>
+            </dl>
+        </div>
+        <div class="faq-card">
+            <dl class="faq-list">
+                <dt>스프린트를 수정하려면 어떻게 해야 하나요?</dt>
+                <dd>스프린트 우측 상단에서 [· · ·] - [스프린트 수정] 버튼을 클릭하면 됩니다.</dd>
+            </dl>
+        </div>
+
+        <!-- 다음 주제로 버튼 -->
+        <div class="next-button-container">
+            <a href="{{ url_for('project_main.project_main_view', project_id=project.project_id) }}" class="next-button">
+                <img src="{{ url_for('static', filename='icons/home.svg') }}" alt="메인 아이콘" class="icon"> 메인으로 돌아가기
+            </a>
+        </div>
+    </div>
+</section>

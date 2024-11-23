@@ -1,0 +1,112 @@
+<section id="sprint" class="guide-section">
+    <style>
+        /* 섹션 컨테이너 */
+        .sprint-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: var(--color-white);
+        }
+
+        /* 제목 스타일 */
+        .sprint-container h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--color-grey-900);
+            text-align: left;
+            width: 100%;
+        }
+
+        /* 본문 내용 스타일 */
+        .sprint-content p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: var(--color-grey-700);
+            text-align: left;
+            width: 100%;
+        }
+
+        /* 하위 섹션 제목 스타일 */
+        .sprint-details h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--color-grey-900);
+            text-align: left;
+            width: 100%;
+        }
+
+        /* 리스트 스타일 */
+        .sprint-list {
+            list-style-type: disc;
+            margin: 20px 0;
+            padding-left: 20px;
+            text-align: left;
+            color: var(--color-grey-700);
+        }
+
+        .sprint-list li strong {
+            color: var(--color-green-600); /* 강조 텍스트 색상 */
+        }
+
+        /* 이미지 스타일 */
+        .sprint-image {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .sprint-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+
+    <div class="sprint-container">
+        <h1>스프린트 관리</h1>
+        <div class="sprint-content">
+            <p>
+                스프린트는 팀이 짧은 기간(1~4주) 동안 달성할 목표를 설정하고 이를 실행하는 
+                애자일의 핵심 프로세스입니다. 스프린트 보드를 통해 작업의 상태(할 일, 진행 중, 완료)를 
+                시각적으로 확인하고, 팀의 진행 상황을 한눈에 파악할 수 있습니다.
+            </p>
+        </div>
+
+        <!-- 주요 기능 -->
+        <div class="sprint-details">
+            <h3>주요 기능</h3>
+            <ul class="sprint-list">
+                <li><strong>스프린트 생성:</strong> 작업 목록을 기반으로 새로운 스프린트를 시작합니다.</li>
+                <li><strong>스프린트 수정:</strong> 진행 중인 스프린트의 목표와 작업 상태를 업데이트합니다.</li>
+                <li><strong>작업 상태 업데이트:</strong> 각 작업의 상태(할 일, 진행 중, 완료)를 실시간으로 관리</li>
+                <li><strong>성과 분석:</strong> 스프린트 종료 후 결과를 평가하고, 다음 스프린트를 계획합니다.</li>
+            </ul>
+        </div>
+
+        <!-- 스프린트 관리 개념 -->
+        <div class="sprint-details">
+            <h3>스프린트 관리의 주요 개념</h3>
+            <ul class="sprint-list">
+                <li><strong>짧은 주기:</strong> 스프린트는 1~4주 단위로 설정되며, 빠른 피드백을 제공합니다.</li>
+                <li><strong>목표 지향:</strong> 팀은 각 스프린트마다 구체적인 목표를 설정하고 이를 달성하기 위해 노력합니다.</li>
+                <li><strong>적응력:</strong> 스프린트가 끝날 때마다 다음 작업을 조정하여 변화에 대응합니다.</li>
+                <li><strong>지속적인 개선:</strong> 스프린트 회고를 통해 팀의 프로세스를 지속적으로 개선합니다.</li>
+            </ul>
+        </div>
+
+        <!-- 이미지 -->
+        <div class="sprint-image">
+            <img src="{{ url_for('static', filename='img/sprint_board.png') }}" alt="스프린트 보드 예제">
+        </div>
+
+        <!-- 다음 주제로 버튼 -->
+        <div class="next-button-container">
+            <a href="#workflow" class="next-button">다음 주제로</a>
+        </div>
+    </div>
+</section>

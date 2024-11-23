@@ -1,0 +1,94 @@
+<section id="workflow" class="guide-section">
+    <style>
+        /* 섹션 컨테이너 */
+        .workflow-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: var(--color-white);
+        }
+
+        /* 제목 스타일 */
+        .workflow-container h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--color-grey-900);
+            text-align: left;
+            width: 100%;
+        }
+
+        /* 본문 내용 스타일 */
+        .workflow-content p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: var(--color-grey-700);
+            text-align: left;
+            width: 100%;
+        }
+
+        /* 리스트 스타일 */
+        .workflow-list {
+            margin: 20px 0;
+            padding-left: 20px;
+            color: var(--color-grey-700);
+        }
+
+        .workflow-list li {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .workflow-list li strong {
+            color: var(--color-green-600); /* 강조 텍스트 색상 */
+        }
+
+        /* 이미지 스타일 */
+        .workflow-image {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .workflow-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+
+    <div class="workflow-container">
+        <h1>사용 흐름</h1>
+        <div class="workflow-content">
+            <p>
+                이 애플리케이션은 프로젝트 관리의 복잡한 단계를 간소화하고, 사용자 친화적인 인터페이스를 통해 
+                효율적인 작업 환경을 제공합니다. 아래는 사용자가 애플리케이션을 활용하는 주요 흐름입니다.
+            </p>
+        </div>
+
+        <!-- 주요 흐름 설명 -->
+        <ol class="workflow-list">
+            <li><strong>회원 가입 및 로그인:</strong> 사용자 계정을 생성하고 애플리케이션에 로그인하여 프로젝트 관리 시작.</li>
+            <li><strong>새 프로젝트 생성:</strong> 프로젝트 이름과 설명을 입력하여 새 프로젝트를 생성. 생성 후, 프로젝트 팀원 초대를 위한 링크 제공.</li>
+            <li><strong>Not List 추가 및 유저스토리 설정:</strong> 프로젝트 범위를 제한하고 품질 관리를 위해 금지 키워드를 추가. <br>유저스토리 작성 시 금지 키워드와 실시간으로 비교하여 경고 제공.</li>
+            <li><strong>백로그 추가:</strong> 프로젝트의 유저 스토리를 1개 또는 여러개를 합하여 프로덕트 백로그를 추가.</li>
+            <li><strong>스프린트 생성 및 진행:</strong> 짧은 기간(1~4주) 동안 달성할 목표를 설정하고 작업 진행 상태를 실시간으로 관리.</li>
+            <li><strong>스프린트 결과 회고 및 개선:</strong> 스프린트 종료 후 작업 성과를 평가하고, 회고를 통해 프로세스를 지속적으로 개선.</li>
+        </ol>
+
+        <!-- 이미지 -->
+        <div class="workflow-image">
+            <img src="{{ url_for('static', filename='img/workflow_overview.png') }}" alt="사용 흐름 다이어그램">
+        </div>
+
+        <!-- 다음 주제로 버튼 -->
+        <div class="next-button-container">
+            <a href="#faq" class="next-button">다음 주제로</a>
+        </div>
+    </div>
+</section>
