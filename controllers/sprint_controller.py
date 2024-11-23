@@ -8,6 +8,7 @@ from database import db
 from flask_login import current_user
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import joinedload
+from controllers.burnup_controller import decrement_total_and_completed_backlog
 
 # 프로젝트 id로 프로덕트 백로그를 모두 불러옴
 def get_all_product_backlogs(project_id):
@@ -172,8 +173,16 @@ def assign_backlogs_to_sprint(sprint_id, new_backlog_ids):
                 backlog.sprint_id = None
                 # 관련된 SprintBacklog 삭제
                 sprint_backlogs = SprintBacklog.query.filter_by(product_backlog_id=backlog_id).all()
+                total_count = 0 # 삭제할 총 백로그 수
+                done_count = 0  # 삭제할 'Done' 상태의 백로그 수
                 for sb in sprint_backlogs:
+                    total_count += 1
+                    if sb.status == 'Done':
+                        done_count += 1
                     db.session.delete(sb)
+                
+                # 삭제된 백로그 수만큼 총 백로그 수와 완료된 백로그 수 감소
+                decrement_total_and_completed_backlog(Sprint.find_by_id(sprint_id).project_id, total_count, done_count)
         
         # 백로그에 스프린트 ID 할당
         for backlog_id in backlogs_to_assign:
