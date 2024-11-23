@@ -76,5 +76,5 @@ def handle_file_upload(file):
     if file and file.filename != '':
         folder_id = "1FcmKeVM8SaYPcJ8CUfOt6iBkB6tseANk"
         upload_result = upload_to_drive(file, file.filename, folder_id)
-        return upload_result.get('webViewLink')
+        return upload_result.get('webContentLink')
     return None
