@@ -11,7 +11,7 @@
             </a>
         </li>
         <li>
-            <a href="{{ url_for('guide') }}">
+            <a href="{{ url_for('guide.guide_view', project_id=project.project_id) }}">
                 <img src="{{ url_for('static', filename='icons/guide.svg') }}" alt="가이드 페이지 아이콘"> 가이드페이지
             </a>
         </li>
