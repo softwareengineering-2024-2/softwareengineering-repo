@@ -4,11 +4,6 @@ const currentMonthElement = document.getElementById("currentMonth");
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
 
-// 모달 관련 변수
-const modal = document.getElementById("scheduleModal");
-const openModalBtn = document.getElementById("openModalBtn");
-const closeModalBtns = document.querySelectorAll(".close");
-
 // 프로젝트 ID
 const projectId = document.body.getAttribute("data-project-id");
 
@@ -35,15 +30,28 @@ function fetchSchedules() {
           const title = $(item).data("title");
           const startDate = new Date($(item).data("start-date"));
           const dueDate = new Date($(item).data("due-date"));
-          schedules.push({ title, start: startDate, end: dueDate });
+          const colorKey = $(item).data("color");
+          const color = colorMap[colorKey];
+          schedules.push({ title, start: startDate, end: dueDate, color });
         });
       renderCalendar(); // 일정 데이터를 받아온 후 캘린더 렌더링
     },
+
     error: function (xhr, status, error) {
       console.error("AJAX 요청 실패:", status, error);
     },
   });
 }
+
+const colorMap = {
+  1: "#f0ada6",
+  2: "#f6c6ad",
+  3: "#fffbce",
+  4: "#b5e4a2",
+  5: "#dee9f8",
+  6: "#babdff",
+  7: "#e9c8ff",
+};
 
 function renderCalendar() {
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
@@ -69,17 +77,19 @@ function renderCalendar() {
     dateElement.classList.add("date");
     dateElement.textContent = i;
 
-    // 각 날짜에 일정 추가하기
     schedules.forEach((schedule) => {
       const scheduleStart = schedule.start.getDate();
       const scheduleEnd = schedule.end.getDate();
       const scheduleMonth = schedule.start.getMonth();
       const scheduleYear = schedule.start.getFullYear();
 
-      // 현재 월의 날짜와 일치하는지 확인
       if (scheduleMonth === currentMonth && scheduleYear === currentYear) {
         if (i >= scheduleStart && i <= scheduleEnd) {
-          dateElement.innerHTML += `<div class="schedule">${schedule.title}</div>`;
+          const scheduleDiv = document.createElement("div");
+          scheduleDiv.classList.add("schedule");
+          scheduleDiv.textContent = schedule.title;
+          scheduleDiv.style.backgroundColor = schedule.color || "gray"; // 색상 설정, 기본값 gray
+          dateElement.appendChild(scheduleDiv);
         }
       }
     });
@@ -95,22 +105,6 @@ function renderCalendar() {
     emptyDate.classList.add("date", "empty");
     emptyDate.style.opacity = "0.5";
     emptyDate.textContent = i;
-
-    // 다음 달의 일정 추가하기
-    schedules.forEach((schedule) => {
-      const scheduleStart = schedule.start.getDate();
-      const scheduleEnd = schedule.end.getDate();
-      const scheduleMonth = schedule.start.getMonth();
-      const scheduleYear = schedule.start.getFullYear();
-
-      // 다음 월의 날짜와 일치하는지 확인
-      if (scheduleMonth === currentMonth + 1 && scheduleYear === currentYear) {
-        if (i <= scheduleEnd) {
-          emptyDate.innerHTML += `<div class="schedule">${schedule.title}</div>`;
-        }
-      }
-    });
-
     calendarDates.appendChild(emptyDate);
   }
 }
@@ -141,22 +135,3 @@ nextBtn.addEventListener("click", () => {
 // 체크박스 변경 시 일정 필터링
 $("#team").change(fetchSchedules);
 $("#personal").change(fetchSchedules);
-
-// 모달 열기 버튼 클릭 시 모달 열기
-openModalBtn.onclick = function () {
-  modal.style.display = "flex";
-};
-
-// 모달 닫기 버튼 클릭 시 모달 닫기
-closeModalBtns.forEach((btn) => {
-  btn.onclick = function () {
-    modal.style.display = "none";
-  };
-});
-
-// 모달 바깥 클릭 시 모달 닫기
-window.onclick = function (event) {
-  if (event.target === modal) {
-    modal.style.display = "none";
-  }
-};

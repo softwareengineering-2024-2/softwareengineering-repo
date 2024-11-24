@@ -62,14 +62,14 @@
             <div class="form-group">
               <label class="b2-semibold" for="date">일시</label>
               <input
-                class="b2-regular"
+                class="b2-regular start_date"
                 type="date"
                 id="start_date"
                 name="start_date"
                 placeholder="시작일을 입력하세요"
               />
               <input
-                class="b2-regular"
+                class="b2-regular due_date"
                 type="date"
                 id="due_date"
                 name="due_date"
@@ -80,7 +80,7 @@
             <div class="form-group">
               <label class="b2-semibold" for="category">분류</label>
               <input
-                class="b2-regular"
+                class="b2-regular personal_radio"
                 type="radio"
                 id="team"
                 name="category"
@@ -89,7 +89,7 @@
               />
               <label class="b2-semibold" for="team">팀 일정</label>
               <input
-                class="b2-regular"
+                class="b2-regular team_radio"
                 type="radio"
                 id="personal"
                 name="category"
@@ -114,7 +114,7 @@
             <div class="form-group">
               <label class="b2-semibold" for="description">설명</label>
               <input
-                class="b2-regular"
+                class="b2-regular description"
                 type="text"
                 id="description"
                 name="content"
@@ -140,5 +140,6 @@
         </div>
       </div>
     </div>
+    <script src="{{ url_for('static', filename='js/calender.js') }}"></script>
   </body>
 </html>

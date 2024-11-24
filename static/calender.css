@@ -15,8 +15,6 @@
 
 .calendar-container {
   width: 100%;
-  margin: 30px auto;
-  padding: 10px;
 }
 
 .calendar-header-wrapper {
@@ -27,7 +25,7 @@
 }
 
 .schedule {
-  background-color: rgba(255, 99, 71, 0.5); /* 일정 색상 */
+  color: black;
   border-radius: 5px;
   padding: 2px;
   margin: 2px 0;
@@ -35,8 +33,23 @@
   /* position: absolute; */
   left: 5px; /* 왼쪽 여백 */
   right: 5px; /* 오른쪽 여백 */
+
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
 }
 
+.filter-options {
+  display: flex;
+  gap: 12px;
+}
+
+.filter-options label {
+  display: flex;
+  gap: 4px;
+}
 .header-right {
   display: flex;
   gap: 16px;
@@ -147,18 +160,18 @@
   border-bottom: 1px solid var(--color-grey-300);
 }
 
-#place,
-#description {
-  width: 90%;
-}
-
-#start_date,
-#due_date {
+.b2-regular.start_date {
   width: 43%;
 }
 
-#team,
-#personal {
+.b2-regular.due_date {
+  width: 43%;
+}
+.b2-regular.team_radio {
+  width: 5%;
+}
+
+.b2-regular.personal_radio {
   width: 5%;
 }
 

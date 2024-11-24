@@ -30,7 +30,7 @@
         <!-- 팀/개인 일정 선택 체크박스 -->
 
         <!-- 일정 목록 -->
-        <div class="schedule-list">
+        <div class="schedule-list" style="display: none">
           <h3>일정 목록</h3>
           <ul>
             {% for schedule in schedules %}
@@ -39,6 +39,7 @@
               data-title="{{ schedule.title }}"
               data-start-date="{{ schedule.start_date }}"
               data-due-date="{{ schedule.due_date }}"
+              data-color="{{schedule.color}}"
             >
               <span class="title">{{ schedule.title }}</span>
               <span class="start_date">{{ schedule.start_date }}</span>
@@ -72,25 +73,23 @@
               </button>
             </div>
             <div class="header-right">
-              <div class="filter-options" style="display: inline">
-                <div>
-                  <label
-                    ><input
-                      type="checkbox"
-                      id="team"
-                      checked
-                      onchange="filterSchedules()"
-                    />팀 일정</label
-                  >
-                  <label
-                    ><input
-                      type="checkbox"
-                      id="personal"
-                      checked
-                      onchange="filterSchedules()"
-                    />개인 일정</label
-                  >
-                </div>
+              <div class="filter-options">
+                <label
+                  ><input
+                    type="checkbox"
+                    id="team"
+                    checked
+                    onchange="filterSchedules()"
+                  />팀 일정</label
+                >
+                <label
+                  ><input
+                    type="checkbox"
+                    id="personal"
+                    checked
+                    onchange="filterSchedules()"
+                  />개인 일정</label
+                >
               </div>
               <a
                 id="addScheduleButton"
