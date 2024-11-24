@@ -65,6 +65,22 @@
             color: var(--color-grey-700);
             margin-left: 0; /* 텍스트 들여쓰기 제거 */
         }
+        .main-button {
+            display: inline-block;
+            padding: 12px 24px;
+            font-size: var(--font-size-b2);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-black);
+            background-color: var(--color-green-200);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .main-button:hover {
+            background-color: var(--color-green-400);
+        }
     </style>
 
     <div class="faq-container">
@@ -93,7 +109,7 @@
 
         <!-- 다음 주제로 버튼 -->
         <div class="next-button-container">
-            <a href="{{ url_for('project_main.project_main_view', project_id=project.project_id) }}" class="next-button">
+            <a href="{{ url_for('project_main.project_main_view', project_id=project.project_id) }}" class="main-button">
                 <img src="{{ url_for('static', filename='icons/home.svg') }}" alt="메인 아이콘" class="icon"> 메인으로 돌아가기
             </a>
         </div>
