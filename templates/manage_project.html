@@ -41,26 +41,27 @@
           </form>
         </div>
         <h1 class="project-list-title">프로젝트 목록</h1>
-        <ul class="project-lists">
+        <ul class="project-lists" id="projectLists">
           {% for userproject in userprojects %}
           <li class="project-list" style="list-style-type: none">
             <a
+              id="projectLinkButton"
               href="{{ url_for('project_main.project_main_view', project_id=userproject.project_id) }}"
               ><p>{{ userproject.project_name }}</p></a
             >
             <div class="project-list-options">
-              <button class="normal-button" onclick="copyToClipboard('{{ userproject.project_link }}')"><p>링크복사</p></button>
+              <button id="copyLinkButton" class="normal-button" onclick="copyToClipboard('{{ userproject.project_link }}')"><p>링크복사</p></button>
               <form
                 action="{{ url_for('manage_project.set_profile_view', project_id=userproject.project_id) }}"
                 method="GET"
               >
-                <button class="normal-button"><p>프로필설정</p></button>
+                <button id="setProfileButton" class="normal-button"><p>프로필설정</p></button>
               </form>
               <form
                 action="{{ url_for('manage_project.delete_project_view', project_id=userproject.project_id) }}"
                 method="POST"
               >
-                <button class="exit-button" type="submit"><p>나가기</p></button>
+                <button id="exitProjectButton" class="exit-button" type="submit"><p>나가기</p></button>
               </form>
             </div>
           </li>
@@ -109,6 +110,12 @@
 
       {% endblock %}
     </div>
+    <div id="onboarding-overlay" class="onboarding-overlay hidden">
+      <div id="onboarding-tooltip" class="onboarding-tooltip">
+          <p id="onboarding-text">이 버튼은 프로젝트를 생성하는 버튼입니다.</p>
+          <button id="onboarding-next-button">다음</button>
+      </div>
+    </div>  
     <script src="{{ url_for('static', filename='js/manage_project.js') }}"></script>
     <script>
       function copyToClipboard(text) {
