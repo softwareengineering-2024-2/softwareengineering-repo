@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
           },
           {
               element: document.getElementById("tempSetProfileButton"),
-              text: "해당 프로젝트에서 사용할 닉네임 및 역할을 선택해주세요.",
+              text: "해당 프로젝트에서 사용할 <br>닉네임 및 역할을 선택해주세요.",
           },
           {
               element: document.getElementById("tempExitProjectButton"),
@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           // 툴팁 위치 계산
           const rect = element.getBoundingClientRect();
-          tooltipText.textContent = step.text;
+          tooltipText.innerHTML = step.text;
           tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`;
           tooltip.style.left = `${rect.left + window.scrollX}px`;
       }
@@ -149,8 +149,8 @@ document.addEventListener("DOMContentLoaded", () => {
   nextButton.addEventListener("click", nextStep);
 
   // 첫 방문 시 온보딩 시작
-  if (!document.cookie.includes("onboarding_done=true")) {
+  if (!document.cookie.includes("onboarding_done_manage_project=true")) {
       startOnboarding();
-      document.cookie = "onboarding_done=true; path=/; max-age=31536000"; // 1년간 유지
+      document.cookie = "onboarding_done_manage_project=true; path=/; max-age=31536000"; // 1년간 유지
   }
 });

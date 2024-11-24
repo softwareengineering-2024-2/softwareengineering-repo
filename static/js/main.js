@@ -1,7 +1,10 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const projectId = document.getElementById('project-id').value; // 프로젝트 ID를 가져옵니다.
-    fetchTodos(projectId); // 페이지 로드 시 투두리스트를 조회합니다.
-});
+document.addEventListener("DOMContentLoaded", function () {
+    const projectId = document.getElementById("project-id").value; // 프로젝트 ID 가져오기
+    fetchTodos(projectId); // 페이지 로드 시 투두리스트 조회
+  
+    // 온보딩 시작
+    startOnboarding();
+  });  
 
 function addNewTodoInput() {
     const addTodo = document.getElementById("add-todo");
@@ -232,3 +235,84 @@ function changeStatus(todoId, status) {
 document.getElementById("two-week-calendar").addEventListener("click", function() {
     window.location.href = "calendar";
 });
+
+
+function startOnboarding() {
+    const onboardingSteps = [
+      {
+        element: document.querySelector(".progress-section"),
+        text: "우리팀의 스프린트 백로그가 얼마나 달성되었는지 <br>확인할 수 있어요.",
+      },
+      {
+        element: document.querySelector(".task-box"),
+        text: "현재 진행중인 스프린트에서 내가 담당하는 <br>스프린트 백로그의 목록을 확인할 수 있어요.",
+      },
+      {
+        element: document.querySelector(".todo-box"),
+        text: "내가 해야하는 일들을 간단히 관리할 수 있어요.",
+      },
+      {
+        element: document.querySelector(".calendar-box"),
+        text: "나와 우리팀의 일정을 간단히 볼 수 있어요.",
+      },
+    ];
+  
+    let currentStep = 0;
+    const overlay = document.getElementById("onboarding-overlay");
+    const tooltip = document.getElementById("onboarding-tooltip");
+    const tooltipText = document.getElementById("onboarding-text");
+    const nextButton = document.getElementById("onboarding-next-button");
+  
+    const showStep = (stepIndex) => {
+      const step = onboardingSteps[stepIndex];
+      if (!step) {
+        endOnboarding();
+        return;
+      }
+  
+      const element = step.element;
+  
+      if (element) {
+        // 강조 스타일 적용
+        element.classList.add("onboarding-highlight");
+  
+        // 툴팁 내용 업데이트
+        tooltipText.innerHTML = step.text;
+  
+        // 툴팁 위치 계산
+        const rect = element.getBoundingClientRect();
+        tooltip.style.top = `${rect.bottom + window.scrollY + 15}px`;
+        tooltip.style.left = `${rect.left + window.scrollX}px`;
+      }
+    };
+  
+    const nextStep = () => {
+      const previousStep = onboardingSteps[currentStep];
+      if (previousStep && previousStep.element) {
+        // 이전 강조 스타일 제거
+        previousStep.element.classList.remove("onboarding-highlight");
+      }
+  
+      currentStep++;
+      showStep(currentStep);
+    };
+  
+    const endOnboarding = () => {
+      overlay.classList.add("hidden");
+      onboardingSteps.forEach((step) => {
+        if (step.element) {
+          step.element.classList.remove("onboarding-highlight");
+        }
+      });
+    };
+  
+    nextButton.addEventListener("click", nextStep);
+  
+    // 첫 방문 시 온보딩 시작
+    if (!document.cookie.includes("onboarding_done_main=true")) {
+      overlay.classList.remove("hidden");
+      showStep(currentStep);
+    //   document.cookie = "onboarding_done_main=true; path=/; max-age=31536000"; // 1년 유지
+    }
+  }
+  

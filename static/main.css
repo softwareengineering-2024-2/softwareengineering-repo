@@ -123,3 +123,60 @@ button.todo-delete:hover {
   cursor: pointer; /* 클릭 가능한 상태를 시각적으로 표시 */
   min-height: 45vh;
 }
+
+.onboarding-highlight {
+  z-index: 1001; /* 툴팁보다 낮게 설정 */
+  position: relative;
+  background-color: white;
+  border: 2px solid var(--color-green-200);
+  border-radius: 8px;
+  display: block; /* 원래 블록 요소로 동작하도록 변경 */
+  box-sizing: border-box;
+}
+
+.onboarding-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000; /* 부모 요소 z-index 명시 */
+  display: flex;
+}
+
+.onboarding-overlay.hidden {
+  display: none;
+}
+
+.onboarding-tooltip {
+  background: var(--color-white);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: left;
+  width: 400px;
+  position: absolute; /* z-index 작동을 보장 */
+  display: flex; /* 내부 요소를 flexbox로 정렬 */
+  flex-direction: column; /* 텍스트와 버튼을 세로로 배치 */
+}
+
+.onboarding-tooltip p {
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: var(--color-grey-900);
+}
+
+.onboarding-tooltip button {
+  padding: 10px 20px;
+  background-color: var(--color-green-400);
+  color: var(--color-black);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.onboarding-tooltip button:hover {
+  background-color: var(--color-green-600);
+}

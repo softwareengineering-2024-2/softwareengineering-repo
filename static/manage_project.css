@@ -317,6 +317,9 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
   text-align: center;
   width: 400px;
+  position: absolute; /* z-index 작동을 보장 */
+  display: flex; /* 내부 요소를 flexbox로 정렬 */
+  flex-direction: column; /* 텍스트와 버튼을 세로로 배치 */
 }
 
 .onboarding-tooltip p {
@@ -327,15 +330,16 @@
 
 .onboarding-tooltip button {
   padding: 10px 20px;
-  background-color: var(--color-green-600);
-  color: var(--color-white);
+  background-color: var(--color-green-400);
+  color: var(--color-black);
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin-left: auto;
 }
 
 .onboarding-tooltip button:hover {
-  background-color: var(--color-green-400);
+  background-color: var(--color-green-600);
 }
 
 /* 공통 강조 스타일 */
