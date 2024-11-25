@@ -82,11 +82,17 @@
 }
 
 .day {
+  border-top: 1px solid var(--color-grey-300);
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 5px;
+  padding: 8px;
   background-color: var(--color-green-300);
+}
+
+.date-container {
+  position: relative;
+  display: inline-block;
 }
 
 .calendar-dates {
@@ -97,7 +103,7 @@
 .date {
   height: 15vh;
   cursor: pointer;
-  padding: 5px;
+  padding: 8px;
   border-top: 1px solid var(--color-grey-50);
   border-left: 1px solid var(--color-grey-50);
   background: var(--color-white);
@@ -206,4 +212,39 @@
 
 .cancel-button {
   background: var(--color-grey-100);
+}
+
+.modal {
+  display: none; /* 기본적으로 숨김 */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close-button {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
