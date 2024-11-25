@@ -45,6 +45,24 @@ function fetchSchedules() {
   });
 }
 
+$(document).ready(function () {
+  fetchSchedules();
+
+  // 중요 체크박스에 대한 이벤트 리스너 추가
+  $("#important").change(function () {
+    if ($(this).is(":checked")) {
+      // 중요 체크 시, 범주 색을 빨강으로 고정
+      $("#color").val("1"); // 빨강 선택
+      $("#color").prop("disabled", true); // 색상 선택을 비활성화
+    } else {
+      // 중요 체크 해제 시, 범주 색을 다시 선택 가능하게
+      $("#color").prop("disabled", false); // 색상 선택 활성화
+      // 중요 체크 해제 시 color 값 초기화
+      $("#color").val("2"); // 기본값 설정 (선택을 다시 가능하게 하기 위해)
+    }
+  });
+});
+
 // 페이지가 로드될 때 일정 가져오기
 $(document).ready(function () {
   fetchSchedules();

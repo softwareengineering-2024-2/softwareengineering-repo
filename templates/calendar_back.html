@@ -27,40 +27,6 @@
     <div class="main-container">
       {% include 'sidebar.html' %}
       <div class="content">
-        <!-- 팀/개인 일정 선택 체크박스 -->
-
-        <!-- 일정 목록 -->
-        <!-- <div class="schedule-list" style="display: none">
-          <h3>일정 목록</h3>
-          <ul>
-            {% for schedule in schedules %}
-            <li
-              class="schedule-item"
-              data-title="{{ schedule.title }}"
-              data-start-date="{{ schedule.start_date }}"
-              data-due-date="{{ schedule.due_date }}"
-              data-color="{{schedule.color}}"
-            >
-              <span class="title">{{ schedule.title }}</span>
-              <span class="start_date">{{ schedule.start_date }}</span>
-              <span class="due_date">{{ schedule.due_date }}</span>
-              <span class="team"
-                >{% if schedule.team == 1 %}Team{% else %}Personal{% endif
-                %}</span
-              >
-              <div class="calendar-actions" style="display: inline">
-                <a
-                  href="{{ url_for('calendar.update_schedule_view', project_id=project.project_id, calendar_id=schedule.calendar_id) }}"
-                  >일정 상세</a
-                >
-              </div>
-            </li>
-            {% else %}
-            <li class="schedule-item">일정이 없습니다.</li>
-            {% endfor %}
-          </ul>
-        </div> -->
-
         <div class="calendar-container">
           <div class="calendar-header-wrapper">
             <div class="calendar-header">
