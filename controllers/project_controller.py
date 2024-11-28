@@ -38,7 +38,7 @@ def get_user_projects():
 def delete_project(project_id):
     project = Project.find_by_id(project_id)
     if project:
-        user_project = UserProject.find_by_project(project_id)
+        user_project = UserProject.find_by_user_and_project(current_user.id, project_id)
         if user_project:
             user_project.delete_from_db()
             return f"프로젝트 {project.project_name}에서 성공적으로 나갔습니다."
@@ -52,3 +52,11 @@ def set_profile(project_id, user_name, user_role):
     if userproject:
         userproject.set_user_profile(current_user.id, project_id, user_name=user_name, user_role=user_role)
         return f"프로필이 설정되었습니다."
+    
+# 프로젝트에 PM이 존재하는지 확인하는 로직
+def check_pm(project_id):
+    userprojects = UserProject.find_by_project(project_id)
+    for userproject in userprojects:
+        if userproject.user_role == "PM(기획자)":
+            return True
+    return False

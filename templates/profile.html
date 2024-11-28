@@ -53,6 +53,11 @@
               <img src="/static/icons/chevron-down.svg" />
             </div>
             <input type="hidden" class="roleSubmit" name="role" value="{{userproject.user_role}}">
+            <div class="caption-wrapper">
+              <div class="caption">
+                {% if pm_check == 1 %}프로젝트에 이미 PM이 존재합니다.{% endif %}
+              </div>
+            </div>
           </div>
           <button class="profile-btn" type="submit">
             <div class="b2-regular">프로필 설정하기</div>
