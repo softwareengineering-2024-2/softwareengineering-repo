@@ -1,73 +1,15 @@
-// 캘린더 관련 변수
-const calendarDates = document.getElementById("calendarDates");
-const currentMonthElement = document.getElementById("currentMonth");
-const prevBtn = document.getElementById("prevBtn");
-const nextBtn = document.getElementById("nextBtn");
+document.addEventListener("DOMContentLoaded", function () {
+  const projectId = document.getElementById("project-id").value; // 프로젝트 ID 가져오기
 
-// 프로젝트 ID
-const projectId = document.body.getAttribute("data-project-id");
+  // 초기화
+  initCalendar();
+  fetchSchedules(projectId);
+  setupEventListeners();
+});
 
-const today = new Date();
-let currentMonth = today.getMonth();
-let currentYear = today.getFullYear();
 const schedules = []; // 일정 데이터를 저장할 배열
 
-function fetchSchedules() {
-  $.ajax({
-    url: "/calendar/" + projectId + "/schedules", // JSON 데이터를 요청할 URL
-    type: "GET",
-    data: {
-      team: $("#team").is(":checked"),
-      personal: $("#personal").is(":checked"),
-    },
-    success: function (response) {
-      console.log("서버 응답:", response); // 응답 확인
-      schedules.length = 0; // 기존 일정 데이터 초기화
-
-      response.forEach((schedule) => {
-        const title = schedule.title;
-        const startDate = new Date(schedule.start_date);
-        const dueDate = new Date(schedule.due_date);
-        const colorKey = schedule.color;
-        const color = colorMap[colorKey];
-
-        // 유효한 날짜인지 확인
-        if (!isNaN(startDate.getTime()) && !isNaN(dueDate.getTime())) {
-          schedules.push({ title, start: startDate, end: dueDate, color });
-        }
-      });
-
-      renderCalendar(); // 캘린더 렌더링
-    },
-    error: function (xhr, status, error) {
-      console.error("AJAX 요청 실패:", status, error);
-    },
-  });
-}
-
-$(document).ready(function () {
-  fetchSchedules();
-
-  // 중요 체크박스에 대한 이벤트 리스너 추가
-  $("#important").change(function () {
-    if ($(this).is(":checked")) {
-      // 중요 체크 시, 범주 색을 빨강으로 고정
-      $("#color").val("1"); // 빨강 선택
-      $("#color").prop("disabled", true); // 색상 선택을 비활성화
-    } else {
-      // 중요 체크 해제 시, 범주 색을 다시 선택 가능하게
-      $("#color").prop("disabled", false); // 색상 선택 활성화
-      // 중요 체크 해제 시 color 값 초기화
-      $("#color").val("2"); // 기본값 설정 (선택을 다시 가능하게 하기 위해)
-    }
-  });
-});
-
-// 페이지가 로드될 때 일정 가져오기
-$(document).ready(function () {
-  fetchSchedules();
-});
-
+// 팔레트
 const colorMap = {
   1: "#f0ada6",
   2: "#f6c6ad",
@@ -78,169 +20,395 @@ const colorMap = {
   7: "#e9c8ff",
 };
 
-function renderCalendar() {
-  const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  const startDayOfWeek = firstDayOfMonth.getDay();
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
 
-  currentMonthElement.textContent = `${currentYear}년 ${currentMonth + 1}월`;
-  calendarDates.innerHTML = "";
-
-  // 이전 달 날짜 추가
-  const prevMonthDays = new Date(currentYear, currentMonth, 0).getDate();
-  for (let i = 0; i < startDayOfWeek; i++) {
-    const emptyDate = document.createElement("div");
-    emptyDate.classList.add("date", "empty");
-    emptyDate.style.opacity = "0.5";
-    emptyDate.textContent = prevMonthDays - startDayOfWeek + 1 + i;
-    calendarDates.appendChild(emptyDate);
-  }
-
-  // 현재 달 날짜 추가
-  for (let i = 1; i <= daysInMonth; i++) {
-    const dateElement = document.createElement("div");
-    dateElement.classList.add("date");
-    dateElement.textContent = i;
-
-    // 일요일인지 확인
-    const currentDate = new Date(currentYear, currentMonth, i);
-    if (currentDate.getDay() === 0) {
-      // 일요일
-      dateElement.style.color = "red"; // 빨간색으로 설정
-    }
-
-    // 공휴일 체크
-    if (isHoliday(currentDate)) {
-      dateElement.style.color = "red"; // 빨간색으로 설정
-    }
-
-    schedules.forEach((schedule) => {
-      const scheduleStart = schedule.start.getDate();
-      const scheduleEnd = schedule.end.getDate();
-      const scheduleMonth = schedule.start.getMonth();
-      const scheduleYear = schedule.start.getFullYear();
-
-      if (scheduleMonth === currentMonth && scheduleYear === currentYear) {
-        if (i >= scheduleStart && i <= scheduleEnd) {
-          const scheduleDiv = document.createElement("div");
-          scheduleDiv.classList.add("schedule");
-          scheduleDiv.textContent = schedule.title;
-          scheduleDiv.style.backgroundColor = schedule.color || "gray"; // 색상 설정, 기본값 gray
-          dateElement.appendChild(scheduleDiv);
-        }
-      }
-    });
-
-    // 클릭 이벤트 추가
-    dateElement.addEventListener("click", () => {
-      showScheduleDetails(currentYear, currentMonth, i);
-    });
-
-    calendarDates.appendChild(dateElement);
-  }
-
-  // 다음 달 날짜 추가
-  const remainingDays =
-    6 - new Date(currentYear, currentMonth, daysInMonth).getDay();
-  for (let i = 1; i <= remainingDays; i++) {
-    const emptyDate = document.createElement("div");
-    emptyDate.classList.add("date", "empty");
-    emptyDate.style.opacity = "0.5";
-    emptyDate.textContent = i;
-    calendarDates.appendChild(emptyDate);
-  }
+function initCalendar() {
+  renderCalendar();
 }
 
-// 공휴일 체크 함수 (예시)
-function isHoliday(date) {
-  const holidays = [
-    new Date(currentYear, 0, 1), // 새해
-    new Date(currentYear, 4, 5), // 부처님 오신 날
-    new Date(currentYear, 7, 15), // 광복절
-    new Date(currentYear, 9, 3), // 한글날
-    new Date(currentYear, 11, 25), // 크리스마스
-    // 추가 공휴일을 여기에 추가
-  ];
-
-  return holidays.some((holiday) => holiday.getTime() === date.getTime());
-}
-
-// 초기 일정 데이터 가져오기
-fetchSchedules();
-
-// 이전 버튼 클릭 이벤트
-prevBtn.addEventListener("click", () => {
-  currentMonth--;
-  if (currentMonth < 0) {
-    currentMonth = 11;
-    currentYear--;
-  }
-  renderCalendar();
-});
-
-// 다음 버튼 클릭 이벤트
-nextBtn.addEventListener("click", () => {
-  currentMonth++;
-  if (currentMonth > 11) {
-    currentMonth = 0;
-    currentYear++;
-  }
-  renderCalendar();
-});
-
-// 체크박스 변경 시 일정 필터링
-$("#team").change(fetchSchedules);
-$("#personal").change(fetchSchedules);
-
-function showScheduleDetails(year, month, day) {
-  const scheduleDetails = document.getElementById("scheduleDetails");
-  scheduleDetails.innerHTML = ""; // 기존 내용 초기화
-
-  const selectedDate = new Date(year, month, day);
-  selectedDate.setHours(0, 0, 0, 0); // 시간 정보를 제거하여 비교
-
-  // 선택한 날짜를 포함하여 필터링
-  const dailySchedules = schedules.filter((schedule) => {
-    const scheduleStart = new Date(schedule.start);
-    const scheduleEnd = new Date(schedule.end);
-    scheduleStart.setHours(0, 0, 0, 0); // 시간 정보를 제거
-    scheduleEnd.setHours(0, 0, 0, 0); // 시간 정보를 제거
-
-    return (
-      selectedDate >= scheduleStart && // 선택한 날짜가 시작일 이후이거나 같고
-      selectedDate <= scheduleEnd // 선택한 날짜가 종료일 이전이거나 같음
-    );
+function setupEventListeners() {
+  document.getElementById("prevBtn").addEventListener("click", function () {
+      changeMonth(-1);
   });
 
-  if (dailySchedules.length === 0) {
-    scheduleDetails.innerHTML = "<p>이 날짜에 일정이 없습니다.</p>";
-  } else {
-    dailySchedules.forEach((schedule) => {
-      const scheduleItem = document.createElement("div");
-      scheduleItem.textContent = `${
-        schedule.title
-      } (${schedule.start.toLocaleDateString()} - ${schedule.end.toLocaleDateString()})`;
-      scheduleDetails.appendChild(scheduleItem);
-    });
-  }
+  document.getElementById("nextBtn").addEventListener("click", function () {
+      changeMonth(1);
+  });
 
-  // 모달 표시
-  const modal = document.getElementById("scheduleModal");
-  modal.style.display = "block";
+  document.getElementById("team").addEventListener("change", function () {
+      const projectId = document.getElementById("project-id").value;
+      fetchSchedules(projectId);
+  });
 
-  // 모달 닫기 버튼 이벤트
-  const closeButton = document.querySelector(".close-button");
-  closeButton.onclick = function () {
-    modal.style.display = "none";
-  };
-
-  // 모달 외부 클릭 시 닫기
-  window.onclick = function (event) {
-    if (event.target === modal) {
-      modal.style.display = "none";
-    }
-  };
+  document.getElementById("personal").addEventListener("change", function () {
+      const projectId = document.getElementById("project-id").value;
+      fetchSchedules(projectId);
+  });
 }
 
-// 초기 일정 데이터 가져오기
-fetchSchedules();
+// 일정 가져오기
+function fetchSchedules(projectId) {
+  const showTeamSchedules = document.getElementById("team").checked;  // 팀 일정 체크 상태
+  const showPersonalSchedules = document.getElementById("personal").checked;  // 개인 일정 체크 상태
+  
+  fetch(`schedules/${projectId}`)
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);  // 데이터를 콘솔에 출력하여 확인
+        schedules.length = 0; // 기존 데이터 초기화
+        
+        data.forEach(schedule => {
+          const { title, start_date, due_date, color, place, content, important, calendar_id } = schedule;
+      
+          // 날짜만 사용하고 시간은 무시하도록 설정
+          const start = new Date(start_date);
+          const end = new Date(due_date);
+          
+          // 시간 부분을 00:00:00으로 설정하여 날짜만 비교
+          start.setHours(0, 0, 0, 0); // 시작일의 시간을 00:00:00으로 설정
+          end.setHours(23, 59, 59, 999); // 종료일의 시간을 23:59:59.999으로 설정
+      
+          // 팀 일정과 개인 일정 필터링
+          if ((showTeamSchedules && team) || (showPersonalSchedules && !team)) {
+              if (!isNaN(start) && !isNaN(end)) {
+                  schedules.push({
+                      calendar_id,  // schedule_id 추가
+                      title,
+                      start,
+                      end,
+                      color: colorMap[color] || "gray",  // 색상 설정
+                      place,                             // 장소 추가
+                      content,                           // 내용 추가
+                      important                         // 중요 여부 추가
+                  });
+              }
+          }
+      });
+      
+        renderCalendar();  // 일정 렌더링
+    })
+    .catch(error => console.error("Error fetching schedules:", error));
+}
+
+
+// 일정 보이게 하기
+function renderCalendar() {
+  const calendarDates = document.getElementById("calendarDates");
+  const currentMonthElement = document.getElementById("currentMonth");
+
+  const firstDay = new Date(currentYear, currentMonth, 1);
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const startDayOfWeek = firstDay.getDay();
+
+  calendarDates.innerHTML = ""; // 기존 달력 초기화
+  currentMonthElement.textContent = `${currentYear}년 ${currentMonth + 1}월`;
+
+  // 이전 달의 날짜 표시
+  const prevMonthDays = new Date(currentYear, currentMonth, 0).getDate();
+  for (let i = 0; i < startDayOfWeek; i++) {
+      const emptyDate = createCalendarDate(prevMonthDays - startDayOfWeek + i + 1, true);
+      calendarDates.appendChild(emptyDate);
+  }
+
+  // 현재 달의 날짜 표시
+  for (let i = 1; i <= daysInMonth; i++) {
+      const date = new Date(currentYear, currentMonth, i);
+      const dateElement = createCalendarDate(i, false);
+
+      // 일정 렌더링
+      schedules.forEach(schedule => {
+          if (date >= schedule.start && date <= schedule.end) {
+              const scheduleDiv = document.createElement("div");
+              scheduleDiv.textContent = schedule.title;
+              scheduleDiv.style.backgroundColor = schedule.color;
+              scheduleDiv.classList.add("schedule");
+
+              // 일정 클릭 시 해당 id 전달
+              scheduleDiv.addEventListener("click", function () {
+                  showScheduleDetails(schedule);  // 일정 상세보기 모달 표시
+              });
+
+              dateElement.appendChild(scheduleDiv);
+          }
+      });
+
+      calendarDates.appendChild(dateElement);
+  }
+
+  // 다음 달의 날짜 표시
+  const remainingDays = 6 - new Date(currentYear, currentMonth, daysInMonth).getDay();
+  for (let i = 1; i <= remainingDays; i++) {
+      const emptyDate = createCalendarDate(i, true);
+      calendarDates.appendChild(emptyDate);
+  }
+}
+
+
+function createCalendarDate(day, isEmpty) {
+  const dateElement = document.createElement("div");
+  dateElement.textContent = day;
+  dateElement.classList.add("date");
+  if (isEmpty) {
+      dateElement.classList.add("empty");
+      dateElement.style.opacity = "0.5";
+  }
+  return dateElement;
+}
+
+function changeMonth(offset) {
+  currentMonth += offset;
+  if (currentMonth < 0) {
+      currentMonth = 11;
+      currentYear -= 1;
+  } else if (currentMonth > 11) {
+      currentMonth = 0;
+      currentYear += 1;
+  }
+  renderCalendar();
+}
+
+// 일정 추가 모달 관리
+document.addEventListener("DOMContentLoaded", function () {
+  const openModalButton = document.getElementById("openModalButton");
+  const modal1 = document.getElementById("newscheduleModal");
+  const cancelModalButton = document.getElementById("cancelModalButton");
+
+  // 모달 열기
+  openModalButton.addEventListener("click", function () {
+    openModal("newscheduleModal"); // modal1을 화면에 표시
+  });
+
+  cancelModalButton.addEventListener("click", function () {
+    closeModal("newscheduleModal"); // modal1을 닫기
+  });
+
+  // 모달 외부 클릭 시 닫기
+  window.addEventListener("click", function (event) {
+    if (event.target === modal1) {
+      closeModal("newscheduleModal"); // 외부 클릭 시 modal1 닫기
+    }
+  });
+});
+
+// 일정 추가 버튼 클릭 시 서버로 폼 데이터 전송
+// 일정 저장
+document.querySelector('#createForm').addEventListener('submit', function(event) {
+  event.preventDefault();  // 기본 폼 제출 동작 방지
+
+  const projectId = document.getElementById("project-id").value;
+
+  // 폼 데이터 가져오기
+  const title = document.querySelector('#title').value;
+  const place = document.querySelector('#place').value;
+  const startDate = document.querySelector('#start_date').value;
+  const dueDate = document.querySelector('#due_date').value;
+  const category = document.querySelector('input[name="category"]:checked').value;
+  const color = document.querySelector('#color').value;
+  const content = document.querySelector('#description').value;
+  const important = document.querySelector('#important').checked;
+  
+  // 'team'이면 true, 'personal'이면 false
+  const isTeam = category === 'team';  // 'team'이 선택되면 true, 아니면 false
+  
+  // 필수 입력 항목 검사
+  if (!title || !startDate || !dueDate) {
+    alert('제목, 시작일, 종료일은 필수로 입력해야 합니다.');
+    return;  // 폼 제출을 중단
+  }
+
+  const formData = {
+    title,
+    place,
+    start_date: startDate,
+    due_date: dueDate,
+    team: isTeam,  // boolean 값으로 변환
+    color,
+    content,
+    important,
+  };
+
+  // AJAX 요청 (fetch 사용)
+  fetch(`/calendar/${projectId}/`, {  // URL에 projectId를 포함
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',  // JSON 형식으로 보냄
+    },
+    body: JSON.stringify(formData)  // formData를 JSON으로 변환
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.message === 'success') {
+        alert('일정이 추가되었습니다!');
+        // 폼 초기화 및 모달 닫기
+        document.querySelector('#createForm').reset();
+        document.querySelector('#newscheduleModal').style.display = 'none';
+        fetchSchedules(document.getElementById("project-id").value);
+    } else {
+        alert('일정 추가에 실패했습니다.');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('서버 오류가 발생했습니다.');
+  });
+});
+
+// 일정 상세
+function showScheduleDetails(schedule) {
+  console.log(schedule);  
+  const modal2 = document.getElementById("scheduleDetailModal");
+
+  // 상세 정보 모달에 데이터를 표시
+  document.getElementById("scheduleTitle").textContent = schedule.title;
+  document.getElementById("schedulePlace").textContent = schedule.place || "없음";
+  document.getElementById("scheduleStartDate").textContent = schedule.start.toLocaleDateString();
+  document.getElementById("scheduleEndDate").textContent = schedule.end.toLocaleDateString();
+  document.getElementById("scheduleDescription").textContent = schedule.content || "없음";
+  document.getElementById("scheduleImportant").textContent = schedule.important ? "예" : "아니오";
+
+  // 수정과 삭제 버튼 활성화
+  document.getElementById("editScheduleButton").onclick = function () {
+    closeModal("scheduleDetailModal");  // 상세보기 모달 닫기
+    openEditModal(schedule);  // 수정 모달 열기
+
+  };
+
+  document.getElementById("deleteScheduleButton").onclick = function () {
+    deleteSchedule(schedule.calendar_id);  // 일정 삭제
+  };
+
+  // 닫기 버튼
+  const closeButton = document.getElementById("cancelModalButton2");
+  closeButton.addEventListener("click", function () {
+    closeModal("scheduleDetailModal");
+  });
+
+   // 모달 외부 클릭 시 닫기
+   window.addEventListener("click", function (event) {
+    if (event.target === modal2) {
+      closeModal("scheduleDetailModal"); // 외부 클릭 시 modal1 닫기
+    }
+  });
+
+  // 모달 열기
+  openModal("scheduleDetailModal");
+}
+
+
+// 수정 모달
+function openEditModal(schedule) {
+
+  // 기존 데이터 폼에 삽입
+  document.getElementById("editTitle").value = schedule.title;
+  document.getElementById("editPlace").value = schedule.place || "";
+  document.getElementById("editStartDate").value = new Date(schedule.start).toLocaleDateString('en-CA');
+  document.getElementById("editEndDate").value = new Date(schedule.end).toLocaleDateString('en-CA');
+  document.getElementById("editDescription").value = schedule.content || "";
+  document.getElementById("editImportant").checked = schedule.important;
+
+  // category에 따라 라디오 버튼 선택 설정
+  document.getElementById("team").checked = schedule.team;
+  document.getElementById("personal").checked = !schedule.team;
+
+  // 색상 선택 필드 설정
+  document.getElementById("color").value = schedule.color;
+
+  // 수정 후 저장 처리
+  // 수정 모달에서 수정된 일정 저장
+  document.getElementById("editScheduleForm").addEventListener("submit", function(event) {
+  event.preventDefault();  // 기본 폼 제출 방지 (페이지 리로드 방지)
+
+  // 수정된 일정 데이터 가져오기
+  const title = document.querySelector('#editTitle').value;
+  const place = document.querySelector('#editPlace').value;
+  const startDate = document.querySelector('#editStartDate').value;
+  const dueDate = document.querySelector('#editEndDate').value;
+  const category = document.querySelector('input[name="category"]:checked').value;
+  const color = document.querySelector('#color').value;
+  const content = document.querySelector('#editDescription').value;
+  const important = document.querySelector('#editImportant').checked;
+  
+  // 'team'이면 true, 'personal'이면 false
+  const isTeam = category === 'team';  // 'team'이 선택되면 true, 아니면 false
+
+  // 수정된 일정 객체
+  const updatedSchedule = {
+    title,
+    place,
+    start_date: startDate,
+    due_date: dueDate,
+    team: isTeam,  // boolean 값으로 변환
+    color,
+    content,
+    important,
+  };
+
+  const calendarId = schedule.calendar_id;  // 수정할 일정의 ID
+
+  fetch(`/calendar/update/${calendarId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updatedSchedule),  // 수정된 일정 데이터 전송
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.message === 'success') {
+      alert('일정이 수정되었습니다!');
+      closeModal("editScheduleModal");
+      fetchSchedules();  // 일정 목록 갱신
+    } else {
+      alert('일정 수정에 실패했습니다.');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('서버 오류가 발생했습니다.');
+  });
+
+  });
+  // 수정 모달 열기
+  openModal("editScheduleModal");
+
+  // 수정 모달 닫기
+  const cancelEditModalButton = document.getElementById("cancelEditModalButton");
+  cancelEditModalButton.addEventListener("click", function () {
+    closeModal("editScheduleModal");
+  });
+}
+
+
+// 일정 삭제
+function deleteSchedule(scheduleId) {
+    if (confirm("정말로 이 일정을 삭제하시겠습니까?")) {
+    fetch(`${scheduleId}`, {
+      method: 'DELETE',
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.message === 'success') {
+        alert('일정이 삭제되었습니다.');
+        document.querySelector('#scheduleDetailModal').style.display = 'none';
+        fetchSchedules(document.getElementById("project-id").value);  // 일정 새로고침
+      } else {
+        alert('삭제에 실패했습니다.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('서버 오류가 발생했습니다.');
+    });
+  }
+}
+
+function openModal(modalId) {
+  const modal = document.getElementById(modalId);
+  modal.style.display = "flex";
+}
+
+function closeModal(modalId) {
+  const modal = document.getElementById(modalId);
+  modal.style.display = "none";
+}

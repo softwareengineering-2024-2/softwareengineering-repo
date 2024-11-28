@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from controllers.milestone_controller import get_milestones, create_milestone, update_milestone, delete_milestone, get_milestone_counts
-from controllers.calendar_controller import create_schedule
+from controllers.calendar_controller import create_schedules
 from models.project_model import UserProject, Project
 from flask_login import login_required, current_user
 
@@ -26,7 +26,7 @@ def create_milestone_view(project_id):
     milestone_content = request.form.get('milestone_content')
     due_date = request.form.get('due_date')
     create_milestone(project_id, milestone_content, due_date)
-    create_schedule(project_id, milestone_content, None, due_date, due_date, True, 0, None, True)
+    create_schedules(current_user.id,project_id, milestone_content, None, due_date, due_date, True, 0, None, True)
 
     return redirect(url_for('milestone.milestone_view', project_id=project_id))
 
