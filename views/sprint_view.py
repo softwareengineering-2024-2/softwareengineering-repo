@@ -4,7 +4,7 @@ from controllers.sprint_controller import (
     assign_backlogs_to_sprint, create_sprint, delete_backlog, get_sprints_with_backlogs, get_unassigned_product_backlogs, get_users_by_project_id, move_incomplete_backlogs_to_next_sprint, update_backlog_details, update_backlog_status, update_sprint, delete_sprint,
     get_all_product_backlogs, create_sprint_backlog
 )
-from controllers.calendar_controller import create_schedule
+from controllers.calendar_controller import create_schedules
 from controllers.burnup_controller import increment_total_backlog, decrement_total_backlog
 from controllers.burnup_controller import increment_total_backlog, decrement_total_backlog
 from models.project_model import Project, UserProject
@@ -41,7 +41,7 @@ def add_sprint():
     selected_backlogs = request.form.getlist('backlogs')
 
     new_sprint, error = create_sprint(project_id, sprint_name, start_date, end_date, status)
-    create_schedule(project_id, sprint_name, None, start_date, end_date, True, 0, None, True)
+    create_schedules(current_user.id,project_id, sprint_name, None, start_date, end_date, True, 0, None, True)
     if new_sprint:
         assign_backlogs_to_sprint(new_sprint.sprint_id, selected_backlogs)
         return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id, status=1))

@@ -124,7 +124,7 @@
 
             <div class="form-buttons">
               <form
-                action="{{ url_for('calendar.create_schedule_view', project_id=project.project_id) }}"
+                action="{{ url_for('calendar.create_schedule', project_id=project.project_id) }}"
                 method="POST"
               >
                 <button type="submit" class="add-button">일정 추가</button>
