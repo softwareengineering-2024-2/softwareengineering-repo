@@ -64,7 +64,6 @@ function fetchSchedules(projectId) {
   fetch(`schedules/${projectId}`)
     .then(response => response.json())
     .then(data => {
-        console.log(data);  // 데이터를 콘솔에 출력하여 확인
         schedules.length = 0; // 기존 데이터 초기화
         
         data.forEach(schedule => {
@@ -275,7 +274,7 @@ document.querySelector('.add-button').addEventListener('click', submitSchedule);
 
 // 일정 상세
 function showScheduleDetails(schedule) {
-  console.log(schedule);  
+  
   const modal2 = document.getElementById("scheduleDetailModal");
 
   // 상세 정보 모달에 데이터를 표시
@@ -314,6 +313,40 @@ function showScheduleDetails(schedule) {
   openModal("scheduleDetailModal");
 }
 
+// 수정 모달 열기
+function openEditModal(schedule) {
+  // 기존 데이터 폼에 삽입
+  document.getElementById("editTitle").value = schedule.title;
+  document.getElementById("editPlace").value = schedule.place || "";
+  document.getElementById("editStartDate").value = new Date(schedule.start).toLocaleDateString('en-CA');
+  document.getElementById("editEndDate").value = new Date(schedule.end).toLocaleDateString('en-CA');
+  document.getElementById("editDescription").value = schedule.content || "";
+  document.getElementById("editImportant").checked = schedule.important;
+
+  // category에 따라 라디오 버튼 선택 설정
+  if (schedule.team == true) {
+    document.getElementById("editTeam").checked = true;}
+  else {
+    document.getElementById("editPersonal").checked = true;}
+
+  // 색상 선택 필드 설정
+  document.getElementById("editColor").value = schedule.color_num ;
+
+  // 수정 버튼 클릭 시 일정 수정 처리
+  const editedButton = document.getElementById("editbutton");
+  editedButton.addEventListener("click", function() {
+    submitEditSchedule(event, schedule.calendar_id);  // calendar_id를 넘겨서 수정 처리
+  });
+
+  // 수정 모달 열기
+  openModal("editScheduleModal");
+
+  // 수정 모달 닫기
+  const cancelEditModalButton = document.getElementById("cancelEditModalButton");
+  cancelEditModalButton.addEventListener("click", function () {
+    closeModal("editScheduleModal");
+  });
+}
 
 // 일정 수정 폼 처리 함수
 function submitEditSchedule(event,calendarId) {
@@ -369,41 +402,6 @@ function submitEditSchedule(event,calendarId) {
 
 }
 
-// 수정 모달 열기
-function openEditModal(schedule) {
-  // 기존 데이터 폼에 삽입
-  document.getElementById("editTitle").value = schedule.title;
-  document.getElementById("editPlace").value = schedule.place || "";
-  document.getElementById("editStartDate").value = new Date(schedule.start).toLocaleDateString('en-CA');
-  document.getElementById("editEndDate").value = new Date(schedule.end).toLocaleDateString('en-CA');
-  document.getElementById("editDescription").value = schedule.content || "";
-  document.getElementById("editImportant").checked = schedule.important;
-
-
-  // category에 따라 라디오 버튼 선택 설정
-  if (schedule.team == true) {
-    document.getElementById("editTeam").checked = true;}
-  else {
-    document.getElementById("editPersonal").checked = true;}
-
-  // 색상 선택 필드 설정
-  document.getElementById("editColor").value = schedule.color_num ;
-
-  // 수정 버튼 클릭 시 일정 수정 처리
-  const editedButton = document.getElementById("editbutton");
-  editedButton.addEventListener("click", function() {
-    submitEditSchedule(event, schedule.calendar_id);  // calendar_id를 넘겨서 수정 처리
-  });
-
-  // 수정 모달 열기
-  openModal("editScheduleModal");
-
-  // 수정 모달 닫기
-  const cancelEditModalButton = document.getElementById("cancelEditModalButton");
-  cancelEditModalButton.addEventListener("click", function () {
-    closeModal("editScheduleModal");
-  });
-}
 
 // 일정 삭제
 function deleteSchedule(scheduleId) {
@@ -428,6 +426,8 @@ function deleteSchedule(scheduleId) {
   }
 }
 
+
+// 모달관리
 function openModal(modalId) {
   const modal = document.getElementById(modalId);
   modal.style.display = "flex";

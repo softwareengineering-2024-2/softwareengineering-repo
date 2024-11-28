@@ -33,16 +33,11 @@ def show_schedules(project_id, user_id):
     
     if team:
         schedules = get_schedules_of_team(project_id)
-        print("team",schedules)
     if personal:
         schedules = get_schedules_of_personal(project_id, user_id)
-        print("personal",schedules)
 
     if team and personal:
         schedules = get_all_schedules(project_id)
-        print("all",schedules)
-    # else:
-    #     schedules = []
         
     return [{"calendar_id": schedules.calendar_id,
              "user_id": schedules.user_id,
@@ -84,39 +79,3 @@ def delete_schedules(calendar_id):
     schedule = Calendar.query.filter_by(calendar_id=calendar_id).first_or_404()
     schedule.delete_from_db()
     return None
-
-# # 새로운 일정을 생성하고 저장하는 로직
-# def create_schedule(project_id, title, place, start_date, due_date, team, color, content, important):
-#     if not title or not start_date or not due_date:
-#         return "일정 제목과 기간을 입력해야 합니다."
-#     new_schedule = Calendar(user_id=current_user.id, project_id=project_id, title=title, place=place, start_date=start_date, due_date=due_date, team=team, color=color, content=content, important=important)
-#     new_schedule.save_to_db()
-#     return "일정이 추가되었습니다."
-
-# # 일정을 수정하는 로직
-# def update_schedule(calendar_id, title, place, start_date, due_date, team, color, content, important):
-#     if not title or not start_date or not due_date:
-#         return "일정 제목과 기간을 입력해야 합니다."
-    
-#     schedule = Calendar.find_by_id(calendar_id)
-#     if schedule:
-#         schedule.update_calendar(calendar_id, title, place, start_date, due_date, team, color, content, important)
-#         return [{'calendar_id': schedule.calendar_id,
-#                 'title': schedule.title,
-#                 'place': schedule.place,
-#                 'start_date': schedule.start_date,
-#                 'due_date': schedule.due_date,
-#                 'team': schedule.team,
-#                 'color': schedule.color,
-#                 'content': schedule.content,
-#                 'important': schedule.important
-#                  }]
-#     return "일정을 찾을 수 없습니다."
-
-# # 일정을 삭제하는 로직
-# def delete_schedule(calendar_id):
-#     schedule = Calendar.find_by_id(calendar_id)
-#     if schedule:
-#         schedule.delete_from_db()
-#         return "일정이 삭제되었습니다."
-#     return "일정을 찾을 수 없습니다."
