@@ -47,7 +47,16 @@ function setupEventListeners() {
   });
 }
 
-// 일정 가져오기
+// 일정 필터링 함수
+function filterSchedules() {
+   // 프로젝트 ID 가져오기
+  const projectId = document.getElementById("project-id").value;
+
+  // 일정을 새로 가져오고 렌더링하는 함수 호출
+  fetchSchedules(projectId);
+}
+
+// 일정 가져오기 (필터링을 고려하여 가져옴)
 function fetchSchedules(projectId) {
   const showTeamSchedules = document.getElementById("team").checked;  // 팀 일정 체크 상태
   const showPersonalSchedules = document.getElementById("personal").checked;  // 개인 일정 체크 상태
@@ -59,7 +68,7 @@ function fetchSchedules(projectId) {
         schedules.length = 0; // 기존 데이터 초기화
         
         data.forEach(schedule => {
-          const { title, start_date, due_date, color, place, content, important, calendar_id } = schedule;
+          const { title, start_date, due_date, color, place, content, important, calendar_id, team } = schedule;
       
           // 날짜만 사용하고 시간은 무시하도록 설정
           const start = new Date(start_date);
@@ -70,17 +79,19 @@ function fetchSchedules(projectId) {
           end.setHours(23, 59, 59, 999); // 종료일의 시간을 23:59:59.999으로 설정
       
           // 팀 일정과 개인 일정 필터링
-          if ((showTeamSchedules && team) || (showPersonalSchedules && !team)) {
+          if ((showTeamSchedules && team) || (showPersonalSchedules && !team) || (showTeamSchedules && showPersonalSchedules)) {
               if (!isNaN(start) && !isNaN(end)) {
                   schedules.push({
                       calendar_id,  // schedule_id 추가
                       title,
                       start,
                       end,
-                      color: colorMap[color] || "gray",  // 색상 설정
+                      color: colorMap[color] || 'gray',        // 색상 설정
+                      color_num : color, 
                       place,                             // 장소 추가
                       content,                           // 내용 추가
-                      important                         // 중요 여부 추가
+                      important,                         // 중요 여부 추가
+                      team                               // team 속성 추가
                   });
               }
           }
@@ -90,7 +101,6 @@ function fetchSchedules(projectId) {
     })
     .catch(error => console.error("Error fetching schedules:", error));
 }
-
 
 // 일정 보이게 하기
 function renderCalendar() {
@@ -144,7 +154,7 @@ function renderCalendar() {
   }
 }
 
-
+// 달력 날짜 생성
 function createCalendarDate(day, isEmpty) {
   const dateElement = document.createElement("div");
   dateElement.textContent = day;
@@ -168,6 +178,7 @@ function changeMonth(offset) {
   renderCalendar();
 }
 
+
 // 일정 추가 모달 관리
 document.addEventListener("DOMContentLoaded", function () {
   const openModalButton = document.getElementById("openModalButton");
@@ -181,19 +192,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
   cancelModalButton.addEventListener("click", function () {
     closeModal("newscheduleModal"); // modal1을 닫기
+    document.querySelector('#createForm').reset();
   });
 
   // 모달 외부 클릭 시 닫기
   window.addEventListener("click", function (event) {
     if (event.target === modal1) {
       closeModal("newscheduleModal"); // 외부 클릭 시 modal1 닫기
+      document.querySelector('#createForm').reset();
     }
   });
 });
 
-// 일정 추가 버튼 클릭 시 서버로 폼 데이터 전송
-// 일정 저장
-document.querySelector('#createForm').addEventListener('submit', function(event) {
+
+// 일정 추가 폼 제출 처리 함수
+function submitSchedule(event) {
   event.preventDefault();  // 기본 폼 제출 동작 방지
 
   const projectId = document.getElementById("project-id").value;
@@ -204,10 +217,12 @@ document.querySelector('#createForm').addEventListener('submit', function(event)
   const startDate = document.querySelector('#start_date').value;
   const dueDate = document.querySelector('#due_date').value;
   const category = document.querySelector('input[name="category"]:checked').value;
-  const color = document.querySelector('#color').value;
   const content = document.querySelector('#description').value;
   const important = document.querySelector('#important').checked;
   
+   // important가 체크되었으면 color를 빨간색으로 설정
+   const color = important ? 1 : document.querySelector('#color').value;
+
   // 'team'이면 true, 'personal'이면 false
   const isTeam = category === 'team';  // 'team'이 선택되면 true, 아니면 false
   
@@ -252,7 +267,11 @@ document.querySelector('#createForm').addEventListener('submit', function(event)
     console.error('Error:', error);
     alert('서버 오류가 발생했습니다.');
   });
-});
+}
+
+// 저장 버튼 클릭 시 submitSchedule 함수 호출
+document.querySelector('.add-button').addEventListener('click', submitSchedule);
+
 
 // 일정 상세
 function showScheduleDetails(schedule) {
@@ -296,42 +315,23 @@ function showScheduleDetails(schedule) {
 }
 
 
-// 수정 모달
-function openEditModal(schedule) {
-
-  // 기존 데이터 폼에 삽입
-  document.getElementById("editTitle").value = schedule.title;
-  document.getElementById("editPlace").value = schedule.place || "";
-  document.getElementById("editStartDate").value = new Date(schedule.start).toLocaleDateString('en-CA');
-  document.getElementById("editEndDate").value = new Date(schedule.end).toLocaleDateString('en-CA');
-  document.getElementById("editDescription").value = schedule.content || "";
-  document.getElementById("editImportant").checked = schedule.important;
-
-  // category에 따라 라디오 버튼 선택 설정
-  document.getElementById("team").checked = schedule.team;
-  document.getElementById("personal").checked = !schedule.team;
-
-  // 색상 선택 필드 설정
-  document.getElementById("color").value = schedule.color;
-
-  // 수정 후 저장 처리
-  // 수정 모달에서 수정된 일정 저장
-  document.getElementById("editScheduleForm").addEventListener("submit", function(event) {
-  event.preventDefault();  // 기본 폼 제출 방지 (페이지 리로드 방지)
+// 일정 수정 폼 처리 함수
+function submitEditSchedule(event,calendarId) {
+  event.preventDefault();  // 기본 폼 제출 동작 방지
 
   // 수정된 일정 데이터 가져오기
   const title = document.querySelector('#editTitle').value;
   const place = document.querySelector('#editPlace').value;
   const startDate = document.querySelector('#editStartDate').value;
   const dueDate = document.querySelector('#editEndDate').value;
-  const category = document.querySelector('input[name="category"]:checked').value;
-  const color = document.querySelector('#color').value;
+  const category = document.querySelector('input[name="editCategory"]:checked').value;
+  const color = document.querySelector('#editColor').value ;
   const content = document.querySelector('#editDescription').value;
   const important = document.querySelector('#editImportant').checked;
   
   // 'team'이면 true, 'personal'이면 false
   const isTeam = category === 'team';  // 'team'이 선택되면 true, 아니면 false
-
+ 
   // 수정된 일정 객체
   const updatedSchedule = {
     title,
@@ -344,8 +344,7 @@ function openEditModal(schedule) {
     important,
   };
 
-  const calendarId = schedule.calendar_id;  // 수정할 일정의 ID
-
+  // 일정 수정 요청
   fetch(`/calendar/update/${calendarId}`, {
     method: 'POST',
     headers: {
@@ -358,7 +357,7 @@ function openEditModal(schedule) {
     if (data.message === 'success') {
       alert('일정이 수정되었습니다!');
       closeModal("editScheduleModal");
-      fetchSchedules();  // 일정 목록 갱신
+      fetchSchedules(document.getElementById("project-id").value);
     } else {
       alert('일정 수정에 실패했습니다.');
     }
@@ -368,7 +367,34 @@ function openEditModal(schedule) {
     alert('서버 오류가 발생했습니다.');
   });
 
+}
+
+// 수정 모달 열기
+function openEditModal(schedule) {
+  // 기존 데이터 폼에 삽입
+  document.getElementById("editTitle").value = schedule.title;
+  document.getElementById("editPlace").value = schedule.place || "";
+  document.getElementById("editStartDate").value = new Date(schedule.start).toLocaleDateString('en-CA');
+  document.getElementById("editEndDate").value = new Date(schedule.end).toLocaleDateString('en-CA');
+  document.getElementById("editDescription").value = schedule.content || "";
+  document.getElementById("editImportant").checked = schedule.important;
+
+
+  // category에 따라 라디오 버튼 선택 설정
+  if (schedule.team == true) {
+    document.getElementById("editTeam").checked = true;}
+  else {
+    document.getElementById("editPersonal").checked = true;}
+
+  // 색상 선택 필드 설정
+  document.getElementById("editColor").value = schedule.color_num ;
+
+  // 수정 버튼 클릭 시 일정 수정 처리
+  const editedButton = document.getElementById("editbutton");
+  editedButton.addEventListener("click", function() {
+    submitEditSchedule(event, schedule.calendar_id);  // calendar_id를 넘겨서 수정 처리
   });
+
   // 수정 모달 열기
   openModal("editScheduleModal");
 
@@ -378,7 +404,6 @@ function openEditModal(schedule) {
     closeModal("editScheduleModal");
   });
 }
-
 
 // 일정 삭제
 function deleteSchedule(scheduleId) {
