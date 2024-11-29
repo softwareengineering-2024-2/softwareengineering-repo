@@ -64,7 +64,11 @@
               <p>현재 진행 중인 작업이 없습니다.</p>
               {% endif %}
             </div>
-            <input type="hidden" id="project-id" value="{{ project.project_id }}">
+            <input
+              type="hidden"
+              id="project-id"
+              value="{{ project.project_id }}"
+            />
             <div class="todo-box">
               <h2>TODO LIST</h2>
               <ul id="todo-list">
@@ -75,8 +79,24 @@
           </div>
 
           <!-- 2주 캘린더 -->
-          <div class="calendar-box" id="two-week-calendar">
-            <h2>2주 캘린더</h2>
+          <div class="calendar-box">
+            <a
+              class="calendar-title"
+              href="{{ url_for('calendar.calendar_view', project_id=project.project_id) }}"
+            >
+              <h2 id="two-week-calendar-title">2주 캘린더</h2>
+            </a>
+
+            <div class="calendar-days">
+              <div class="day" style="color: red">일요일</div>
+              <div class="day">월요일</div>
+              <div class="day">화요일</div>
+              <div class="day">수요일</div>
+              <div class="day">목요일</div>
+              <div class="day">금요일</div>
+              <div class="day">토요일</div>
+            </div>
+            <div class="calendar-dates" id="calendarDates"></div>
           </div>
         </div>
       </div>
