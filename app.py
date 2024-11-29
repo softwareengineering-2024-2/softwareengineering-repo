@@ -11,6 +11,7 @@ from views.calendar_view import calendar_bp
 from views.retrospect_view import retrospect_bp
 from views.burnup_view import burnup_bp
 from views.scrum_view import scrum_bp
+from views.guide_view import guide_bp
 from dotenv import load_dotenv
 from database import init_db
 
@@ -43,6 +44,7 @@ app.register_blueprint(calendar_bp, url_prefix='/calendar')
 app.register_blueprint(retrospect_bp, url_prefix='/retrospect')
 app.register_blueprint(burnup_bp, url_prefix='/burnup')
 app.register_blueprint(scrum_bp, url_prefix='/scrum')
+app.register_blueprint(guide_bp, url_prefix='/guide')
 
 @app.route("/")
 def index():
@@ -86,9 +88,9 @@ def index():
 # def calendar():
 #     return render_template('calendar.html')
 
-@app.route('/guide')
-def guide():
-    return render_template('guide.html')
+# @app.route('/guide')
+# def guide():
+#     return render_template('guide.html')
 #-------------------------------------------------
 
 if __name__ == "__main__":

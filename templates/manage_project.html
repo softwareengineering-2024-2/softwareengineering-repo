@@ -41,26 +41,39 @@
           </form>
         </div>
         <h1 class="project-list-title">프로젝트 목록</h1>
-        <ul class="project-lists">
+        <ul class="project-lists" id="projectLists">
           {% for userproject in userprojects %}
           <li class="project-list" style="list-style-type: none">
             <a
+              id="projectLinkButton"
               href="{{ url_for('project_main.project_main_view', project_id=userproject.project_id) }}"
               ><p>{{ userproject.project_name }}</p></a
             >
             <div class="project-list-options">
-              <button class="normal-button" onclick="copyToClipboard('{{ userproject.project_link }}')"><p>링크복사</p></button>
+              <button id="copyLinkButton"
+                class="normal-button"
+                onclick="copyToClipboard('{{ userproject.project_link }}')"
+              >
+                <p>링크복사</p>
+              </button>
               <form
                 action="{{ url_for('manage_project.set_profile_view', project_id=userproject.project_id) }}"
                 method="GET"
               >
-                <button class="normal-button"><p>프로필설정</p></button>
+                <button id="setProfileButton" class="normal-button"><p>프로필설정</p></button>
               </form>
               <form
                 action="{{ url_for('manage_project.delete_project_view', project_id=userproject.project_id) }}"
                 method="POST"
+                id="exitProjectForm"
               >
-                <button class="exit-button" type="submit"><p>나가기</p></button>
+                <button id="exitProjectButton"
+                  class="exit-button"
+                  type="button"
+                  onclick="openExitProjectModal(event)"
+                >
+                  <p>나가기</p>
+                </button>
               </form>
             </div>
           </li>
@@ -107,8 +120,37 @@
         </form>
       </div>
 
+      <!-- 프로젝트 나가기 모달 -->
+      <div class="project-modal" id="exitProjectModal" style="display: none">
+        <h1>프로젝트를 나가시겠습니까?</h1>
+        <div class="modal-buttons-wrapper">
+          <button
+            class="exit-confirm-button"
+            id="confirmExitButton"
+            type="button"
+            onclick="submitExitForm()"
+          >
+            <div class="b2-regular">나가기</div>
+          </button>
+          <button
+            class="cancel-button"
+            id="cancelExitButton"
+            type="button"
+            onclick="closeModal('exitProjectModal');"
+          >
+            <div class="b2-regular">취소</div>
+          </button>
+        </div>
+      </div>
+
       {% endblock %}
     </div>
+    <div id="onboarding-overlay" class="onboarding-overlay hidden">
+      <div id="onboarding-tooltip" class="onboarding-tooltip">
+          <p id="onboarding-text">이 버튼은 프로젝트를 생성하는 버튼입니다.</p>
+          <button id="onboarding-next-button">확인</button>
+      </div>
+    </div>  
     <script src="{{ url_for('static', filename='js/manage_project.js') }}"></script>
     <script>
       function copyToClipboard(text) {

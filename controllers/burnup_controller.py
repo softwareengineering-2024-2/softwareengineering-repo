@@ -34,7 +34,7 @@ def decrement_total_backlog(project_id):
     change.save_to_db()
     return "총 백로그 수가 업데이트되었습니다."
 
-# 스크럼보드에서 스프린트 백로그의 상태를 'done'으로 변경하거나 'done'에서 다른 상태로 변경 시 완료된 백로그 수 업데이트
+# 스크럼보드에서 스프린트 백로그의 상태를 'done'으로 변경하거나 'done'에서 다른 상태로 변경 시 완료된 백로그 수를 업데이트하는 함수
 def update_completed_backlog(project_id, done_backlog_count):
     today = datetime.today().date()
     try:
@@ -43,5 +43,18 @@ def update_completed_backlog(project_id, done_backlog_count):
     except NoResultFound:
         last_change = BacklogChanges.get_last_change(project_id) # 최근 변경사항
         change = BacklogChanges(project_id=project_id, changed_date=today, total_backlog=last_change.total_backlog, completed_backlog=last_change.completed_backlog+done_backlog_count)
+    change.save_to_db()
+    return "완료된 백로그 수가 업데이트되었습니다."
+
+# 스프린트 수정으로 인한 백로그 삭제 시 변경된 백로그 수를 업데이트하는 함수
+def decrement_total_and_completed_backlog(project_id, total_backlog_count, done_backlog_count):
+    today = datetime.today().date()
+    try:
+        change = BacklogChanges.query.filter_by(project_id=project_id, changed_date=today).one()
+        change.total_backlog -= total_backlog_count  # 총 백로그 수 증가
+        change.completed_backlog -= done_backlog_count  # 완료된 백로그 수 증가
+    except NoResultFound:
+        last_change = BacklogChanges.get_last_change(project_id) # 최근 변경사항
+        change = BacklogChanges(project_id=project_id, changed_date=today, total_backlog=last_change.total_backlog-total_backlog_count, completed_backlog=last_change.completed_backlog-done_backlog_count)
     change.save_to_db()
     return "완료된 백로그 수가 업데이트되었습니다."

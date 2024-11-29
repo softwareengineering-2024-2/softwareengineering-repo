@@ -1,82 +1,80 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
-from controllers.calendar_controller import get_all_schedules, get_schedules_of_team_or_personal, create_schedule, update_schedule, delete_schedule
-from models.project_model import UserProject
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from controllers.calendar_controller import (
+    show_schedules,
+    create_schedules,
+    update_schedules,
+    delete_schedules
+)
+from models.project_model import Project, UserProject
 from models.calendar_model import Calendar
 from flask_login import login_required, current_user
+import traceback
+from flask import current_app
 
 # Blueprint 객체 생성
 calendar_bp = Blueprint('calendar', __name__)
 
-# 일정 목록 조회 로직
+# HTML 페이지 렌더링
 @calendar_bp.route('/<int:project_id>', methods=['GET'])
 @login_required
 def calendar_view(project_id):
     try:
-        project = UserProject.find_by_user_and_project(current_user.id, project_id)
-        if not project:
+        userproject = UserProject.find_by_user_and_project(current_user.id, project_id)
+        if not userproject:
             flash("프로젝트를 찾을 수 없습니다.")
             return redirect(url_for('project_main.project_main_view', project_id=project_id))
 
-        team = request.args.get('team', 'true').lower() == 'true'
-        personal = request.args.get('personal', 'true').lower() == 'true'
+        # 일정 조회
+        schedules = show_schedules(project_id, current_user.id)
 
-        if team and personal:
-            schedules = get_all_schedules(project_id)
-        elif team:
-            schedules = get_schedules_of_team_or_personal(project_id, team=True)
-        elif personal:
-            schedules = get_schedules_of_team_or_personal(project_id, team=False)
-        else:
-            schedules = []
-
-        return render_template('calendar_back.html', project_id=project_id, schedules=schedules)
+        # HTML 페이지를 렌더링
+        return render_template('calendar_back.html', project=Project.find_by_id(project_id), userproject=userproject,schedules=schedules)
     except Exception as e:
-        print(f"Error: {e}")  # 오류 로그 출력
+    # 로그 출력
+        current_app.logger.error(f"An error occurred: {e}")
+        current_app.logger.error(traceback.format_exc())  # 상세 에러 스택 트레이스 출력
         return "Internal Server Error", 500
 
-# 일정 생성 로직
-@calendar_bp.route('/<int:project_id>/create', methods=['GET', 'POST'])
-@login_required
-def create_schedule_view(project_id):
-    project = UserProject.find_by_user_and_project(current_user.id, project_id)
-    if request.method == 'POST':
-        title = request.form.get('title')
-        place = request.form.get('place')
-        start_date = request.form.get('start_date')
-        due_date = request.form.get('due_date')
-        team = request.form.get('category') == 'team'
-        color = request.form.get('color')
-        content = request.form.get('content')
-        important = request.form.get('important') == 'on'
-        message = create_schedule(project_id, title, place, start_date, due_date, team, color, content, important)
-        flash(message)
-        return redirect(url_for('calendar.calendar_view', project_id=project_id))
-    return render_template('create_schedule_back.html', project=project)
+# 일정 조회
+@calendar_bp.route('/schedules/<int:project_id>/', methods=['GET'])
+def get_schedule(project_id):
+    user_id = current_user.id
+    schedule = show_schedules(project_id, user_id)
+    return schedule
 
-# 일정 수정 로직
-@calendar_bp.route('/<int:project_id>/<int:calendar_id>/update', methods=['GET', 'POST'])
-@login_required
-def update_schedule_view(project_id, calendar_id):
-    project = UserProject.find_by_user_and_project(current_user.id, project_id)
-    schedule = Calendar.find_by_id(calendar_id)
-    if request.method == 'POST':
-        title = request.form.get('title')
-        place = request.form.get('place')
-        start_date = request.form.get('start_date')
-        due_date = request.form.get('due_date')
-        team = request.form.get('team')  == 'team'
-        color = request.form.get('color')
-        content = request.form.get('content')
-        important = request.form.get('important') == 'on'
-        message = update_schedule(calendar_id, title, place, start_date, due_date, team, color, content, important)
-        flash(message)
-        return redirect(url_for('calendar.calendar_view', project_id=project_id))
-    return render_template('schedule_detail_back.html', project=project, schedule=schedule)
+# 일정 추가
+@calendar_bp.route('/<int:project_id>/', methods=['POST'])
+def create_schedule(project_id):
+    user_id = current_user.id
+    title = request.json.get('title')
+    place = request.json.get('place')
+    start_date = request.json.get('start_date')
+    due_date = request.json.get('due_date')
+    team = request.json.get('team')
+    color = request.json.get('color')
+    content = request.json.get('content')
+    important = request.json.get('important')
+    create_schedules(user_id, project_id, title, place, start_date, due_date, team, color, content, important)
+    return jsonify({"message": "success"})
 
-# 일정 삭제 로직
-@calendar_bp.route('/<int:project_id>/<int:calendar_id>/delete', methods=['POST'])
-@login_required
-def delete_schedule_view(project_id, calendar_id):
-    message = delete_schedule(calendar_id)
-    flash(message)
-    return redirect(url_for('calendar.calendar_view', project_id=project_id))
+#일정 수정
+@calendar_bp.route('/update/<int:calendar_id>', methods=['POST'])
+def update_schedule(calendar_id):
+    title = request.json.get('title')
+    place = request.json.get('place')
+    start_date = request.json.get('start_date')
+    due_date = request.json.get('due_date')
+    team = request.json.get('team')
+    color = request.json.get('color')
+    content = request.json.get('content')
+    important = request.json.get('important')
+    update_schedules(calendar_id, title, place, start_date, due_date, team, color, content, important)
+    return jsonify({"message": "success"})
+
+# 일정 삭제
+@calendar_bp.route('/<int:calendar_id>', methods=['DELETE'])
+def delete_schedule(calendar_id):
+    delete_schedules(calendar_id)
+    return jsonify({"message": "success"})
+    
+

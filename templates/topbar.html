@@ -1,93 +1,87 @@
 <div class="topbar">
-  <ul>
-    <li>
-      <a href="{{ url_for('manage_project.manage_project_view') }}">
-        <img
-          src="{{ url_for('static', filename='icons/project.svg') }}"
-          alt="프로젝트 아이콘"
-        />
-        프로젝트
-      </a>
-    </li>
-    <li>
-      {% if project %}
-      <a
-        href="{{ url_for('calendar.calendar_view', project_id=project.project_id) }}"
-      >
-        <img
-          src="{{ url_for('static', filename='icons/calendar.svg') }}"
-          alt="캘린더 아이콘"
-        />
-        캘린더
-      </a>
-      {% else %}
-      <a href="#">
-        <img
-          src="{{ url_for('static', filename='icons/calendar.svg') }}"
-          alt="캘린더 아이콘"
-        />
-        캘린더
-      </a>
-      {% endif %}
-    </li>
-    <li>
-      <a href="{{ url_for('guide') }}">
-        <img
-          src="{{ url_for('static', filename='icons/guide.svg') }}"
-          alt="가이드 페이지 아이콘"
-        />
-        가이드페이지
-      </a>
-    </li>
-    <li class="notification-dropdown">
-      <div class="notification-dropdown">
+  <div class="right-menu">
+    <ul>
+      <li>
+        <a href="{{ url_for('manage_project.manage_project_view') }}">
+          <img
+            src="{{ url_for('static', filename='icons/project.svg') }}"
+            alt="프로젝트 아이콘"
+          />
+          프로젝트
+        </a>
+      </li>
+      <li>
         <a
-          href="#"
-          onclick="toggleNotificationDropdown(event, '{{ project.project_id }}')"
+          href="{{ url_for('calendar.calendar_view', project_id=project.project_id) }}"
         >
           <img
-            src="{{ url_for('static', filename='icons/alarm.svg') }}"
-            alt="알림 아이콘"
+            src="{{ url_for('static', filename='icons/calendar.svg') }}"
+            alt="캘린더 아이콘"
           />
-          알림
+          캘린더
         </a>
-        <div class="notification-content" style="display: none">
-          <h3>알림</h3>
-          <ul>
-            <!-- 알림 항목들이 여기에 동적으로 추가됩니다 -->
-          </ul>
-        </div>
-      </div>
-    </li>
-    <li class="my-page-dropdown">
-      <a href="#" onclick="toggleMyPageDropdown(event)">
-        <img
-          src="{{ url_for('static', filename='icons/mypage.svg') }}"
-          alt="마이페이지 아이콘"
-        />
-        마이페이지
-      </a>
-      <div class="mypage-content">
-        <h3>마이페이지</h3>
-        <!-- 프로필 사진 -->
-        <div class="profile-picture">
-          <img src="{{ current_user.profile_pic }}" alt="프로필 사진" />
-        </div>
-        <!-- 역할과 사용자 이름 -->
-        <p>{{ userproject.user_role }} {{ userproject.user_name }}</p>
-        <!-- 버튼들 -->
-        <form
-          action="{{ url_for('manage_project.set_profile_view', project_id=project.project_id) }}"
-          method="GET"
+      </li>
+      <li>
+        <a
+          href="{{ url_for('guide.guide_view', project_id=project.project_id) }}"
         >
-          <button class="btn btn-edit-profile">프로필 변경하기</button>
-        </form>
-        <form action="{{ url_for('auth.logout') }}" method="get">
-          <button class="btn btn-logout">로그아웃 하기</button>
-        </form>
-      </div>
-    </li>
-  </ul>
+          <img
+            src="{{ url_for('static', filename='icons/guide.svg') }}"
+            alt="가이드 페이지 아이콘"
+          />
+          가이드페이지
+        </a>
+      </li>
+      <li class="notification-dropdown">
+        <div class="notification-dropdown">
+          <a
+            href="#"
+            onclick="toggleNotificationDropdown(event, '{{ project.project_id }}')"
+          >
+            <img
+              src="{{ url_for('static', filename='icons/alarm.svg') }}"
+              alt="알림 아이콘"
+            />
+            알림
+          </a>
+          <div class="notification-content" style="display: none">
+            <h3>알림</h3>
+            <ul>
+              <!-- 알림 항목들이 여기에 동적으로 추가됩니다 -->
+            </ul>
+          </div>
+        </div>
+      </li>
+      <li class="my-page-dropdown">
+        <a href="#" onclick="toggleMyPageDropdown(event)">
+          <img
+            src="{{ url_for('static', filename='icons/mypage.svg') }}"
+            alt="마이페이지 아이콘"
+          />
+          마이페이지
+        </a>
+        <div class="mypage-content">
+          <h3>마이페이지</h3>
+          <!-- 프로필 사진 -->
+          <div class="profile-picture">
+            <img src="{{ current_user.profile_pic }}" alt="프로필 사진" />
+          </div>
+          <!-- 역할과 사용자 이름 -->
+          <p>{{ userproject.user_role }} {{ userproject.user_name }}</p>
+          <!-- 버튼들 -->
+          <form
+            action="{{ url_for('manage_project.set_profile_view', project_id=project.project_id) }}"
+            method="GET"
+          >
+            <button class="btn btn-edit-profile">프로필 변경하기</button>
+          </form>
+          <form action="{{ url_for('auth.logout') }}" method="get">
+            <button class="btn btn-logout">로그아웃 하기</button>
+          </form>
+        </div>
+      </li>
+    </ul>
+  </div>
 </div>
 
 <!-- JavaScript 파일 추가 -->

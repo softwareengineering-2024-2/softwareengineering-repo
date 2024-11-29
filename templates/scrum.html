@@ -1,4 +1,3 @@
-# scrum.html
 <!DOCTYPE html>
 <html lang="ko">
   <head>
@@ -33,31 +32,57 @@
       <div class="content">
         {% block content %}
         <div class="scrum-title-wrapper">
-          <div class="title-right">
+          <div class="title-left-wrapper">
             <h1>스크럼 보드</h1>
             <div class="sprint-change-btn" onclick="toggleSprintDropdown()">
-              <h2>{{ selected_sprint.sprint_name if selected_sprint else '선택된 스프린트가 없습니다' }}</h2>
+              <p>
+                {{ selected_sprint.sprint_name if selected_sprint else '선택된
+                스프린트가 없습니다' }}
+              </p>
               <img src="/static/icons/chevron-down.svg" />
               <div class="sprint-dropdown" id="sprintDropdown">
                 <ul>
                   {% for sprint in sprints %}
-                  <li onclick="changeSprint({{ sprint.sprint_id }})">{{ sprint.sprint_name }}</li>
+                  <li onclick="changeSprint({{ sprint.sprint_id }})">
+                    {{ sprint.sprint_name }}
+                  </li>
                   {% endfor %}
                 </ul>
               </div>
             </div>
+            <button
+              onclick="saveStatuses()"
+              class="save-button"
+              {%
+              if
+              is_past_due
+              %}disabled
+              style="cursor: not-allowed; opacity: 0.5"
+              {%
+              endif
+              %}
+            >
+              <div class="b2-regular">상태 저장</div>
+            </button>
           </div>
 
           <div class="sprint-percentage-container">
             <p>스프린트 작업 완료율</p>
-            <div class="sprint-bar"><div class="sprint-bar-outer">
-              <div class="sprint-bar-inner" style="width: {{ completion_percentage }}%;"></div>
+            <div class="sprint-bar">
+              <div class="sprint-bar-outer">
+                <div
+                  class="sprint-bar-inner"
+                  style="width: {{ completion_percentage }}%;"
+                ></div>
+              </div>
+              <span>{{ completion_percentage|round|int }}%</span>
             </div>
-            <span>{{ completion_percentage|round|int }}%</span></div></div>
           </div>
         </div>
 
-        <div class="scrum-board-container {% if is_past_due %}past-due{% endif %}">
+        <div
+          class="scrum-board-container {% if is_past_due %}past-due{% endif %}"
+        >
           <div class="todo-container">
             <h1 class="scrum-board-title">To Do</h1>
             <div
@@ -130,12 +155,8 @@
           {% endif %}
         </div>
         {% endblock %}
-        <div class="save-button-container" style="text-align: right; margin-top: 20px;">
-          <button onclick="saveStatuses()" class="save-button" {% if is_past_due %}disabled style="cursor: not-allowed; opacity: 0.5;"{% endif %}>상태 저장</button>
-        </div>
       </div>
     </div>
-
 
     <!-- 외부 JavaScript 파일 연결 -->
     <script src="{{ url_for('static', filename='js/scrum.js') }}"></script>

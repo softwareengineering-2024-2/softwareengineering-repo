@@ -1,4 +1,3 @@
-from flask import jsonify
 from models.todolist_model import TodoList
 
 # 투두리스트 작성
