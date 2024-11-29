@@ -30,14 +30,13 @@ for file in changed_files:
         prompt = f"다음은 PR에서 변경된 코드의 diff입니다:\n{diff}\n\n이 변경 사항에 대한 상세한 코드 리뷰를 한국어로 작성해 주세요. 개선점, 잠재적 버그, 코드 스타일 등에 대해 언급해 주세요."
 
         # GPT에게 리뷰 요청
-        createChatCompletion({
+        response = openai.createChatCompletion(
             model: "gpt-3.5-turbo",
             messages: [
               { role: "system", content: "You are a helpful code reveiwer." },
               { role: "user", content: prompt }
             ]
-          });
-
+          )
         review = response.choices[0].text.strip()
 
         # 리뷰 코멘트를 리스트에 추가
