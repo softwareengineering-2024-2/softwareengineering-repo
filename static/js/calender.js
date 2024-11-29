@@ -115,7 +115,6 @@ function fetchSchedules(projectId) {
     .catch((error) => console.error("Error fetching schedules:", error));
 }
 
-// 일정 보이게 하기
 function renderCalendar() {
   const calendarDates = document.getElementById("calendarDates");
   const currentMonthElement = document.getElementById("currentMonth");
@@ -130,11 +129,13 @@ function renderCalendar() {
   // 이전 달의 날짜 표시
   const prevMonthDays = new Date(currentYear, currentMonth, 0).getDate();
   for (let i = 0; i < startDayOfWeek; i++) {
-    const emptyDate = createCalendarDate(
-      prevMonthDays - startDayOfWeek + i + 1,
-      true
-    );
-    calendarDates.appendChild(emptyDate);
+    const date = new Date(currentYear, currentMonth - 1, prevMonthDays - startDayOfWeek + i + 1);
+    const dateElement = createCalendarDate(date.getDate(), true);
+
+    // 일정 렌더링
+    renderSchedulesForDate(date, dateElement);
+
+    calendarDates.appendChild(dateElement);
   }
 
   // 현재 달의 날짜 표시
@@ -143,32 +144,51 @@ function renderCalendar() {
     const dateElement = createCalendarDate(i, false);
 
     // 일정 렌더링
-    schedules.forEach((schedule) => {
-      if (date >= schedule.start && date <= schedule.end) {
-        const scheduleDiv = document.createElement("div");
-        scheduleDiv.textContent = schedule.title;
-        scheduleDiv.style.backgroundColor = schedule.color;
-        scheduleDiv.classList.add("schedule");
-
-        // 일정 클릭 시 해당 id 전달
-        scheduleDiv.addEventListener("click", function () {
-          showScheduleDetails(schedule); // 일정 상세보기 모달 표시
-        });
-
-        dateElement.appendChild(scheduleDiv);
-      }
-    });
+    renderSchedulesForDate(date, dateElement);
 
     calendarDates.appendChild(dateElement);
   }
 
   // 다음 달의 날짜 표시
-  const remainingDays =
-    6 - new Date(currentYear, currentMonth, daysInMonth).getDay();
+  const remainingDays = 6 - new Date(currentYear, currentMonth, daysInMonth).getDay();
   for (let i = 1; i <= remainingDays; i++) {
-    const emptyDate = createCalendarDate(i, true);
-    calendarDates.appendChild(emptyDate);
+    const date = new Date(currentYear, currentMonth + 1, i);
+    const dateElement = createCalendarDate(i, true);
+
+    // 일정 렌더링
+    renderSchedulesForDate(date, dateElement);
+
+    calendarDates.appendChild(dateElement);
   }
+}
+
+function renderSchedulesForDate(date, dateElement) {
+  schedules.forEach((schedule) => {
+    
+    if (date >= schedule.start && date <= schedule.end) {
+      const scheduleDiv = document.createElement("div");
+      scheduleDiv.textContent = schedule.title;
+      scheduleDiv.style.backgroundColor = schedule.color;
+      scheduleDiv.classList.add("schedule");
+
+      // 일정 클릭 시 해당 id 전달
+      scheduleDiv.addEventListener("click", function () {
+        showScheduleDetails(schedule); // 일정 상세보기 모달 표시
+      });
+
+      dateElement.appendChild(scheduleDiv);
+    }
+  });
+}
+
+function createCalendarDate(day, isOtherMonth) {
+  const dateElement = document.createElement("div");
+  dateElement.classList.add("date");
+  if (isOtherMonth) {
+    dateElement.classList.add("other-month");
+  }
+  dateElement.textContent = day;
+  return dateElement;
 }
 
 // 달력 날짜 생성
