@@ -24,6 +24,34 @@ function drop(ev) {
   // 드롭 대상이 scrum-content이고, 드래그된 항목이 해당 scrum-content의 자식이 아닐 경우 항목을 추가
   if (dropTarget && dropTarget !== draggedItem.parentNode) {
     dropTarget.appendChild(draggedItem); // 드래그된 항목을 드롭된 scrum-content에 추가
+    // 상태 업데이트
+    var newStatus = dropZone.id.replace("-", " ").titleCase();
+    var backlogId = draggedItem.getAttribute("data-backlog-id");
+
+    // 서버에 상태 업데이트 요청 보내기
+    fetch("/update_sprint_backlog_status", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrf_token"), // CSRF 토큰이 필요한 경우
+      },
+      body: JSON.stringify({
+        backlog_id: backlogId,
+        new_status: newStatus,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (!data.success) {
+          alert("상태 업데이트에 실패했습니다.");
+          location.reload();
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("상태 업데이트 중 오류가 발생했습니다.");
+        location.reload();
+      });
   }
 }
 
@@ -94,20 +122,24 @@ function changeSprint(sprint_id) {
 
 // 스프린트 드롭다운 토글 함수
 function toggleSprintDropdown() {
-  const dropdowns = document.getElementsByClassName('sprint-dropdown');
+  const dropdowns = document.getElementsByClassName("sprint-dropdown");
   if (dropdowns.length > 0) {
-    const dropdown = dropdowns[0]; 
-    dropdown.classList.toggle('show'); 
+    const dropdown = dropdowns[0];
+    dropdown.classList.toggle("show");
   } else {
     console.error("No dropdown elements found.");
   }
 }
 
 // 드롭다운 외부 클릭 시 닫기
-window.onclick = function(event) {
-  const dropdown = document.getElementById('sprintDropdown');
-  if (!event.target.matches('.sprint-change-btn') && !event.target.closest('.sprint-change-btn') && dropdown.classList.contains('show')) {
-    dropdown.classList.remove('show');
+window.onclick = function (event) {
+  const dropdown = document.getElementById("sprintDropdown");
+  if (
+    !event.target.matches(".sprint-change-btn") &&
+    !event.target.closest(".sprint-change-btn") &&
+    dropdown.classList.contains("show")
+  ) {
+    dropdown.classList.remove("show");
   }
 };
 
@@ -124,20 +156,20 @@ String.prototype.titleCase = function () {
 function saveStatuses() {
   // 모든 백로그 아이템의 현재 상태를 수집합니다.
   var updatedBacklogs = [];
-  document.querySelectorAll('.scrum-sprint-item').forEach(function(item) {
-    var backlogId = item.getAttribute('data-backlog-id');
+  document.querySelectorAll(".scrum-sprint-item").forEach(function (item) {
+    var backlogId = item.getAttribute("data-backlog-id");
     var parentColumn = item.parentElement;
-    var status = '';
-    if (parentColumn.id === 'to-do') {
-      status = 'To Do';
-    } else if (parentColumn.id === 'in-progress') {
-      status = 'In Progress';
-    } else if (parentColumn.id === 'done') {
-      status = 'Done';
+    var status = "";
+    if (parentColumn.id === "to-do") {
+      status = "To Do";
+    } else if (parentColumn.id === "in-progress") {
+      status = "In Progress";
+    } else if (parentColumn.id === "done") {
+      status = "Done";
     }
     updatedBacklogs.push({
-      'backlog_id': backlogId,
-      'new_status': status
+      backlog_id: backlogId,
+      new_status: status,
     });
   });
 
@@ -148,20 +180,20 @@ function saveStatuses() {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      'updated_backlogs': updatedBacklogs
+      updated_backlogs: updatedBacklogs,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        alert("상태가 성공적으로 저장되었습니다.");
+        // 필요하다면 페이지를 새로고침하거나 추가 작업을 수행합니다.
+      } else {
+        alert("상태 저장에 실패했습니다: " + data.message);
+      }
     })
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      alert("상태가 성공적으로 저장되었습니다.");
-      // 필요하다면 페이지를 새로고침하거나 추가 작업을 수행합니다.
-    } else {
-      alert("상태 저장에 실패했습니다: " + data.message);
-    }
-  })
-  .catch((error) => {
-    console.error('Error:', error);
-    alert('상태 저장 중 오류가 발생했습니다.');
-  });
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("상태 저장 중 오류가 발생했습니다.");
+    });
 }

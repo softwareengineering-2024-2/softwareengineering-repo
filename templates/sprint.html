@@ -36,9 +36,7 @@
           </button>
         </div>
         <div class="sprint-navigation">
-          <div class="nav-btn-lt">
-            <button class="nav-btn" onclick="navigateSprints(-1)">&lt;</button>
-          </div>
+          <button class="nav-btn" onclick="navigateSprints(-1)">&lt;</button>
           {% if sprints %} {% for sprint in sprints %}
           <div
             class="sprint-container {% if sprint.is_past_due %}past-due{% endif %}"
@@ -136,16 +134,13 @@
             </div>
           </div>
           {% endfor %} {% else %}
-          <div class="sprint-container-none">
-            <p>아직 생성된 스프린트가 없습니다.</p>
-          </div>
+          <p>아직 생성된 스프린트가 없습니다.</p>
           {% endif %}
-          <div class="nav-btn-gt">
-            <button class="nav-btn" onclick="navigateSprints(1)">&gt;</button>
-          </div>
+          <button class="nav-btn" onclick="navigateSprints(1)">&gt;</button>
         </div>
 
-        <div class="backlog-div">
+        <div class="backlog-navigation">
+          <button class="nav-btn" style="visibility: hidden">&lt;</button>
           <div class="product-backlog">
             <h3>프로덕트 백로그</h3>
             <div class="product-backlog-list">
@@ -160,6 +155,7 @@
               {% endfor %}
             </div>
           </div>
+          <button class="nav-btn" style="visibility: hidden">&gt;</button>
         </div>
       </div>
     </div>
@@ -266,9 +262,19 @@
           />
 
           <label for="edit-product-backlog">프로덕트 백로그</label>
+          <<<<<<< HEAD
+          <select id="edit-product-backlog" name="backlogs" multiple>
+            {% for backlog in backlogs.unassigned_backlogs %}
+            <option value="{{ backlog.product_backlog_id }}">
+              {{ backlog.product_backlog_content }}
+            </option>
+            {% endfor %}
+          </select>
+          =======
           <div id="edit-product-backlog-container" class="product-backlog-list">
             <!-- 프로덕트 백로그 항목이 동적으로 추가됩니다 -->
           </div>
+          >>>>>>> 5062ab35ed45eafc731cee7ced8da470d9036fe0
 
           <div class="modal-buttons">
             <button
@@ -431,4 +437,28 @@
     var unassignedBacklogsData = {{ backlogs.unassigned_backlogs|tojson }};
   </script>
   <script src="{{ url_for('static', filename='js/sprint.js') }}"></script>
+  <<<<<<< HEAD
+  <script>
+    const selectedBacklogs = new Map(); // 선택된 항목들을 저장하는 Map (key: ID, value: content)
+
+    // 항목 클릭 시 선택/해제하고 입력창 업데이트
+    function toggleBacklog(content, id) {
+      // 선택된 항목이 이미 있는 경우 제거 (해제)
+      if (selectedBacklogs.has(id)) {
+        selectedBacklogs.delete(id);
+      } else {
+        // 선택된 항목에 추가
+        selectedBacklogs.set(id, content);
+      }
+      updateSelectedBacklogs();
+    }
+
+    // 선택된 항목들을 쉼표로 구분하여 입력창에 표시
+    function updateSelectedBacklogs() {
+      const selectedInput = document.getElementById("selected-backlogs");
+      // 선택된 백로그 내용을 쉼표로 구분하여 표시
+      selectedInput.value = Array.from(selectedBacklogs.values()).join(", ");
+    }
+  </script>
+  ======= >>>>>>> 5062ab35ed45eafc731cee7ced8da470d9036fe0
 </html>
