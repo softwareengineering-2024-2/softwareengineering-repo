@@ -32,6 +32,7 @@ def get_product_backlogs_view(project_id):
 
 # 스프린트 추가
 @sprint_bp.route('/add-sprint', methods=['POST'])
+@login_required 
 def add_sprint():
     project_id = request.form['project_id']
     sprint_name = request.form['sprint_name']
@@ -39,6 +40,9 @@ def add_sprint():
     end_date = request.form['end_date']
     status = request.form.get('status', None)
     selected_backlogs = request.form.getlist('backlogs')
+
+    # 쉼표로 구분된 문자열을 리스트로 변환
+    selected_backlogs = [int(backlog_id) for item in selected_backlogs for backlog_id in item.split(',')]
 
     new_sprint, error = create_sprint(project_id, sprint_name, start_date, end_date, status)
     create_schedules(current_user.id,project_id, sprint_name, None, start_date, end_date, True, 0, None, True)

@@ -186,6 +186,10 @@
   background-color: gray;
   color: white;
 }
+.product-backlog-item.selected {
+  background-color: gray;
+  color: white;
+}
 
 /* 모달 배경 */
 .modal {
