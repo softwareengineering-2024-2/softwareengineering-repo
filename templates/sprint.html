@@ -149,7 +149,7 @@
           <div class="product-backlog">
             <h3>프로덕트 백로그</h3>
             <div class="product-backlog-list">
-              {% for backlog in backlogs.all_backlogs %}
+              {% for backlog in backlogs.unassigned_backlogs %}
               <div class="product-backlog-item">
                 <p>{{ backlog.product_backlog_content }}</p>
               </div>

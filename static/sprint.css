@@ -185,6 +185,7 @@
 .product-backlog-item.assigned {
   background-color: gray;
   color: white;
+  text-decoration: line-through; 
 }
 .product-backlog-item.selected {
   background-color: gray;
