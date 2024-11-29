@@ -1,6 +1,7 @@
 from flask import request
 from models.calendar_model import Calendar
 from models.milestone_model import Milestone
+from models.sprint_model import Sprint
 from flask_login import current_user
 
 # 모든 일정(팀+개인)을 가져오는 로직
@@ -85,5 +86,18 @@ def delete_schedules(calendar_id):
 def delete_milestone_schedules(project_id, milestone_id):
     milestone_content = Milestone.find_by_id(milestone_id).milestone_content
     schedule = Calendar.find_by_title(project_id, milestone_content)
+    schedule.delete_from_db()
+    return None
+
+# 스프린트 일정 수정
+def update_sprint_schedules(project_id, sprint_name, start_date, end_date):
+    schedule = Calendar.find_by_title(project_id, sprint_name)
+    if schedule:
+        schedule.update_calendar(sprint_name, None, start_date, end_date, True, 0, None, True)
+    return None
+
+# 스프린트 일정 삭제
+def delete_sprint_schedules(project_id, sprint_name):
+    schedule = Calendar.find_by_title(project_id, sprint_name)
     schedule.delete_from_db()
     return None
