@@ -405,7 +405,6 @@
   background-color: white !important;
   border: 2px solid var(--color-green-200); /* 기본 테두리 색상 */
   border-radius: 8px; /* 둥근 모서리 */
-  padding: 8px; /* 내부 여백 */
   display: flex; /* 버튼 내부 내용 정렬 */
   justify-content: center;
   align-items: center;
