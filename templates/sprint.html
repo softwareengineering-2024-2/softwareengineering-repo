@@ -52,7 +52,7 @@
                   >{{ sprint.start_date }} - {{ sprint.end_date }}</span
                 >
                 {% if sprint.status == 'Done' %}
-                  <span class="sprint-status-label">스프린트 완료</span>
+                <span class="sprint-status-label">스프린트 완료</span>
                 {% endif %}
               </div>
               {% if not sprint.is_past_due %}
@@ -68,17 +68,17 @@
                 </button>
               </div>
               {% else %}
-                <!-- 백로그 이전 버튼 -->
-                <div class="sprint-actions">
-                  <button
-                    class="move-backlog-btn"
-                    onclick="moveBacklogs({{ sprint.sprint_id }}, {{ project.project_id }})"
-                  >
-                    백로그 이전
-                  </button>
-                </div>
-                {% endif %}
+              <!-- 백로그 이전 버튼 -->
+              <div class="sprint-actions">
+                <button
+                  class="move-backlog-btn"
+                  onclick="moveBacklogs({{ sprint.sprint_id }}, {{ project.project_id }})"
+                >
+                  백로그 이전
+                </button>
               </div>
+              {% endif %}
+            </div>
             <div class="sprint-backlog-container">
               <!-- 프로덕트 백로그 섹션 -->
               {% for backlog in sprint.product_backlogs %}
@@ -95,8 +95,8 @@
                   {% endif %}
                 </div>
                 <div class="sprint-backlog-list">
-                  {% if backlog.sprint_backlogs %}
-                  {% for sprint_backlog in backlog.sprint_backlogs %}
+                  {% if backlog.sprint_backlogs %} {% for sprint_backlog in
+                  backlog.sprint_backlogs %}
                   <div class="sprint-backlog-item">
                     <p>{{ sprint_backlog.content }}</p>
                     <div class="status-container">
@@ -115,20 +115,19 @@
                         {{ sprint_backlog.user_name[:2] }}</span
                       >
                       {% if not sprint.is_past_due %}
-                        <button
-                          class="options-btn"
-                          onclick="toggleBacklogOptionsModal(event, {{ sprint_backlog.sprint_backlog_id }}, '{{ sprint_backlog.content }}', {{ sprint_backlog.user_id }})"
-                        >
-                          <img
-                            src="{{ url_for('static', filename='icons/dotdotdot.svg') }}"
-                            alt="설정 버튼"
-                          />
-                        </button>
-                        {% endif %}
-                      </div>
+                      <button
+                        class="options-btn"
+                        onclick="toggleBacklogOptionsModal(event, {{ sprint_backlog.sprint_backlog_id }}, '{{ sprint_backlog.content }}', {{ sprint_backlog.user_id }})"
+                      >
+                        <img
+                          src="{{ url_for('static', filename='icons/dotdotdot.svg') }}"
+                          alt="설정 버튼"
+                        />
+                      </button>
+                      {% endif %}
                     </div>
-                    {% endfor %}
-                  {% else %}
+                  </div>
+                  {% endfor %} {% else %}
                   <p>스프린트 백로그가 없습니다.</p>
                   {% endif %}
                 </div>
@@ -207,8 +206,20 @@
 
           <div class="modal-buttons">
             <input type="hidden" name="project_id" value="{{ project_id }}" />
-            <button type="button" class="add-sprint-btn" onclick="submitSprintForm()">스프린트 추가</button>
-            <button type="button" class="cancel-btn" onclick="closeSprintCreateModal()">취소하기</button>
+            <button
+              type="button"
+              class="add-sprint-btn"
+              onclick="submitSprintForm()"
+            >
+              스프린트 추가
+            </button>
+            <button
+              type="button"
+              class="cancel-btn"
+              onclick="closeSprintCreateModal()"
+            >
+              취소하기
+            </button>
           </div>
         </form>
       </div>
@@ -230,10 +241,20 @@
           />
 
           <label for="edit-sprint-start-date">스프린트 시작일</label>
-          <input type="date" id="edit-sprint-start-date" name="start_date" required />
+          <input
+            type="date"
+            id="edit-sprint-start-date"
+            name="start_date"
+            required
+          />
 
           <label for="edit-sprint-end-date">스프린트 종료일</label>
-          <input type="date" id="edit-sprint-end-date" name="end_date" required />
+          <input
+            type="date"
+            id="edit-sprint-end-date"
+            name="end_date"
+            required
+          />
 
           <label for="edit-product-backlog">프로덕트 백로그</label>
           <div id="edit-product-backlog-container" class="product-backlog-list">
@@ -241,13 +262,24 @@
           </div>
 
           <div class="modal-buttons">
-            <button type="button" class="add-sprint-btn" onclick="submitEditSprintForm()">저장</button>
-            <button type="button" class="cancel-btn" onclick="closeSprintEditModal()">취소하기</button>
+            <button
+              type="button"
+              class="add-sprint-btn"
+              onclick="submitEditSprintForm()"
+            >
+              저장
+            </button>
+            <button
+              type="button"
+              class="cancel-btn"
+              onclick="closeSprintEditModal()"
+            >
+              취소하기
+            </button>
           </div>
         </form>
       </div>
     </div>
-
 
     <!-- 스프린트 백로그 생성 모달 -->
     <div id="sprint_backlog_modal" class="modal" style="display: none">
@@ -347,31 +379,35 @@
     </div>
 
     <!-- 메시지 모달 -->
-    <div id="messageModal" class="modal" style="display: none;">
+    <div id="messageModal" class="modal" style="display: none">
       <div class="modal-content">
         <h2 id="modalTitle">알림</h2>
         <p id="modalMessage">메시지 내용이 여기에 표시됩니다.</p>
-        <button onclick="closeMessageModal()" class="modal-close-btn">닫기</button>
+        <button onclick="closeMessageModal()" class="modal-close-btn">
+          닫기
+        </button>
       </div>
     </div>
 
     <!-- 삭제 확인 모달 -->
-    <div id="confirmDeleteModal" class="modal" style="display: none;">
+    <div id="confirmDeleteModal" class="modal" style="display: none">
       <div class="modal-content">
         <h2>확인</h2>
         <p id="confirmDeleteMessage">삭제 문구 위치</p>
         <div class="modal-buttons">
-          <button onclick="confirmDelete()" class="modal-confirm-btn">확인</button>
-          <button onclick="closeConfirmDeleteModal()" class="modal-cancel-btn">취소</button>
+          <button onclick="confirmDelete()" class="modal-confirm-btn">
+            확인
+          </button>
+          <button onclick="closeConfirmDeleteModal()" class="modal-cancel-btn">
+            취소
+          </button>
         </div>
       </div>
     </div>
-
   </body>
   <script>
     var sprintsData = {{ sprints|tojson }};
     var unassignedBacklogsData = {{ backlogs.unassigned_backlogs|tojson }};
   </script>
   <script src="{{ url_for('static', filename='js/sprint.js') }}"></script>
-  
 </html>
