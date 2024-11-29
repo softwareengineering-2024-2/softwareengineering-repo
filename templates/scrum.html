@@ -153,7 +153,16 @@
         {% endblock %}
       </div>
     </div>
-
+    <div id="onboarding-overlay" class="onboarding-overlay hidden">
+      <div id="onboarding-tooltip" class="onboarding-tooltip">
+        <p id="onboarding-text"></p>
+        <div class="onboarding-buttons">
+          <button id="onboarding-next-button" class="onboarding-next-button">
+            다음
+          </button>
+        </div>
+      </div>
+    </div>    
     <!-- 외부 JavaScript 파일 연결 -->
     <script src="{{ url_for('static', filename='js/scrum.js') }}"></script>
   </body>
