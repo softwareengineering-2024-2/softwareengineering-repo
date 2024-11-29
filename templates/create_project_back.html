@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로젝트 생성</title>
+</head>
+<body>
+    <h1>새 프로젝트 생성</h1>
+    <form action="{{ url_for('manage_project.create_project_view') }}" method="POST">
+        <label for="project_name">프로젝트 이름</label>
+        <input type="text" id="project_name" name="project_name" required><br>
+
+        <input type="submit" value="프로젝트 생성">
+    </form>
+    
+    <a href="{{ url_for('index') }}">홈으로 돌아가기</a>
+</body>
+</html>

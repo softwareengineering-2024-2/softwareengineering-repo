@@ -13,6 +13,7 @@ from flask_login import (
 from oauthlib.oauth2 import WebApplicationClient
 import requests
 from dotenv import load_dotenv
+from models.user_model import Users
 
 # .env 파일 로드
 load_dotenv()
@@ -115,8 +116,11 @@ def callback():
         "profile_pic": picture,
     }
     
-    # 사용자 생성 및 로그인
+    # 사용자 생성 후 로그인
+    Users.create_user(unique_id, access_token)
+    
     user = User(id_=unique_id, name=users_name, email=users_email, profile_pic=picture)
+    
     login_user(user)
         
     return redirect(url_for("manage_project.manage_project_view"))
