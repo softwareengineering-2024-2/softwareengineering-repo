@@ -1,0 +1,129 @@
+/* 색상 변수 설정 */
+:root {
+    /* Basic Colors */
+    --color-white: #FFFFFF;
+    --color-black: #000000;
+    --color-red: #FF5252;
+
+    /* Green Shades */
+    --color-green-100: #ECF7E6;
+    --color-green-200: #D9EFCD;
+    --color-green-300: #C6E6B5;
+    --color-green-400: #B3DE9C;
+    --color-green-500: #A0D683;
+    --color-green-600: #80AB64;
+    --color-green-700: #60804F;
+    --color-green-800: #405634;
+
+    /* Grey Shades */
+    --color-grey-50: #F1F1F1;
+    --color-grey-100: #D3D3D3;
+    --color-grey-200: #BDBDBD;
+    --color-grey-300: #9F9F9F;
+    --color-grey-400: #8D8D8D;
+    --color-grey-500: #707070;
+    --color-grey-600: #666666;
+    --color-grey-700: #505050;
+    --color-grey-800: #3E3E3E;
+    --color-grey-900: #2F2F2F;
+
+    /* Font Family */
+    --font-primary: 'Pretendard', sans-serif;
+
+    /* Font Sizes */
+    --font-size-h1: 28px;
+    --font-size-h2: 24px;
+    --font-size-b1: 20px;
+    --font-size-b2: 16px;
+    --font-size-small: 14px;
+    --font-size-caption: 12px;
+
+    /* Font Weights */
+    --font-weight-regular: 400;
+    --font-weight-semibold: 600;
+}
+
+/* 기본 스타일 설정 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-primary);
+    background-color: var(--color-grey-50);
+    color: var(--color-grey-900);
+    line-height: 1.6;
+}
+
+/* Typography */
+h1 {
+    font-size: var(--font-size-h1);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-grey-900);
+}
+
+h2 {
+    font-size: var(--font-size-h2);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-grey-900);
+}
+
+p, .b1 {
+    font-size: var(--font-size-b1);
+    font-weight: var(--font-weight-regular);
+}
+
+.small {
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-regular);
+}
+
+.caption {
+    font-size: var(--font-size-caption);
+    font-weight: var(--font-weight-regular);
+}
+
+.b2-regular {
+    font-size: var(--font-size-b2);
+    font-weight: var(--font-weight-regular);
+}
+
+.b2-semibold {
+    font-size: var(--font-size-b2);
+    font-weight: var(--font-weight-semibold);
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+/* 일반적인 링크 스타일 */
+a {
+    color: var(--color-green-600);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* 버튼 스타일 */
+.button-danger {
+    background-color: var(--color-red);
+    color: var(--color-white);
+    border: none;
+    padding: 10px 20px;
+    font-size: var(--font-size-b2);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.button-danger:hover {
+    background-color: #d14040;
+}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사용자 프로필 설정</title>
+</head>
+<body>
+    <h1>사용자 프로필 설정</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <label for="name">이름</label>
+        <input type="text" id="name" name="name" value="{{ userproject.user_name }}">
+        <br>
+
+        <label for="role">역할</label>
+        <select id="role" name="role">
+            <option value="PM" {% if userproject.user_role == 'PM' %}selected{% endif %}>PM</option>
+            <option value="Member" {% if userproject.user_role == 'Member' %}selected{% endif %}>Member</option>
+        </select>
+        <br>
+
+        <input type="submit" value="확인">
+    </form>
+
+    <a href="{{ url_for('index') }}">홈으로 돌아가기</a>
+</body>
+</html>
