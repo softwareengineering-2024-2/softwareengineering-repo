@@ -91,13 +91,13 @@ jobs:
         # 9. GPT를 활용한 코드 리뷰
       - name: Run GPT Code Review
         if: github.event_name == 'pull_request'
-            env:
-              OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              PR_NUMBER: ${{ github.event.pull_request.number }}
-            run: |
-              pip install openai PyGithub
-              python .github/scripts/gpt_code_review.py
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          pip install openai PyGithub
+          python .github/scripts/gpt_code_review.py
 
          # 10. PR 머지 시 관련 이슈에 코멘트 남기기
       - name: Comment on related issue 
