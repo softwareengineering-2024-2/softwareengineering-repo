@@ -31,7 +31,7 @@ for file in changed_files:
 
         # GPT에게 리뷰 요청
         response = openai.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4o",
             messages=[
                 {"role": "system", "content": "You are a helpful code reviewer."},
                 {"role": "user", "content": prompt}
