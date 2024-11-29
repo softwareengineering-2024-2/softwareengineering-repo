@@ -152,12 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
           tooltipText.innerHTML = step.text;
           tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`;
           tooltip.style.left = `${rect.left + window.scrollX}px`;
-          // 버튼 텍스트 및 동작 변경
-          if (stepIndex === onboardingSteps.length - 1) {
-            nextButton.textContent = "완료"; // 버튼 텍스트를 "완료"로 변경
-          } else {
-            nextButton.textContent = "다음"; // 버튼 텍스트를 "다음"으로 설정
-          }
       }
   };
 

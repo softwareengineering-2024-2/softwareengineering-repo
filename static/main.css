@@ -232,6 +232,7 @@ button.todo-delete:hover {
   background-color: white;
   border: 2px solid var(--color-green-300); /* 강조 색상 */
   border-radius: 8px;
+  padding: 8px; /* 여백 추가 */
   padding-left: 25vh; /* 왼쪽 여백 추가 */
   width: 50%; /* 강조 영역을 절반 정도로 축소 */
   margin-left: auto; /* 자동 여백을 왼쪽으로 설정 */
@@ -243,6 +244,7 @@ button.todo-delete:hover {
   position: relative;
   background-color:  var(--color-green-500);
   border-radius: 8px;
+  padding: 8px;
   display: inline-block;
   box-sizing: border-box;
 }
@@ -253,6 +255,7 @@ button.todo-delete:hover {
   position: relative;
   background-color:  var(--color-green-500);
   border-radius: 8px;
+  padding: 8px;
   width: calc(100% - 16px); /* 사이드바 메뉴 전체 강조 */
   box-sizing: border-box;
 }
