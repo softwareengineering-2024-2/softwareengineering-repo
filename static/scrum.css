@@ -38,6 +38,7 @@
   border-radius: 10px;
   border: 1px solid var(--Grey-grey-300, #9f9f9f);
   background: #fff;
+  cursor: pointer;
 }
 
 .title-left-wrapper > * {
