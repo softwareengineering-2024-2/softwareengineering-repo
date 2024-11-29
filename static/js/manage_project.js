@@ -58,3 +58,129 @@ function closeModal(modalId) {
 function submitExitForm() {
   document.getElementById("exitProjectForm").submit();
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const onboardingSteps = [
+      {
+          element: document.getElementById("openCreateButton"),
+          text: "이 버튼은 프로젝트를 생성하는 버튼입니다.",
+      },
+      {
+          element: document.getElementById("openJoinButton"),
+          text: "프로젝트 코드를 받았다면 여기를 눌러주세요.",
+      },
+  ];
+
+  const projectLists = document.getElementById("projectLists");
+
+  // 임시 프로젝트 추가 함수
+  const addTemporaryProject = () => {
+      const tempProjectHTML = `
+        <li class="project-list temp-project" style="list-style-type: none">
+            <a href="#" id="tempProjectLink" class="temp-project-link">
+                <p>TEST</p>
+            </a>
+            <div class="project-list-options">
+                <button id="tempCopyLinkButton" class="temp-copy-link-button">
+                    <p>링크복사</p>
+                </button>
+                <button id="tempSetProfileButton" class="temp-set-profile-button">
+                    <p>프로필설정</p>
+                </button>
+                <button id="tempExitProjectButton" class="temp-exit-project-button">
+                    <p>나가기</p>
+                </button>
+            </div>
+        </li>`;
+      projectLists.insertAdjacentHTML("beforeend", tempProjectHTML);
+
+      // 임시 프로젝트의 버튼 요소를 온보딩 단계에 추가
+      onboardingSteps.push(
+          {
+              element: document.getElementById("tempProjectLink"),
+              text: "해당 프로젝트의 메인화면으로 이동합니다.",
+          },
+          {
+              element: document.getElementById("tempCopyLinkButton"),
+              text: "링크를 복사하여 팀원들에게 공유해주세요.",
+          },
+          {
+              element: document.getElementById("tempSetProfileButton"),
+              text: "해당 프로젝트에서 사용할 <br>닉네임 및 역할을 선택해주세요.",
+          },
+          {
+              element: document.getElementById("tempExitProjectButton"),
+              text: "해당 프로젝트를 나갈 수 있는 버튼입니다.",
+          }
+      );
+  };
+
+  const removeTemporaryProject = () => {
+      const tempProject = document.querySelector(".temp-project");
+      if (tempProject) {
+          tempProject.remove();
+      }
+  };
+
+  let currentStep = 0;
+  const overlay = document.getElementById("onboarding-overlay");
+  const tooltip = document.getElementById("onboarding-tooltip");
+  const tooltipText = document.getElementById("onboarding-text");
+  const nextButton = document.getElementById("onboarding-next-button");
+
+  const startOnboarding = () => {
+      overlay.classList.remove("hidden");
+      addTemporaryProject();
+      showStep(currentStep);
+  };
+
+  const showStep = (stepIndex) => {
+      const step = onboardingSteps[stepIndex];
+      if (!step) {
+          endOnboarding();
+          return;
+      }
+
+      const element = step.element;
+
+      if (element) {
+          // 강조 스타일 적용
+          element.classList.add("onboarding-highlight");
+
+          // 툴팁 위치 계산
+          const rect = element.getBoundingClientRect();
+          tooltipText.innerHTML = step.text;
+          tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`;
+          tooltip.style.left = `${rect.left + window.scrollX}px`;
+      }
+  };
+
+  const nextStep = () => {
+      const previousStep = onboardingSteps[currentStep];
+      if (previousStep && previousStep.element) {
+          // 이전 강조 스타일 제거
+          previousStep.element.classList.remove("onboarding-highlight");
+      }
+
+      currentStep++;
+      showStep(currentStep);
+  };
+
+  const endOnboarding = () => {
+      overlay.classList.add("hidden");
+      removeTemporaryProject();
+      onboardingSteps.forEach((step) => {
+          if (step.element) {
+              step.element.classList.remove("onboarding-highlight");
+          }
+      });
+  };
+
+  nextButton.addEventListener("click", nextStep);
+
+  // 첫 방문 시 온보딩 시작
+  if (!document.cookie.includes("onboarding_done_manage_project=true")) {
+      startOnboarding();
+      document.cookie = "onboarding_done_manage_project=true; path=/; max-age=31536000"; // 1년간 유지
+  }
+});
