@@ -175,3 +175,96 @@ function openMessageModal(title, message) {
 function closeMessageModal() {
     document.getElementById("messageModal").style.display = "none";
 }
+
+// 온보딩 기능 추가
+document.addEventListener("DOMContentLoaded", function () {
+    // PM인지 여부를 확인
+    const isPM = "{{ userproject.user_role }}" === "PM(기획자)";   
+    // 온보딩 스텝 정의
+    const onboardingSteps = [
+        {
+            element: document.querySelector(".not-list-box"),
+            text: isPM
+                ? "Not List는 프로젝트에서 금지된 키워드를 관리할 수 있습니다. 금지된 키워드를 수정, 삭제할 수 있습니다."
+                : "Not List는 프로젝트에서 금지된 키워드를 확인할 수 있습니다.",
+        },
+        {
+            element: document.querySelector(".notlist-input-container"),
+            text: "여기에서 새로운 키워드를 입력하여 Not List에 추가할 수 있습니다.",
+        },
+        {
+            element: document.querySelector(".userstory-container"),
+            text: "유저스토리 섹션에서 사용자 스토리를 관리할 수 있습니다. 스토리를 수정하거나 삭제할 수 있습니다.",
+        },
+        {
+            element: document.querySelector(".userstory-input-container"),
+            text: "여기에서 새로운 유저스토리를 입력하여 추가할 수 있습니다.",
+        },
+    ];
+
+    let currentStep = 0;
+
+    const overlay = document.getElementById("onboarding-overlay");
+    const tooltip = document.getElementById("onboarding-tooltip");
+    const tooltipText = document.getElementById("onboarding-text");
+    const nextButton = document.getElementById("onboarding-next-button");
+
+    const showStep = (stepIndex) => {
+        const step = onboardingSteps[stepIndex];
+        if (!step) {
+            endOnboarding();
+            return;
+        }
+
+        const element = step.element;
+
+        // 강조 스타일 적용
+        if (element) {
+            element.classList.add("onboarding-highlight");
+        }
+
+        // 툴팁 내용 설정
+        tooltipText.innerHTML = step.text;
+
+        // 툴팁 위치 설정
+        const rect = element.getBoundingClientRect();
+        tooltip.style.position = "absolute";
+        tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`;
+        tooltip.style.left = `${Math.min(rect.left + window.scrollX, window.innerWidth - tooltip.offsetWidth - 10)}px`;
+        // 버튼 텍스트 및 동작 변경
+        if (stepIndex === onboardingSteps.length - 1) {
+            nextButton.textContent = "완료"; // 버튼 텍스트를 "완료"로 변경
+        } else {
+            nextButton.textContent = "다음"; // 버튼 텍스트를 "다음"으로 설정
+        }
+
+        // 오버레이 표시
+        overlay.classList.remove("hidden");
+    };
+
+    const hideStep = (stepIndex) => {
+        const step = onboardingSteps[stepIndex];
+        if (step && step.element) {
+            step.element.classList.remove("onboarding-highlight");
+        }
+    };
+
+    const nextStep = () => {
+        hideStep(currentStep);
+        currentStep++;
+        showStep(currentStep);
+    };
+
+    const endOnboarding = () => {
+        hideStep(currentStep);
+        overlay.classList.add("hidden");
+        document.cookie = "onboarding_done_userstory=true; path=/; max-age=31536000"; // 1년 유지
+    };
+
+    nextButton.addEventListener("click", nextStep);
+
+    // 온보딩 초기화
+    if (!document.cookie.includes("onboarding_done_userstory=true")) {
+        showStep(currentStep);
+    }
+});
