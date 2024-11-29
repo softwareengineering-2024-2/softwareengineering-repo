@@ -33,8 +33,8 @@ for file in changed_files:
         response = openai.createChatCompletion(
             model="gpt-3.5-turbo",
             messages= [
-              { role: "system", content: "You are a helpful code reveiwer." },
-              { role: "user", content: prompt }
+                {"role": "system", "content": "You are a helpful code reviewer."},
+                {"role": "user", "content": prompt}
             ]
           )
         review = response.choices[0].text.strip()
