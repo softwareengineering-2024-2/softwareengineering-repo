@@ -2,6 +2,11 @@
 document.addEventListener("DOMContentLoaded", function () {
   const projectId = document.getElementById("project-id").value; // 프로젝트 ID를 가져옵니다.
   fetchTodos(projectId); // 페이지 로드 시 투두리스트를 조회합니다.
+
+  // 캘린더 초기화
+  initCalendar2();
+  fetchSchedules(projectId);
+  setupEventListeners2();
 });
 
 function addNewTodoInput() {
@@ -228,18 +233,9 @@ function changeStatus(todoId, status) {
 
 /////////////////////////////////////////////////////////////////////////
 // 2주 캘린더
-document.addEventListener("DOMContentLoaded", function () {
-  const projectId = document.getElementById("project-id").value; // 프로젝트 ID 가져오기
-
-  // 초기화
-  initCalendar2();
-  fetchSchedules(projectId);
-  setupEventListeners2();
-});
 
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
-let currentWeek = new Date().getWeek();
 let today = new Date().getDate();
 
 const schedules = []; 
@@ -250,78 +246,95 @@ function initCalendar2() {
 
 function setupEventListeners2() {
   document.getElementById("prevBtn").addEventListener("click", function () {
-    changeWeek(-1);
+    showPreviousWeek();
   });
 
   document.getElementById("nextBtn").addEventListener("click", function () {
-    changeWeek(1);
+    showNextWeek();
+  });
+
+  document.getElementById("todayBtn").addEventListener("click", function () {
+    showThisWeek();
   });
 }
 
-function changeWeek(diff) {
-  currentWeek += diff;
-  if (currentWeek < 0){
-    currentWeek = 51;
-    currentYear -= 1;
+let currentWeekStart = new Date(); // 현재 기준 주의 시작일 (일요일)
+currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay()); // 주의 일요일로 설정
+
+// 캘린더 렌더링 함수
+function renderCalendar2() {
+  const calendarDates = document.getElementById("calendarDates");
+
+  // 초기화
+  calendarDates.innerHTML = "";
+
+  // 기준 주로부터 2주 동안 날짜 생성
+  let calendarDays = [];
+  let currentDate = new Date(currentWeekStart);
+
+  for (let i = 0; i < 14; i++) {
+    calendarDays.push(new Date(currentDate)); // 날짜 배열에 추가
+    currentDate.setDate(currentDate.getDate() + 1); // 다음 날로 이동
   }
-  else if (currentWeek > 51){
-    currentWeek = 0;
-    currentYear += 1;
-  }
+
+  // 날짜를 그리드로 표시
+  calendarDays.forEach((date) => {
+    const dateDiv = document.createElement("div");
+    dateDiv.classList.add("date");
+
+    // 날짜 표시
+    const dateSpan = document.createElement("span");
+    const month = date.getMonth() + 1; // 0-based index, 그래서 +1을 해줍니다
+    const day = date.getDate();
+    dateSpan.textContent = `${month}/${day}`; // 월/일 형식으로 표시
+
+    dateSpan.style.color = date.toDateString() === new Date().toDateString() ? "red" : "black"; // 오늘은 빨간색, 나머지는 검정색
+    dateSpan.style.fontWeight = "bold";
+
+    dateDiv.appendChild(dateSpan);
+
+    // 일정 렌더링
+    schedules.forEach((schedule) => {
+      const start = new Date(schedule.start_date);
+      const end = new Date(schedule.due_date);
+
+      // 날짜 비교 (시간 제거)
+      start.setHours(0, 0, 0, 0);
+      end.setHours(23, 59, 59, 999);
+
+      if (date >= start && date <= end) {
+        const scheduleDiv = document.createElement("div");
+        scheduleDiv.textContent = schedule.title;
+        scheduleDiv.style.backgroundColor = schedule.color;
+        scheduleDiv.style.color = "black";
+        scheduleDiv.classList.add("schedule");
+
+        dateDiv.appendChild(scheduleDiv);
+      }
+    });
+
+    calendarDates.appendChild(dateDiv);
+  });
+}
+
+// 이전 주 버튼 이벤트
+function showPreviousWeek() {
+  currentWeekStart.setDate(currentWeekStart.getDate() - 7); // 1주일 전으로 이동
   renderCalendar2();
 }
 
-function renderCalendar2() {
-  const calendarDates = document.getElementById("calendarDates");
-    const today = new Date();
-
-    // 초기화
-    calendarDates.innerHTML = "";
-
-    // 오늘 날짜 기준으로 속한 주의 일요일 계산
-    const currentDay = today.getDay();
-    const diffToSunday = currentDay === 0 ? 0 : currentDay; // 오늘이 일요일이면 차이는 0, 아니면 일요일까지의 차이 계산
-    const sunday = new Date(today);
-    sunday.setDate(today.getDate() - diffToSunday); // 일요일 날짜로 이동 (현재 일요일로부터 이전 날짜를 빼서 일요일로 이동)
-
-    // 2주 간의 날짜 생성
-    let calendarDays = [];
-    let currentDate = new Date(sunday);
-
-    // 2주 동안 날짜 배열
-    for (let i = 0; i < 14; i++) {
-      calendarDays.push(new Date(currentDate)); // 날짜 배열에 추가
-      currentDate.setDate(currentDate.getDate() + 1); // 다음 날로 이동
-    }
-
-    // 날짜를 그리드로 표시
-    calendarDays.forEach((date, index) => {
-      const dateDiv = document.createElement("div");
-      dateDiv.classList.add("date");
-
-      dateDiv.textContent = date.getDate();
-
-      schedules.forEach((schedule) => {
-        if (date >= schedule.start && date <= schedule.end) {
-          const scheduleDiv = document.createElement("div");
-          scheduleDiv.textContent = schedule.title;
-          scheduleDiv.style.backgroundColor = schedule.color;
-          scheduleDiv.classList.add("schedule");
-
-          dateElement.appendChild(scheduleDiv);
-        }
-      });
-
-      // 오늘 날짜 강조 표시
-      if (date.toDateString() === today.toDateString()) {
-        dateDiv.style.fontWeight = "bold";
-        dateDiv.style.color = "red";
-      }
-
-      calendarDates.appendChild(dateDiv);
-    });
+// 다음 주 버튼 이벤트
+function showNextWeek() {
+  currentWeekStart.setDate(currentWeekStart.getDate() + 7); // 1주일 후로 이동
+  renderCalendar2();
 }
 
+// 오늘 버튼 이벤트
+function showThisWeek() {
+  currentWeekStart = new Date(); // 현재 날짜로 설정
+  currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay()); // 일요일로 설정
+  renderCalendar2();
+}
 
 // 팔레트
 const colorMap = {
@@ -369,7 +382,7 @@ function fetchSchedules(projectId){
         }
       });
 
-      renderCalendar();
+      renderCalendar2();
     })
     .catch((error) => console.error("Error fetching schedules:", error));
 }
