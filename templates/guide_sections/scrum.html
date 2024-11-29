@@ -1,0 +1,114 @@
+<section id="scrum" class="guide-section">
+    <style>
+        /* 섹션 컨테이너 */
+        .scrum-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: var(--color-white);
+        }
+
+        /* 제목 스타일 */
+        .scrum-container h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--color-grey-900);
+            text-align: left;
+            width: 100%;
+        }
+
+        /* 본문 내용 스타일 */
+        .scrum-content p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: var(--color-grey-700);
+            text-align: left;
+            width: 100%;
+        }
+
+        /* 이미지 스타일 */
+        .scrum-image {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .scrum-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 하위 섹션 제목 스타일 */
+        .scrum-details h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--color-grey-900);
+            text-align: left;
+            width: 100%;
+        }
+
+        /* 리스트 스타일 */
+        .scrum-list {
+            list-style-type: disc;
+            margin: 20px 0;
+            padding-left: 20px;
+            text-align: left;
+            color: var(--color-grey-700);
+        }
+
+        .scrum-list li strong {
+            color: var(--color-green-600); /* 강조 텍스트 색상 */
+        }
+    </style>
+
+    <div class="scrum-container">
+        <h1>스크럼 소개</h1>
+        <div class="scrum-content">
+            <p>
+                스크럼(Scrum)은 애자일의 대표적인 프레임워크로, 팀이 짧은 개발 주기(Sprint) 동안 
+                특정 목표를 달성할 수 있도록 돕는 체계적인 방법론입니다. 주요 이벤트와 역할 분담을 통해 
+                프로젝트 진행 상황을 투명하게 관리하고, 문제를 빠르게 해결할 수 있습니다.
+            </p>
+            <div class="scrum-image">
+                <img src="{{ url_for('static', filename='img/scrum_process.jpg') }}" alt="스크럼 프로세스">
+            </div>
+            <p>
+                스크럼은 팀의 협업을 극대화하고, 지속적인 피드백과 개선을 통해 프로젝트 성공 가능성을 높입니다.
+            </p>
+        </div>
+
+        <!-- 스크럼의 주요 특징 -->
+        <div class="scrum-details">
+            <h3>스크럼의 주요 특징</h3>
+            <ul class="scrum-list">
+                <li><strong>명확한 역할 분담:</strong> Product Owner, Scrum Master, 개발 팀으로 구성</li>
+                <li><strong>정해진 이벤트:</strong> 스프린트 계획, 데일리 스크럼, 스프린트 리뷰 및 회고</li>
+                <li><strong>반복 주기:</strong> 1~4주 단위의 스프린트로 구성된 개발 주기</li>
+                <li><strong>투명성:</strong> 작업 진행 상황을 시각화하여 팀원 간의 공유</li>
+                <li><strong>적응력:</strong> 우선순위를 지속적으로 조정하여 변화에 대응</li>
+            </ul>
+        </div>
+
+        <!-- 우리 시스템에서의 스크럼 -->
+        <div class="scrum-details">
+            <h3>우리 시스템에서의 스크럼</h3>
+            <ul class="scrum-list">
+                <li><strong>유저스토리 관리:</strong> 유저스토리 작성 시 금지 키워드가 포함되었을 경우, PM에게 <strong>알림</strong>이 발송됩니다.</li>
+                <li><strong>Not List:</strong> 금지 키워드는 [유저스토리] 페이지에서 관리되며, 모두가 추가할 수 있지만 PM만 삭제할 수 있습니다.</li>
+                <li><strong>키워드 경고:</strong> 금지 키워드가 포함된 유저스토리를 등록하려고 할 때, 경고 팝업이 표시되며 추가 여부를 확인합니다.</li>
+                <li><strong>투명한 작업 흐름:</strong> 스크럼 보드에서 각 작업의 상태(할 일, 진행 중, 완료)를 시각적으로 관리할 수 있습니다.</li>
+            </ul>
+        </div>
+
+        <!-- 다음 주제로 버튼 -->
+        <div class="next-button-container">
+            <a href="#project-management" class="next-button">다음 주제로</a>
+        </div>
+    </div>
+</section>

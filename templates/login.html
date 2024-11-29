@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>login-page</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='global.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='login.css') }}"
+    />
+  </head>
+  <body>
+    <div class="backgorund">
+      <div class="title">A.T.M</div>
+      <div class="subtitle">Agile Task Mate</div>
+      <div class="description">쉬운 애자일 툴, 애자일 작업 파트너!</div>
+      <a
+        id="login-button"
+        class="login-button"
+        href="{{ url_for('auth.login') }}"
+      >
+        <img src="../static/icons/Google.svg" alt="구글 아이콘" />
+        Google로 로그인하기
+      </a>
+    </div>
+  </body>
+</html>

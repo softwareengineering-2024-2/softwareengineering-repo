@@ -1,0 +1,239 @@
+<!-- productbacklog_back.html -->
+<!-- 가로축이 시간, 세로축이 일 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>프로덕트 백로그</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+        #userStories {
+            border: 1px solid #ddd;
+            padding: 10px;
+            width: 15%;
+            height: 80vh;
+            overflow-y: auto;
+        }
+        #productBacklog {
+            border: 2px dashed #888;
+            padding: 20px;
+            width: 60%;
+            min-height: 80vh;
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            overflow-x: auto;
+        }
+        .user-story {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 5px;
+            width: 40%;
+            height: 10vh;
+            background-color: #f9f9f9;
+            cursor: move;
+        }
+        .backlog-box {
+            border: 2px solid #4CAF50;
+            padding: 10px;
+            margin: 10px 0;
+            height: fit-content;
+            width: fit-content;
+            background-color: #e0ffe0;
+        }
+        .selected {
+            background-color: #d3ffd3;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+</head>
+
+<body>
+    <h2>프로덕트 백로그</h2>
+    <div id="userStories" class="backlog">
+        <h2>User Stories</h2>
+        {% for story in user_stories %}
+            {% if story.product_backlog_id is none %}
+                <div class="user-story" draggable="true" data-story-id="{{ story.story_id }}">
+                    {{ story.user_story_content }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div id="productBacklog" class="backlog" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h2>Product Backlog</h2>
+        <form id="createBacklogGroupForm">
+            <button type="button" onclick="saveBacklogGroup()">저장</button>
+        </form>
+        {% for backlog in product_backlog_groups %}
+            <div class="backlog-box" data-backlog-id="{{ backlog.product_backlog_id }}">
+                <input type="text" value="{{ backlog.product_backlog_content }}">
+                <button onclick="deleteBacklog('{{ backlog.product_backlog_id }}')">x</button>
+                {% for story in user_stories if story.product_backlog_id == backlog.product_backlog_id %}
+                    <div class="user-story" draggable="true" data-story-id="{{ story.story_id }}">
+                        {{ story.user_story_content }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        new Sortable(document.getElementById('userStories'), {
+            group: 'shared',
+            animation: 150,
+            onEnd: function () {
+                checkEmptyBacklogs();
+            }
+        });
+
+        function initializeSortableBacklogBoxes() {
+            document.querySelectorAll('.backlog-box').forEach(function (backlogBox) {
+                new Sortable(backlogBox, {
+                    group: 'shared',
+                    animation: 150,
+                    onAdd: function (event) {
+                        checkEmptyBacklogs();
+                    },
+                    onEnd: function () {
+                        checkEmptyBacklogs();
+                    }
+                });
+            });
+        }
+
+        initializeSortableBacklogBoxes();
+
+        // 드래그된 요소가 드롭 영역에 드롭될 수 있도록 기본 동작을 방지함
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        // 드래그 시작 시 호출
+        function drag(event) {
+            event.dataTransfer.setData("story_id", event.target.getAttribute("data-story-id")); // 유저스토리 ID 저장
+        }
+
+        // 드롭된 위치에 유저스토리 추가
+        function drop(event) {
+            event.preventDefault();
+            const story_id = event.dataTransfer.getData("story_id");
+            const storyElement = document.querySelector(`.user-story[data-story-id='${story_id}']`);
+
+            if (storyElement) {
+                const backlogBox = event.target.closest('.backlog-box');
+                if (backlogBox) { // 백로그 박스가 있으면 기존 백로그 박스에 유저스토리 추가
+                    backlogBox.appendChild(storyElement);
+                } else { // 백로그 박스가 없으면 백로그 박스를 새로 생성해 유저스토리 추가
+                    const newBacklogBox = createNewBacklogBox();
+                    newBacklogBox.appendChild(storyElement);
+                    document.getElementById("productBacklog").appendChild(newBacklogBox);
+                    initializeSortableBacklogBoxes();
+                }
+                checkEmptyBacklogs();
+            }
+        }
+
+        // 백로그 박스 생성
+        function createNewBacklogBox() {
+            const backlogBox = document.createElement("div");
+            backlogBox.classList.add("backlog-box");
+            backlogBox.setAttribute("data-backlog-id", Date.now());
+
+            const inputField = document.createElement("input");
+            inputField.type = "text";
+            inputField.placeholder = "백로그 이름 입력";
+            backlogBox.appendChild(inputField);
+
+            const deleteButton = document.createElement("button");
+            deleteButton.innerText = "x";
+            deleteButton.onclick = () => {
+                const backlogId = backlogBox.getAttribute('data-backlog-id');
+                if (backlogId) {
+                    deleteBacklog(backlogId, false);
+                }
+                backlogBox.remove();
+            };
+            backlogBox.appendChild(deleteButton);
+
+            document.getElementById("productBacklog").appendChild(backlogBox);
+            return backlogBox;
+        }
+
+        function checkEmptyBacklogs() {
+            document.querySelectorAll('.backlog-box').forEach(function (box) {
+                if (box.querySelectorAll('.user-story').length === 0) {
+                    const backlogId = box.getAttribute('data-backlog-id');
+                    if (backlogId) {
+                        deleteBacklog(backlogId, false);
+                    }
+                    box.remove();
+                }
+            });
+        }        
+
+        // 백로그 저장
+        function saveBacklogGroup() {
+            const backlogGroups = Array.from(document.querySelectorAll('.backlog-box')).map(box => {
+                const backlogName = box.querySelector('input').value.trim();
+                const storyIds = Array.from(box.querySelectorAll('.user-story')).map(story => story.getAttribute('data-story-id'));
+                const backlogId = box.getAttribute('data-backlog-id'); // 기존 백로그의 ID를 유지
+                return { backlogName, storyIds, backlogId };
+            });
+
+            // 유저스토리 컨테이너에서 백로그에 속하지 않은 유저스토리 찾기
+            const unassignedStoryIds = Array.from(document.querySelectorAll('#userStories .user-story')).map(story => story.getAttribute('data-story-id'));
+
+            // 백로그 이름이 하나라도 비어있으면 저장할 수 없게 함
+            for (const group of backlogGroups) {
+                if (!group.backlogName) {
+                    alert("모든 백로그에는 이름이 필요합니다. 이름을 입력해 주세요.");
+                    return;
+                }
+            }
+
+            // 서버에 백로그 그룹 상태 저장 요청 보내기
+            fetch("/backlog/product_backlog/save_groups", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({backlogGroups, unassignedStoryIds})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Backlog groups saved successfully!");
+                    location.reload();
+                } else {
+                    alert("Failed to save backlog groups.");
+                }
+            });
+        }
+
+        // 백로그 삭제
+        function deleteBacklog(backlogId, shouldReload = true) {
+            fetch(`/backlog/product_backlog/delete/${backlogId}`, {
+                method: "DELETE"
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (shouldReload) {
+                    location.reload();
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert("서버와의 통신 중 문제가 발생했습니다.");
+            });
+        }
+
+        document.querySelectorAll('.user-story').forEach(element => {
+            element.addEventListener('dragstart', drag);
+        });
+    </script>
+</body>
+</html>

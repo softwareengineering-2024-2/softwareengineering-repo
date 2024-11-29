@@ -1,6 +1,6 @@
 import json
 import os
-from flask import Blueprint, redirect, request, session, url_for
+from flask import Blueprint, redirect, request, session, url_for, render_template, flash
 from flask_login import (
     LoginManager,
     current_user,
@@ -55,7 +55,7 @@ def init_login_manager(app):
 
     @login_manager.unauthorized_handler
     def unauthorized():
-        return "로그인 하여야 접근 가능합니다.", 403
+        return render_template("login.html")
 
 @auth_bp.route("/login")
 def login():
@@ -93,6 +93,9 @@ def callback():
     
     client.parse_request_body_response(json.dumps(token_response.json()))
     
+    # 액세스 토큰 저장
+    access_token = token_response.json().get("access_token")
+    
     userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
     uri, headers, body = client.add_token(userinfo_endpoint)
     userinfo_response = requests.get(uri, headers=headers, data=body)
@@ -119,8 +122,8 @@ def callback():
     user = User(id_=unique_id, name=users_name, email=users_email, profile_pic=picture)
     
     login_user(user)
-    
-    return redirect(url_for("index"))  # 로그인 후 인덱스 페이지로 리다이렉트
+        
+    return redirect(url_for("manage_project.manage_project_view"))
 
 @auth_bp.route("/logout")
 @login_required
