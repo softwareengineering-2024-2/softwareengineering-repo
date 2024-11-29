@@ -31,8 +31,8 @@ for file in changed_files:
 
         # GPT에게 리뷰 요청
         response = openai.createChatCompletion(
-            model: "gpt-3.5-turbo",
-            messages: [
+            model="gpt-3.5-turbo",
+            messages= [
               { role: "system", content: "You are a helpful code reveiwer." },
               { role: "user", content: prompt }
             ]
