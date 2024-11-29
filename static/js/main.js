@@ -277,33 +277,33 @@ function startOnboarding() {
       // 탑바 설명
       {
         element: document.querySelector(".topbar"),
-        text: "탑바를 통해 프로젝트, 캘린더, 가이드 페이지, 알림, 마이페이지로 이동할 수 있어요.",
+        text: "상단 메뉴를 통해 프로젝트, 캘린더, 가이드 페이지, <br>알림, 마이페이지로 이동할 수 있어요.",
         highlightClass: "onboarding-highlight-topbar", // 탑바 전용 강조 스타일
         overlay: true, // 오버레이 표시
       },
       // 프로젝트명 강조
       {
         element: document.querySelector(".sidebar-header"),
-        text: "이곳에서 현재 선택한 프로젝트명을 확인할 수 있습니다.",
+        text: "좌측 상단에서 현재 접속 중인 프로젝트명을 <br>확인할 수 있습니다.",
         highlightClass: "onboarding-highlight-sidebar-header", // 프로젝트명 강조 스타일
         overlay: "transparent", // 오버레이 배경 투명
       },
       // 메뉴 강조
       {
         element: document.querySelector(".sidebar ul"),
-        text: "이곳에서 프로젝트의 각 메뉴를 선택하여 이동할 수 있습니다.",
+        text: "좌측 메뉴에서 프로젝트의 각 과정을 선택하여 <br>이동할 수 있습니다.",
         highlightClass: "onboarding-highlight-sidebar-menu", // 메뉴 강조 스타일
         overlay: "transparent", // 오버레이 배경 투명
       },
       // 메인 페이지 내용
       {
         element: document.querySelector(".progress-section"),
-        text: "우리팀의 스프린트 백로그가 얼마나 달성되었는지 확인할 수 있어요.",
+        text: "우리팀의 스프린트 백로그가 얼마나 달성되었는지 <br>확인할 수 있어요.",
         overlay: true, // 오버레이 표시
       },
       {
         element: document.querySelector(".task-box"),
-        text: "현재 진행중인 스프린트에서 내가 담당하는 스프린트 백로그의 목록을 확인할 수 있어요.",
+        text: "현재 진행중인 스프린트에서 내가 담당하는 스프린트 <br>백로그의 목록을 확인할 수 있어요.",
         overlay: true, // 오버레이 표시
       },
       {
@@ -351,7 +351,6 @@ function startOnboarding() {
         // 툴팁 위치 계산
         const rect = element.getBoundingClientRect();
         tooltip.style.position = "absolute";
-        tooltip.style.display = "block";
   
         if (step.highlightClass === "onboarding-highlight-topbar") {
           tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`; // 탑바 아래
@@ -365,6 +364,12 @@ function startOnboarding() {
         } else {
           tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`;
           tooltip.style.left = `${rect.left + window.scrollX}px`;
+        }
+        // 버튼 텍스트 및 동작 변경
+        if (stepIndex === onboardingSteps.length - 1) {
+          nextButton.textContent = "완료"; // 버튼 텍스트를 "완료"로 변경
+        } else {
+          nextButton.textContent = "다음"; // 버튼 텍스트를 "다음"으로 설정
         }
       }
     };
