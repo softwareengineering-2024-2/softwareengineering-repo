@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>일정 추가하기</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='global.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='calender.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='topbar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='sidebar.css') }}"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    {% include 'topbar.html' %}
+    <div class="main-container">
+      {% include 'sidebar.html' %}
+      <div class="schedule-form-wrapper">
+        <div class="schedule-form">
+          <h1>일정 추가하기</h1>
+
+          <form class="create-form" method="POST">
+            <div class="title-wrapper">
+              <div class="form-group">
+                <label class="b2-semibold" for="title">제목</label>
+                <input
+                  class="b2-regular"
+                  type="text"
+                  id="title"
+                  name="title"
+                  placeholder="일정을 입력하세요"
+                />
+              </div>
+              <div class="important-select">
+                <label class="b2-semibold" for="important">중요</label>
+                <input type="checkbox" id="important" name="important" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="b2-semibold" for="location">장소</label>
+              <input
+                class="b2-regular"
+                type="text"
+                id="place"
+                name="place"
+                placeholder="장소를 입력하세요"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="b2-semibold" for="date">일시</label>
+              <input
+                class="b2-regular start_date"
+                type="date"
+                id="start_date"
+                name="start_date"
+                placeholder="시작일을 입력하세요"
+              />
+              <input
+                class="b2-regular due_date"
+                type="date"
+                id="due_date"
+                name="due_date"
+                placeholder="종료일을 입력하세요"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="b2-semibold" for="category">분류</label>
+              <input
+                class="b2-regular personal_radio"
+                type="radio"
+                id="team"
+                name="category"
+                value="team"
+                checked
+              />
+              <label class="b2-semibold" for="team">팀 일정</label>
+              <input
+                class="b2-regular team_radio"
+                type="radio"
+                id="personal"
+                name="category"
+                value="personal"
+              />
+              <label class="b2-semibold" for="team">개인 일정</label>
+            </div>
+
+            <div class="form-group">
+              <label class="b2-semibold" for="color">범주</label>
+              <select id="color" name="color" placeholder="색상 선택">
+                <!-- <option value="1">빨강</option> -->
+                <option value="2">주황</option>
+                <option value="3">노랑</option>
+                <option value="4">초록</option>
+                <option value="5">파랑</option>
+                <option value="6">남색</option>
+                <option value="7">보라</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="b2-semibold" for="description">설명</label>
+              <input
+                class="b2-regular description"
+                type="text"
+                id="description"
+                name="content"
+                placeholder="설명을 입력하세요"
+              />
+            </div>
+
+            <div class="form-buttons">
+              <form
+                action="{{ url_for('calendar.create_schedule', project_id=project.project_id) }}"
+                method="POST"
+              >
+                <button type="submit" class="add-button">일정 추가</button>
+              </form>
+              <form
+                action="{{ url_for('calendar.calendar_view', project_id=project.project_id) }}"
+                method="GET"
+              >
+                <button type="submit" class="cancel-button">취소하기</button>
+              </form>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/calender.js') }}"></script>
+  </body>
+</html>
