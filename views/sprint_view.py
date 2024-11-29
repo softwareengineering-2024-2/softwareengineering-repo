@@ -4,7 +4,7 @@ from controllers.sprint_controller import (
     assign_backlogs_to_sprint, create_sprint, delete_backlog, get_sprints_with_backlogs, get_unassigned_product_backlogs, get_users_by_project_id, move_incomplete_backlogs_to_next_sprint, update_backlog_details, update_backlog_status, update_sprint, delete_sprint,
     get_all_product_backlogs, create_sprint_backlog
 )
-from controllers.calendar_controller import create_schedules
+from controllers.calendar_controller import create_schedules, update_sprint_schedules, delete_sprint_schedules
 from controllers.burnup_controller import increment_total_backlog, decrement_total_backlog
 from controllers.burnup_controller import increment_total_backlog, decrement_total_backlog
 from models.project_model import Project, UserProject
@@ -62,6 +62,7 @@ def edit_sprint(sprint_id, project_id):
     }
     
     updated_sprint = update_sprint(sprint_id, updates)
+    update_sprint_schedules(project_id, sprint_name, start_date, end_date)
     if updated_sprint:
         assign_backlogs_to_sprint(sprint_id, selected_backlogs)
         flash('스프린트가 성공적으로 수정되었습니다.')
@@ -81,6 +82,7 @@ def delete_sprint_route(sprint_id):
     deleted_sprint = delete_sprint(sprint_id)
     if deleted_sprint:
         flash('스프린트가 성공적으로 삭제되었습니다.')
+        delete_sprint_schedules(deleted_sprint.project_id, deleted_sprint.sprint_name)
         return redirect(url_for('sprint.get_product_backlogs_view', project_id=deleted_sprint.project_id))
     else:
         flash('스프린트 삭제에 실패했습니다.')

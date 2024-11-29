@@ -47,6 +47,11 @@ class Sprint(db.Model):
     @classmethod
     def find_by_id(cls, id):
         return cls.query.get(id)
+    
+    # 스프린트 id를 통해 스프린트 검색
+    @classmethod
+    def find_by_sprint(cls, sprint_id):
+        return cls.query.filter_by(sprint_id=sprint_id).first()
 
 # Sprint Backlog 모델
 class SprintBacklog(db.Model):
