@@ -3,6 +3,7 @@ from googleapiclient.http import MediaFileUpload
 from google.oauth2.service_account import Credentials
 import os
 import tempfile
+import re
 
 # 구글 드라이브 API 초기화 함수
 def init_drive_api():
@@ -66,3 +67,14 @@ def delete_file_from_drive(file_id):
     drive_service = init_drive_api()
     drive_service.files().delete(fileId=file_id).execute()
     return True
+
+# 파일 이름 불러오는 함수
+def get_file_name(file_id):
+    drive_service = init_drive_api()
+    file = drive_service.files().get(fileId=file_id, fields="name").execute()
+    return file.get("name")
+
+# 파일 ID 추출하는 함수
+def extract_file_id(file_link):
+    match = re.search(r"file/d/([a-zA-Z0-9_-]+)", file_link)
+    return match.group(1) if match else None
