@@ -315,7 +315,7 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-  text-align: center;
+  text-align: left;
   width: 400px;
   position: absolute; /* z-index 작동을 보장 */
   display: flex; /* 내부 요소를 flexbox로 정렬 */
