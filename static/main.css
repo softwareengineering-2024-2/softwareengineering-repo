@@ -27,7 +27,7 @@
 .progress-bar {
   width: 97%;
   height: 20px;
-  background-color: var(---color-white);
+  background-color: var(--color-grey-50);
   border-radius: 10px;
   overflow: hidden;
   margin-right: 10px;
