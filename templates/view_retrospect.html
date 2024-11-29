@@ -57,7 +57,7 @@
                 <div class="retrospect-item">
                     <strong>첨부 파일:</strong>
                     {% if file_link %}
-                        <a href="{{ file_link }}" target="_blank" download>파일 다운로드</a>
+                        <a href="{{ file_link }}" target="_blank" download>{{ file_name if file_name else "파일 다운로드" }}</a>
                     {% else %}
                         첨부된 파일이 없습니다.
                     {% endif %}

@@ -3,6 +3,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models.project_model import Project, UserProject
 from models.retrospect_model import Retrospect
+from drive.drive_init import extract_file_id, get_file_name
 from controllers.retrospect_controller import get_sprints, create_retrospect, update_retrospect, delete_retrospect, get_retrospect_by_id, get_user_name_by_project_and_user, get_filtered_retrospects, handle_file_upload
 from flask_login import current_user, login_required
 from database import db
@@ -94,14 +95,16 @@ def edit_retrospect_view(project_id, retrospect_id):
 @login_required
 def view_retrospect_view(project_id, retrospect_id):
     retrospect = get_retrospect_by_id(retrospect_id)
-    print(f"retrieved retrospect: {retrospect}")
-    print(f"file link from retrospect: {retrospect.file_link}")
-    
     project = Project.query.get_or_404(project_id)
     sprints = get_sprints(project_id)
     user_name = get_user_name_by_project_and_user(project_id, retrospect.user_id)
     file_link = retrospect.file_link if retrospect.file_link else None
-    return render_template('view_retrospect.html', project=project, retrospect=retrospect, sprints=sprints, user_name=user_name, file_link=file_link, userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
+    file_name = None
+    if retrospect.file_link:
+        file_id = extract_file_id(retrospect.file_link)
+        if file_id:
+            file_name = get_file_name(file_id)
+    return render_template('view_retrospect.html', project=project, retrospect=retrospect, sprints=sprints, user_name=user_name, file_name=file_name, file_link=file_link, userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
 
 # 회고 삭제
 @retrospect_bp.route('/<int:project_id>/delete/<int:retrospect_id>', methods=["POST"])

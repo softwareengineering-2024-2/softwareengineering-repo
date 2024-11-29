@@ -66,6 +66,8 @@
 .calendar-header {
   display: flex;
   gap: 8px;
+  justify-content: center;
+  align-items: center;
 }
 
 .calendar-header button {
@@ -73,6 +75,20 @@
   cursor: pointer;
   background-color: transparent;
 }
+
+.add-schedule-button {
+  border-radius: 10px;
+  border: 1px solid var(--color-grey-300);
+  background: var(--color-white);
+  display: flex;
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+/* 캘린더 css */
 
 .calendar-days {
   display: grid;
@@ -100,9 +116,11 @@
   grid-template-columns: repeat(7, 1fr);
 }
 
+.schedule {
+  cursor: pointer;
+}
 .date {
   height: 15vh;
-  cursor: pointer;
   padding: 8px;
   border-top: 1px solid var(--color-grey-50);
   border-left: 1px solid var(--color-grey-50);
@@ -113,7 +131,12 @@
   background-color: var(--color-green-50);
 }
 
-/* 캘린더 일정 추가 페이지 css */
+/* 캘린더 일정 추가 모달 css */
+.modal {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
 
 .schedule-form-wrapper {
   display: flex;
@@ -247,4 +270,42 @@
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+.header-title-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/* 일정 상세보기 모달 */
+#cancelModalButton2 {
+  font-size: 4.5vh;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.detail-button-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-button-wrapper button {
+  display: flex;
+  padding: 8px 20px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 10px;
+  border: none;
+}
+
+#editScheduleButton {
+  background: var(--color-green-500);
+}
+
+#deleteScheduleButton {
+  background: var(--color-grey-100);
 }

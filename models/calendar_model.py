@@ -1,5 +1,4 @@
 from database import db
-from datetime import date
 
 # Calendar 모델
 class Calendar(db.Model):
@@ -29,41 +28,34 @@ class Calendar(db.Model):
         self.content = content
         self.important = important
 
-    # 일정을 데이터베이스에 저장하는 메서드
+    # 데이터베이스에 저장하는 메서드
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
 
-    # Calendar 테이블에서 해당 데이터를 삭제하는 메서드
+    # 데이터베이스에서 삭제하는 메서드
     def delete_from_db(self):
         db.session.delete(self)
         db.session.commit()
-    
-    # 캘린더 ID를 기준으로 일정을 검색하는 메서드
+
+    # 데이터베이스에서 수정하는 메서드
+    def update_calendar(self, title, place, start_date, due_date, team, color, content, important):
+        self.title = title
+        self.place = place
+        self.start_date = start_date
+        self.due_date = due_date
+        self.team = team
+        self.color = color
+        self.content = content
+        self.important = important
+        db.session.commit()
+
+    # 일정 ID를 기준으로 일정을 검색하는 메서드
     @classmethod
     def find_by_id(cls, calendar_id):
         return cls.query.filter_by(calendar_id=calendar_id).first()
     
-    # 프로젝트 ID를 기준으로 일정을 검색하는 메서드
+    # 일정 이름을 기준으로 일정을 검색하는 메서드
     @classmethod
-    def find_by_project(cls, project_id):
-        return cls.query.filter_by(project_id=project_id).all()
-    
-    # 프로젝트 ID와 팀/개인 여부를 기준으로 일정을 검색하는 메서드
-    @classmethod
-    def find_by_project_and_team(cls, project_id, team):
-        return cls.query.filter_by(project_id=project_id, team=team).all()
-    
-    # 사용자 ID와 프로젝트 ID를 기준으로 사용자의 프로필 정보를 저장하는 메서드
-    @classmethod
-    def update_calendar(cls, calendar_id, title, place, start_date, due_date, team, color, content, important):
-        schedule = Calendar.find_by_id(calendar_id)
-        schedule.title = title
-        schedule.place = place
-        schedule.start_date = start_date
-        schedule.due_date = due_date
-        schedule.team = team
-        schedule.color = color
-        schedule.content = content
-        schedule.important = important
-        schedule.save_to_db()
+    def find_by_title(cls, project_id, title):
+        return cls.query.filter_by(project_id=project_id, title=title, team=1, important=1).first()

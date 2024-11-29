@@ -27,7 +27,7 @@
 .progress-bar {
   width: 97%;
   height: 20px;
-  background-color: var(---color-white);
+  background-color: var(--color-grey-50);
   border-radius: 10px;
   overflow: hidden;
   margin-right: 10px;
@@ -120,8 +120,51 @@ button.todo-delete:hover {
   padding: 15px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  cursor: pointer; /* 클릭 가능한 상태를 시각적으로 표시 */
-  min-height: 45vh;
+  /* cursor: pointer; 클릭 가능한 상태를 시각적으로 표시 */
+  min-height: 50vh;
+  gap: 8px;
+}
+
+.calendar-days {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-weight: bold;
+}
+
+.day {
+  border-top: 1px solid var(--color-grey-300);
+  border-bottom: 1px solid var(--color-grey-300);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  background-color: var(--color-green-300);
+}
+
+.date-container {
+  position: relative;
+  display: inline-block;
+}
+
+.calendar-dates {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.schedule {
+  cursor: pointer;
+}
+.date {
+  height: 15vh;
+  padding: 8px;
+  border-bottom: 1px solid var(--color-grey-50);
+  border-left: 1px solid var(--color-grey-50);
+  background: var(--color-white);
+}
+
+.date:hover {
+  background-color: var(--color-green-50);
 }
 
 .onboarding-highlight {

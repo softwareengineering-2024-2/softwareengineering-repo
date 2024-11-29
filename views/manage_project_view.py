@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from controllers.project_controller import create_project, join_project, get_user_projects, delete_project, set_profile
+from controllers.project_controller import create_project, join_project, get_user_projects, delete_project, set_profile, check_pm
 from models.project_model import UserProject, Project
 from flask_login import login_required, current_user
 
@@ -59,7 +59,7 @@ def join_project_view():
 @login_required
 def delete_project_view(project_id):
     message = delete_project(project_id)
-    flash(message)  # 프로젝트 삭제 결과 메시지를 플래시 메시지로 전달
+    flash(message)
     return redirect(url_for('manage_project.manage_project_view'))
 
 # 사용자 프로필 설정 로직
@@ -67,9 +67,21 @@ def delete_project_view(project_id):
 @login_required
 def set_profile_view(project_id):
     if request.method == 'POST':
-        user_name = request.form.get('name')
-        user_role = request.form.get('role')
-        message = set_profile(project_id, user_name, user_role)
-        flash(message)
+        userproject = UserProject.find_by_user_and_project(current_user.id, project_id)
+        current_role = userproject.user_role
+        
+        set_name = request.form.get('name')
+        set_role = request.form.get('role')
+        
+        # PM이 이미 존재하는지 확인
+        if current_role == "Member" and set_role == "PM(기획자)":
+            if check_pm(project_id):
+                return render_template('profile.html', userproject=UserProject.find_by_user_and_project(current_user.id, project_id), 
+                        project=Project.find_by_id(project_id), pm_check=1)
+            else:
+                set_profile(project_id, set_name, set_role)
+        else:
+            set_profile(project_id, set_name, set_role)    
         return redirect(url_for('project_main.project_main_view', project_id=project_id))
-    return render_template('profile.html', userproject=UserProject.find_by_user_and_project(current_user.id, project_id), project=Project.find_by_id(project_id))
+    return render_template('profile.html', userproject=UserProject.find_by_user_and_project(current_user.id, project_id), 
+                        project=Project.find_by_id(project_id), pm_check=0)

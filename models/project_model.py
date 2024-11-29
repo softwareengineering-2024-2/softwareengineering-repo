@@ -57,7 +57,7 @@ class UserProject(db.Model):
     # 프로젝트 ID를 기준으로 UserProject를 검색하는 메서드
     @classmethod
     def find_by_project(cls, project_id):
-        return cls.query.filter_by(project_id=project_id).first()
+        return cls.query.filter_by(project_id=project_id).all()
     
     # 사용자 ID와 프로젝트 ID를 기준으로 UserProject를 검색하는 메서드
     @classmethod
