@@ -87,6 +87,19 @@
         스프린트 회고</a
       >
     </li>
+    <li
+      class="{% if request.path == '/burnup/<int:project_id>' %}active{% endif %}"
+    >
+      <a
+        href="{{ url_for('burnup.burnup_view', project_id=project.project_id) }}"
+        ><img
+          src="{{ url_for('static', filename='icons/burnup.svg') }}"
+          alt="번업차트 아이콘"
+          class="icon"
+        />
+        번업 차트</a
+      >
+    </li>
   </ul>
 </div>
 <script>

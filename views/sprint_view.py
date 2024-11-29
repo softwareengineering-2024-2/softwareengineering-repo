@@ -1,10 +1,12 @@
 # views/sprint_view.py
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from controllers.sprint_controller import (
-    assign_backlogs_to_sprint, create_sprint, delete_backlog, get_sprints_with_backlogs, get_unassigned_product_backlogs, get_users_by_project_id, update_backlog_details, update_backlog_status, update_sprint, delete_sprint,
+    assign_backlogs_to_sprint, create_sprint, delete_backlog, get_sprints_with_backlogs, get_unassigned_product_backlogs, get_users_by_project_id, move_incomplete_backlogs_to_next_sprint, update_backlog_details, update_backlog_status, update_sprint, delete_sprint,
     get_all_product_backlogs, create_sprint_backlog
 )
 from controllers.calendar_controller import create_schedule
+from controllers.burnup_controller import increment_total_backlog, decrement_total_backlog
+from controllers.burnup_controller import increment_total_backlog, decrement_total_backlog
 from models.project_model import Project, UserProject
 from flask_login import current_user, login_required
 
@@ -91,6 +93,7 @@ def add_sprint_backlog(sprint_id, product_backlog_id):
     content = request.form.get('content')
     user_id = request.form.get('user_id')
     backlog, error = create_sprint_backlog(sprint_id, product_backlog_id, content, user_id) 
+    increment_total_backlog(request.form.get('project_id')) # 백로그 생성 시 총 백로그 수 증가
 
     if backlog:
         flash('스프린트 백로그가 성공적으로 추가되었습니다.')
@@ -125,5 +128,15 @@ def delete_backlog_view(backlog_id):
     success, message, project_id = delete_backlog(backlog_id)
     flash(message)
     if success:
+        decrement_total_backlog(project_id) # 백로그 삭제 시 총 백로그 수 감소
         return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id))
     return redirect(url_for('sprint.get_product_backlogs_view')) 
+
+@sprint_bp.route('/move-backlogs/<int:sprint_id>/<int:project_id>', methods=['POST'])
+def move_backlogs(sprint_id, project_id):
+    success, message = move_incomplete_backlogs_to_next_sprint(sprint_id, project_id)
+    if success:
+        return jsonify({'message': '백로그가 다음 스프린트로 이전되었습니다.'}), 200
+    else:
+        return jsonify({'error': '백로그 이전 중 오류가 발생했습니다: ' + message}), 500
+

@@ -35,28 +35,51 @@ function editRetrospect(retrospectId) {
     location.href = editUrl;
 }
 
-// 삭제 동작
+// 모든 모달 닫기 함수 선언
+function closeAllSmallModals() {
+    document.querySelectorAll('.modal').forEach((modal) => {
+        modal.classList.add('hidden');
+    });
+}
+
+// 삭제 버튼 클릭 시 삭제 확인 모달 표시
 function deleteRetrospect(retrospectId) {
-    if (confirm('정말 삭제하시겠습니까?')) {
-        fetch(`/retrospect/${projectId}/delete/${retrospectId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+    // Small modal 닫기
+    closeAllSmallModals();
+
+    // 모달 메시지 설정
+    document.getElementById("confirmDeleteMessage").textContent = "정말로 이 회고를 삭제하시겠습니까?";
+    // 확인 버튼에 삭제 동작 연결
+    document.querySelector(".custom-modal-confirm-btn").onclick = function () {
+        confirmDelete(retrospectId);
+    };
+    // 삭제 확인 모달 표시
+    document.getElementById("confirmDeleteModal").classList.remove("hidden");
+}
+
+// 삭제 확인 처리
+function confirmDelete(retrospectId) {
+    fetch(`/retrospect/${projectId}/delete/${retrospectId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((response) => {
+            if (response.ok) {
+                showMessageModal("성공", "회고가 삭제되었습니다.");
+                setTimeout(() => location.reload(), 2000); // 2초 후 새로고침
+            } else {
+                showMessageModal("오류", "회고 삭제에 실패했습니다.");
+            }
         })
-            .then((response) => {
-                if (response.ok) {
-                    alert('삭제되었습니다.');
-                    location.reload(); // 페이지 새로고침
-                } else {
-                    alert('삭제에 실패했습니다.');
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('오류가 발생했습니다.');
-            });
-    }
+        .catch((error) => {
+            console.error("Error:", error);
+            showMessageModal("오류", "회고 삭제 중 오류가 발생했습니다.");
+        });
+
+    // 삭제 확인 모달 닫기
+    closeConfirmDeleteModal();
 }
 
 // 모달 바깥 클릭 시 닫기
@@ -69,3 +92,19 @@ document.addEventListener('click', (event) => {
     });
 });
 
+// 삭제 확인 모달 닫기
+function closeConfirmDeleteModal() {
+    document.getElementById("confirmDeleteModal").classList.add("hidden");
+}
+
+// 메시지 모달 열기
+function showMessageModal(title, message) {
+    document.getElementById("modalTitle").textContent = title;
+    document.getElementById("modalMessage").textContent = message;
+    document.getElementById("messageModal").classList.remove("hidden");
+}
+
+// 메시지 모달 닫기
+function closeMessageModal() {
+    document.getElementById("messageModal").classList.add("hidden");
+}

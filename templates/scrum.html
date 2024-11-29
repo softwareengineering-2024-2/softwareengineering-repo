@@ -1,3 +1,4 @@
+# scrum.html
 <!DOCTYPE html>
 <html lang="ko">
   <head>
@@ -30,12 +31,11 @@
     <div class="main-container">
       {% include 'sidebar.html' %}
       <div class="content">
-        <!-- 메인 콘텐츠가 들어갈 부분 -->
         {% block content %}
         <div class="scrum-title-wrapper">
           <div class="title-right">
             <h1>스크럼 보드</h1>
-            <div class="sprint-change-btn">
+            <div class="sprint-change-btn" onclick="toggleSprintDropdown()">
               <h2>{{ selected_sprint.sprint_name if selected_sprint else '선택된 스프린트가 없습니다' }}</h2>
               <img src="/static/icons/chevron-down.svg" />
               <div class="sprint-dropdown" id="sprintDropdown">
@@ -50,32 +50,76 @@
 
           <div class="sprint-percentage-container">
             <p>스프린트 작업 완료율</p>
-            <div class="sprint-bar"></div>
+            <div class="sprint-bar"><div class="sprint-bar-outer">
+              <div class="sprint-bar-inner" style="width: {{ completion_percentage }}%;"></div>
+            </div>
+            <span>{{ completion_percentage|round|int }}%</span></div></div>
           </div>
         </div>
 
-        <div class="scrum-board-container">
-          {% if backlogs_by_status %}
-          {% for status in ['To Do', 'In Progress', 'Done'] %}
-          {# <div class="todo-container"> #}
-            <div class="{{ status|lower|replace(' ', '-') }}-container">
-            <h1 class="scrum-board-title">{{ status }}</h1>
+        <div class="scrum-board-container {% if is_past_due %}past-due{% endif %}">
+          <div class="todo-container">
+            <h1 class="scrum-board-title">To Do</h1>
             <div
               class="scrum-content"
-              id="{{ status|lower|replace(' ', '-') }}"
+              id="to-do"
               ondrop="drop(event)"
               ondragover="allowDrop(event)"
             >
-            {% for backlog in backlogs_by_status[status] %}
-            <div
-              class="scrum-sprint-item"
-              id="item-{{ backlog.sprint_backlog_id }}"
-              draggable="true"
-              ondragstart="drag(event)"
-              data-backlog-id="{{ backlog.sprint_backlog_id }}"
-            >
+              {% for backlog in backlogs_by_status['To Do'] %}
+              <div
+                class="scrum-sprint-item"
+                id="item-{{ backlog.sprint_backlog_id }}"
+                draggable="true"
+                ondragstart="drag(event)"
+                data-backlog-id="{{ backlog.sprint_backlog_id }}"
+              >
                 <p>{{ backlog.sprint_backlog_content }}</p>
-                <span class="user-circle"> {{ backlog.user_id }} </span>
+                <span class="user-circle">{{ backlog.user_name[:2] }}</span>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="inprogress-container">
+            <h1 class="scrum-board-title">In Progress</h1>
+            <div
+              class="scrum-content"
+              id="in-progress"
+              ondrop="drop(event)"
+              ondragover="allowDrop(event)"
+            >
+              {% for backlog in backlogs_by_status['In Progress'] %}
+              <div
+                class="scrum-sprint-item"
+                id="item-{{ backlog.sprint_backlog_id }}"
+                draggable="true"
+                ondragstart="drag(event)"
+                data-backlog-id="{{ backlog.sprint_backlog_id }}"
+              >
+                <p>{{ backlog.sprint_backlog_content }}</p>
+                <span class="user-circle">{{ backlog.user_name[:2] }}</span>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="done-container">
+            <h1 class="scrum-board-title">Done</h1>
+            <div
+              class="scrum-content"
+              id="done"
+              ondrop="drop(event)"
+              ondragover="allowDrop(event)"
+            >
+              {% for backlog in backlogs_by_status['Done'] %}
+              <div
+                class="scrum-sprint-item"
+                id="item-{{ backlog.sprint_backlog_id }}"
+                draggable="true"
+                ondragstart="drag(event)"
+                data-backlog-id="{{ backlog.sprint_backlog_id }}"
+              >
+                <p>{{ backlog.sprint_backlog_content }}</p>
+                <span class="user-circle">{{ backlog.user_name[:2] }}</span>
               </div>
               {% endfor %}
             </div>
@@ -86,8 +130,12 @@
           {% endif %}
         </div>
         {% endblock %}
+        <div class="save-button-container" style="text-align: right; margin-top: 20px;">
+          <button onclick="saveStatuses()" class="save-button" {% if is_past_due %}disabled style="cursor: not-allowed; opacity: 0.5;"{% endif %}>상태 저장</button>
+        </div>
       </div>
     </div>
+
 
     <!-- 외부 JavaScript 파일 연결 -->
     <script src="{{ url_for('static', filename='js/scrum.js') }}"></script>

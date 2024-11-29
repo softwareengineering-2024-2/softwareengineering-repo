@@ -136,19 +136,43 @@ function toggleSprintOptionsModal(
 }
 
 function submitEditSprintForm() {
-  const productBacklogSelect = document.getElementById("edit-product-backlog");
+  const productBacklogContainer = document.getElementById(
+    "edit-product-backlog-container"
+  );
+  const selectedBacklogs = [];
+  const backlogItems = productBacklogContainer.getElementsByClassName(
+    "product-backlog-item"
+  );
 
-  // 프로덕트 백로그가 없는 경우 확인
-  if (
-    productBacklogSelect.options.length === 0 ||
-    productBacklogSelect.selectedOptions.length === 0
-  ) {
-    showMessageModal("오류", "프로덕트 백로그를 지정해야합니다.");
+  for (let i = 0; i < backlogItems.length; i++) {
+    const item = backlogItems[i];
+    if (item.classList.contains("assigned")) {
+      selectedBacklogs.push(item.dataset.backlogId);
+    }
+  }
+
+  // 선택된 백로그가 없으면 경고 메시지 표시
+  if (selectedBacklogs.length === 0) {
+    showMessageModal("오류", "최소 하나의 프로덕트 백로그를 선택해야 합니다.");
     return;
   }
 
-  // 모든 필드가 올바르게 입력되었을 때 폼 제출
-  document.getElementById("edit-sprint-form").submit();
+  // 폼에 선택된 백로그 ID를 히든 인풋으로 추가
+  const editForm = document.getElementById("edit-sprint-form");
+  // 기존의 히든 인풋 제거
+  const existingInputs = editForm.querySelectorAll('input[name="backlogs"]');
+  existingInputs.forEach((input) => input.remove());
+
+  selectedBacklogs.forEach(function (backlogId) {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "backlogs";
+    input.value = backlogId;
+    editForm.appendChild(input);
+  });
+
+  // 폼 제출
+  editForm.submit();
 }
 
 // 백로그 설정 팝업 모달 열기/닫기
@@ -195,6 +219,63 @@ function openSprintEditModal(
   // 폼 액션 URL 설정
   const editForm = document.getElementById("edit-sprint-form");
   editForm.action = editUrl;
+  // 프로덕트 백로그 컨테이너 초기화
+  const productBacklogContainer = document.getElementById(
+    "edit-product-backlog-container"
+  );
+  productBacklogContainer.innerHTML = ""; // 기존 내용 제거
+
+  // 현재 스프린트를 sprintsData에서 찾기
+  var currentSprint = sprintsData.find(function (sprint) {
+    return sprint.sprint_id === sprintId;
+  });
+
+  // 현재 스프린트에 할당된 프로덕트 백로그 ID 리스트 생성
+  var assignedBacklogIds = currentSprint.product_backlogs.map(function (
+    backlog
+  ) {
+    return backlog.product_backlog_id;
+  });
+
+  // 모든 관련 프로덕트 백로그 가져오기 (현재 스프린트에 할당되었거나 할당되지 않은 백로그)
+  var relevantBacklogs = [];
+
+  // 현재 스프린트에 할당된 백로그 추가
+  currentSprint.product_backlogs.forEach(function (backlog) {
+    relevantBacklogs.push({
+      product_backlog_id: backlog.product_backlog_id,
+      content: backlog.content,
+      assigned: true,
+    });
+  });
+
+  // 할당되지 않은 백로그 추가
+  unassignedBacklogsData.forEach(function (backlog) {
+    relevantBacklogs.push({
+      product_backlog_id: backlog.product_backlog_id,
+      content: backlog.product_backlog_content,
+      assigned: false,
+    });
+  });
+
+  // 프로덕트 백로그 리스트 생성
+  relevantBacklogs.forEach(function (backlog) {
+    var backlogItem = document.createElement("div");
+    backlogItem.className = "product-backlog-item";
+    backlogItem.dataset.backlogId = backlog.product_backlog_id;
+    backlogItem.textContent = backlog.content;
+    if (backlog.assigned) {
+      backlogItem.classList.add("assigned"); // 할당된 백로그 스타일 적용
+    }
+
+    // 클릭 이벤트 리스너 추가
+    backlogItem.addEventListener("click", function () {
+      backlogItem.classList.toggle("assigned");
+    });
+
+    productBacklogContainer.appendChild(backlogItem);
+  });
+
   document.getElementById("sprint_edit_modal").style.display = "flex";
 }
 
@@ -224,7 +305,6 @@ function confirmDelete() {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRFToken": "{{ csrf_token() }}",
     },
   })
     .then((response) => {
@@ -375,3 +455,25 @@ window.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+
+function moveBacklogs(sprintId, projectId) {
+  fetch(`/sprint/move-backlogs/${sprintId}/${projectId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}),
+  })
+    .then((response) => {
+      if (response.ok) {
+        showMessageModal("성공", "백로그가 다음 스프린트로 이전되었습니다.");
+        setTimeout(() => location.reload(), 2000);
+      } else {
+        showMessageModal("오류", "백로그 이전에 실패했습니다.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      showMessageModal("오류", "백로그 이전 중 오류가 발생했습니다.");
+    });
+}

@@ -37,69 +37,100 @@
                 </div>
                 <button class="btn-register" onclick="location.href='{{ url_for('retrospect.create_retrospect_view', project_id=project.project_id) }}'">회고 등록</button>
             </header>
-
-            <div class="retrospect-cards">
-                {% for retrospect in retrospects.items %}
-                <div class="card">
-                    <div class="card-content"
-                    onclick="navigateToRetrospect(event, {{ project.project_id }}, {{ retrospect.retrospect_id }})">
-                    <div class="card-header {{ 'retrospect' if retrospect.label == 'retrospect' else 'risk' }}">
-                        {% if retrospect.label == 'retrospect' %}
-                            회고
-                        {% else %}
-                            리스크
-                        {% endif %}
-                    </div>
-                    <h3>{{ retrospect.retrospect_title }}</h3>
-                    <p>작성자: {{ user_map[retrospect.user_id] }}</p>
-                    <p>스프린트: {% if retrospect.sprint_id %}
-                        {% for sprint in sprints %}
-                            {% if sprint.sprint_id == retrospect.sprint_id %}
-                                {{ sprint.sprint_name }}
-                            {% endif %}
+            <div class="content-body">
+                <div class="retrospect-cards">
+                    {% if retrospects.items %}
+                        {% for retrospect in retrospects.items %}
+                        <div class="card">
+                            <div class="card-content"
+                                onclick="navigateToRetrospect(event, {{ project.project_id }}, {{ retrospect.retrospect_id }})">
+                                <div class="card-header {{ 'retrospect' if retrospect.label == 'retrospect' else 'risk' }}">
+                                    {% if retrospect.label == 'retrospect' %}
+                                        회고
+                                    {% else %}
+                                        리스크
+                                    {% endif %}
+                                </div>
+                                <h3>{{ retrospect.retrospect_title }}</h3>
+                                <p>작성자: {{ user_map[retrospect.user_id] }}</p>
+                                <p>스프린트: {% if retrospect.sprint_id %}
+                                    {% for sprint in sprints %}
+                                        {% if sprint.sprint_id == retrospect.sprint_id %}
+                                            {{ sprint.sprint_name }}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    없음
+                                {% endif %}</p>
+                            </div>
+                            <div class="card-actions">
+                                {% if userproject.user_role == 'PM(기획자)' or current_user.id == retrospect.user_id %}
+                                    <img
+                                        src="{{ url_for('static', filename='icons/dotdotdot.svg') }}"
+                                        alt="설정 버튼"
+                                        class="options-btn"
+                                        onclick="openOptions(event, {{ retrospect.retrospect_id }})"
+                                    />
+                                {% endif %}
+                            </div>                            
+                        </div>
                         {% endfor %}
                     {% else %}
-                        없음
-                    {% endif %}</p>
-                    </div>
-                    <!-- 수정/삭제 버튼 -->
-                    <div class="card-actions">
-                    <img
-                        src="{{ url_for('static', filename='icons/dotdotdot.svg') }}"
-                        alt="설정 버튼"
-                        class="options-btn"
-                        onclick="openOptions(event, {{ retrospect.retrospect_id }})"
-                    />
-                    </div>
+                        <div class="no-retrospects">
+                            아직 생성된 회고가 없습니다.
+                        </div>
+                    {% endif %}
                 </div>
-                {% endfor %}
-            </div>
 
-            <div class="pagination">
-                {% if retrospects.has_prev %}
-                <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=retrospects.prev_num) }}">&lt; 이전</a>
-                {% endif %}
-                {% for page_num in retrospects.iter_pages(left_edge=2, right_edge=2, left_current=1, right_current=1) %}
-                {% if page_num %}
-                <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=page_num) }}"
-                   class="{{ 'active' if page_num == retrospects.page else '' }}">{{ page_num }}</a>
-                {% else %}
-                <span>…</span>
-                {% endif %}
-                {% endfor %}
-                {% if retrospects.has_next %}
-                <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=retrospects.next_num) }}">다음 &gt;</a>
-                {% endif %}
+                <div class="pagination">
+                    {% if retrospects.has_prev %}
+                    <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=retrospects.prev_num) }}">&lt; 이전</a>
+                    {% endif %}
+                    {% for page_num in retrospects.iter_pages(left_edge=2, right_edge=2, left_current=1, right_current=1) %}
+                    {% if page_num %}
+                    <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=page_num) }}"
+                    class="{{ 'active' if page_num == retrospects.page else '' }}">{{ page_num }}</a>
+                    {% else %}
+                    <span>…</span>
+                    {% endif %}
+                    {% endfor %}
+                    {% if retrospects.has_next %}
+                    <a href="{{ url_for('retrospect.retrospect_view', project_id=project.project_id, page=retrospects.next_num) }}">다음 &gt;</a>
+                    {% endif %}
+                </div>
             </div>
             <!-- 수정/삭제 모달 -->
             {% for retrospect in retrospects.items %}
             <div id="options-modal-{{ retrospect.retrospect_id }}" class="modal hidden">
                 <div class="modal-content">
-                    <button onclick="editRetrospect({{ retrospect.retrospect_id }})">수정</button>
+                    <!-- 수정 버튼: 작성자 본인만 표시 -->
+                    {% if current_user.id == retrospect.user_id %}
+                        <button onclick="editRetrospect({{ retrospect.retrospect_id }})">수정</button>
+                    {% endif %}
                     <button class="btn-danger" onclick="deleteRetrospect({{ retrospect.retrospect_id }})">삭제</button>
                 </div>
             </div>
             {% endfor %}
+            <!-- 삭제 확인 모달 -->
+            <div id="confirmDeleteModal" class="custom-modal hidden">
+                <div class="custom-modal-content">
+                    <h2>확인</h2>
+                    <p id="confirmDeleteMessage">정말로 이 회고를 삭제하시겠습니까?</p>
+                    <div class="custom-modal-buttons">
+                        <button onclick="confirmDelete()" class="custom-modal-confirm-btn">삭제</button>
+                        <button onclick="closeConfirmDeleteModal()" class="custom-modal-cancel-btn">취소</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 메시지 모달 -->
+            <div id="messageModal" class="custom-modal hidden">
+                <div class="custom-modal-content">
+                    <h2 id="modalTitle">알림</h2>
+                    <p id="modalMessage">메시지 내용이 여기에 표시됩니다.</p>
+                    <button onclick="closeMessageModal()" class="custom-modal-close-btn">닫기</button>
+                </div>
+            </div>
         </div>
     </div>
     <script>

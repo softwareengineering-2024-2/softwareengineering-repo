@@ -1,5 +1,5 @@
 # controllers/sprint_controller.py
-from datetime import datetime
+from datetime import date, datetime
 from models.sprint_model import Sprint, SprintBacklog
 from models.productbacklog_model import ProductBacklog
 from models.project_model import UserProject
@@ -19,9 +19,8 @@ def get_all_product_backlogs(project_id):
 # 스프린트 백로그에 할당되지 않은 프로덕트 백로그만 가져오는 함수
 def get_unassigned_product_backlogs(project_id):
     try:
-        # 스프린트에 할당되지 않은 프로덕트 백로그를 필터링
         unassigned_backlogs = ProductBacklog.query.filter_by(project_id=project_id, sprint_id=None).all()
-        return unassigned_backlogs
+        return [backlog.to_dict() for backlog in unassigned_backlogs]
     except SQLAlchemyError as e:
         return str(e)
 
@@ -111,6 +110,7 @@ def get_sprints_with_backlogs(project_id, sprint_id=None):
         sprint_details = []
 
         for sprint in sprints:
+            is_past_due = date.today() > sprint.sprint_end_date
             backlog_details = []
             for backlog in sprint.product_backlog:
                 sprint_backlogs = (
@@ -142,7 +142,9 @@ def get_sprints_with_backlogs(project_id, sprint_id=None):
                 'sprint_name': sprint.sprint_name,
                 'start_date': sprint.sprint_start_date.strftime('%Y-%m-%d'),
                 'end_date': sprint.sprint_end_date.strftime('%Y-%m-%d'),
-                'product_backlogs': backlog_details
+                'status': sprint.status,
+                'product_backlogs': backlog_details,
+                'is_past_due': is_past_due,
             })
 
         return sprint_details
@@ -151,28 +153,38 @@ def get_sprints_with_backlogs(project_id, sprint_id=None):
 
     
 # 프로덕트 백로그에 스프린트 ID를 할당하는 메서드
-def assign_backlogs_to_sprint(sprint_id, backlog_ids):
+def assign_backlogs_to_sprint(sprint_id, new_backlog_ids):
     try:
+        # 새로운 백로그 ID를 세트로 변환
+        new_backlog_ids = set(map(int, new_backlog_ids))
+        
+        # 현재 스프린트에 할당된 백로그 ID를 가져옴
         current_backlogs = ProductBacklog.query.filter_by(sprint_id=sprint_id).all()
-        current_backlog_ids = {backlog.id for backlog in current_backlogs}
-
-        # 삭제 또는 수정할 백로그
-        new_backlog_ids = set(map(int, backlog_ids))
-        backlogs_to_add = new_backlog_ids - current_backlog_ids
-        backlogs_to_remove = current_backlog_ids - new_backlog_ids
-
-        # Unassign backlogs
-        for backlog_id in backlogs_to_remove:
+        current_backlog_ids = set(backlog.product_backlog_id for backlog in current_backlogs)
+        
+        # 제거해야 할 백로그 (현재 할당되었지만 선택되지 않은 백로그)
+        backlogs_to_unassign = current_backlog_ids - new_backlog_ids
+        
+        # 새로 할당해야 할 백로그 (이전에 할당되지 않았지만 새로 선택된 백로그)
+        backlogs_to_assign = new_backlog_ids - current_backlog_ids
+        
+        # 백로그 할당 해제 및 관련 SprintBacklog 삭제
+        for backlog_id in backlogs_to_unassign:
             backlog = ProductBacklog.query.get(backlog_id)
             if backlog:
                 backlog.sprint_id = None
-
-        # Assign new backlogs
-        for backlog_id in backlogs_to_add:
+                # 관련된 SprintBacklog 삭제
+                sprint_backlogs = SprintBacklog.query.filter_by(product_backlog_id=backlog_id).all()
+                for sb in sprint_backlogs:
+                    db.session.delete(sb)
+        
+        # 백로그에 스프린트 ID 할당
+        for backlog_id in backlogs_to_assign:
             backlog = ProductBacklog.query.get(backlog_id)
             if backlog:
                 backlog.sprint_id = sprint_id
-
+                # 필요한 경우 새로운 SprintBacklog 생성 로직 추가
+                
         db.session.commit()
         return True
     except SQLAlchemyError as e:
@@ -231,14 +243,28 @@ def update_backlog_status(backlog_id, status):
         if backlog:
             backlog.status = status
             db.session.commit()
-            # 성공시 반환
+
+            # 해당 스프린트의 모든 백로그가 Done인지 확인
+            sprint_id = backlog.sprint_id
+            all_backlogs = SprintBacklog.query.filter_by(sprint_id=sprint_id).all()
+            if all(b.status == 'Done' for b in all_backlogs):
+                # 스프린트의 status를 Done으로 업데이트
+                sprint = Sprint.query.get(sprint_id)
+                if sprint:
+                    sprint.status = 'Done'
+                    db.session.commit()
+            else:
+                # 하나라도 Done이 아니면 스프린트의 status를 In Progress로 설정
+                sprint = Sprint.query.get(sprint_id)
+                if sprint and sprint.status != 'In Progress':
+                    sprint.status = 'In Progress'
+                    db.session.commit()
+
             return True, "Status updated successfully", backlog.sprint.project_id
         else:
-            # 백로그를 찾을 수 없을 때
             return False, "Backlog not found", None
     except Exception as e:
         db.session.rollback()
-        # 데이터베이스 오류 발생시
         return False, str(e), None
 
 
@@ -299,3 +325,59 @@ def get_current_sprint_backlogs(user_id, project_id):
 
     except SQLAlchemyError as e:
         return {'error': str(e)}
+
+def move_incomplete_backlogs_to_next_sprint(sprint_id, project_id):
+    try:
+        # 현재 스프린트 가져오기
+        current_sprint = Sprint.query.get(sprint_id)
+        if not current_sprint:
+            return False, "Current Sprint not found"
+
+        # 다음 스프린트 찾기
+        next_sprint = Sprint.query.filter(
+            Sprint.project_id == project_id,
+            Sprint.sprint_start_date > current_sprint.sprint_end_date
+        ).order_by(Sprint.sprint_start_date).first()
+
+        if not next_sprint:
+            return False, "No next Sprint found"
+
+        # 완료되지 않은 스프린트 백로그 가져오기
+        incomplete_backlogs = SprintBacklog.query.filter(
+            SprintBacklog.sprint_id == sprint_id,
+            SprintBacklog.status != 'Done'
+        ).all()
+
+        # 해당하는 ProductBacklog의 sprint_id를 다음 스프린트로 업데이트
+        for sprint_backlog in incomplete_backlogs:
+            product_backlog = ProductBacklog.query.get(sprint_backlog.product_backlog_id)
+            if product_backlog:
+                product_backlog.sprint_id = next_sprint.sprint_id
+                db.session.add(product_backlog) 
+
+        # SprintBacklog의 sprint_id도 다음 스프린트로 업데이트
+        for sprint_backlog in incomplete_backlogs:
+            sprint_backlog.sprint_id = next_sprint.sprint_id
+            db.session.add(sprint_backlog)
+
+        # 스프린트 백로그가 없는 현재 스프린트의 프로덕트 백로그 가져오기
+        unassigned_product_backlogs = ProductBacklog.query.filter(
+            ProductBacklog.sprint_id == sprint_id,
+            ~ProductBacklog.product_backlog_id.in_(
+                db.session.query(SprintBacklog.product_backlog_id).filter(
+                    SprintBacklog.sprint_id == sprint_id
+                )
+            )
+        ).all()
+
+        # 이 프로덕트 백로그들의 sprint_id를 다음 스프린트로 업데이트
+        for product_backlog in unassigned_product_backlogs:
+            product_backlog.sprint_id = next_sprint.sprint_id
+            db.session.add(product_backlog)
+
+        db.session.commit()
+        return True, "Backlogs moved successfully"
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error in move_incomplete_backlogs_to_next_sprint: {e}")  # 예외 메시지 출력
+        return False, str(e)

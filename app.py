@@ -9,6 +9,7 @@ from views.productbacklog_view import productbacklog_bp
 from views.sprint_view import sprint_bp
 from views.calendar_view import calendar_bp
 from views.retrospect_view import retrospect_bp
+from views.burnup_view import burnup_bp
 from views.scrum_view import scrum_bp
 from dotenv import load_dotenv
 from database import init_db
@@ -40,6 +41,7 @@ app.register_blueprint(sprint_bp, url_prefix='/sprint')
 app.register_blueprint(userstory_bp, url_prefix='/userstory')
 app.register_blueprint(calendar_bp, url_prefix='/calendar')
 app.register_blueprint(retrospect_bp, url_prefix='/retrospect')
+app.register_blueprint(burnup_bp, url_prefix='/burnup')
 app.register_blueprint(scrum_bp, url_prefix='/scrum')
 
 @app.route("/")
@@ -48,13 +50,13 @@ def index():
 
 #------------------------------------------------
 #view로 이동 요청
-@app.route("/main")
-def main():
-    total_tasks = 100  # 전체 작업 수 (예시)
-    completed_tasks = 25  # 완료된 작업 수 (예시)
-    # 달성률 계산
-    progress_percentage = (completed_tasks / total_tasks) * 100 if total_tasks > 0 else 0
-    return render_template('main.html', progress_percentage=progress_percentage)
+# @app.route("/main")
+# def main():
+#     total_tasks = 100  # 전체 작업 수 (예시)
+#     completed_tasks = 25  # 완료된 작업 수 (예시)
+#     # 달성률 계산
+#     progress_percentage = (completed_tasks / total_tasks) * 100 if total_tasks > 0 else 0
+#     return render_template('main.html', progress_percentage=progress_percentage)
 
 # @app.route("/milestone")
 # def milestone():
@@ -80,9 +82,9 @@ def main():
 # def project():
 #     return render_template('manage_project.html')
 
-@app.route('/calendar')
-def calendar():
-    return render_template('calendar.html')
+# @app.route('/calendar')
+# def calendar():
+#     return render_template('calendar.html')
 
 @app.route('/guide')
 def guide():
