@@ -1,5 +1,4 @@
 @import url("global.css");
-
 .main-container {
   margin-top: 2vh; /* 탑바 밑 여백 추가 */
   margin-left: 25vh; /* 사이드바 너비만큼 왼쪽 여백 추가 */
@@ -11,7 +10,6 @@
   flex-direction: column;
   text-align: center;
   justify-content: center;
-  gap: 10px;
 }
 
 .scrum-title-wrapper {
@@ -20,11 +18,31 @@
   margin: 0px 20px;
 }
 
-.title-right {
+.title-left-wrapper {
   display: flex;
   align-items: center;
   gap: 20px;
   cursor: pointer;
+  flex-wrap: wrap; /* 줄바꿈을 허용 */
+  width: 45%;
+  text-align: left;
+  line-height: normal;
+}
+
+.save-button {
+  display: flex;
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--Grey-grey-300, #9f9f9f);
+  background: #fff;
+}
+
+.title-left-wrapper > * {
+  word-wrap: break-word; /* 단어가 너무 길면 줄바꿈 */
+  word-break: break-word; /* 단어를 강제로 끊음 */
 }
 
 .sprint-change-btn {
@@ -46,6 +64,27 @@
   width: 50%;
   border-radius: 10px;
   border: 1px solid var(--color-grey-100);
+}
+
+.sprint-bar {
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.sprint-bar-outer {
+  width: 100%; /* 부모 컨테이너가 진행 바를 감쌀 수 있도록 설정 */
+  height: 20px;
+  background-color: var(--color-grey-50); /* 배경색 설정 */
+  border-radius: 10px;
+}
+
+.sprint-bar-inner {
+  height: 100%;
+  background-color: var(--color-green-500);
+  border-radius: 10px;
+  transition: width 0.3s ease;
 }
 
 .scrum-board-container {
@@ -184,20 +223,6 @@
 
 .sprint-dropdown ul li:hover {
   background-color: var(--color-grey-50);
-}
-
-.sprint-bar {
-  width: 0%;
-  background-color: #eee;
-  height: 20px;
-  border-radius: 5px;
-}
-
-.sprint-bar-inner {
-  height: 20px;
-  background-color: var(--color-grey-900);
-  border-radius: 5px;
-  transition: width 0.3s ease;
 }
 
 .past-due {
