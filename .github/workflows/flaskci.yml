@@ -1,0 +1,121 @@
+name: flask-ci
+
+# main과 develop 브랜치에 푸시되거나 풀 리퀘스트가 열렸을 때 워크플로우 실행
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+    
+permissions:
+  contents: read 
+  checks: write 
+  issues: write 
+  pull-requests: write 
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+        # 1. 리포지토리 체크아웃
+      - uses: actions/checkout@v4
+      
+        # 2. Python 환경 설정
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.8"
+
+        # 3. 의존성 설치
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          
+        # 4. 테스트 결과 디렉토리 생성
+      - name: Create Test Results Directory
+        run: mkdir -p test-results
+        
+        # 5. flake8(코드 린팅) 수행
+      - name: Lint with flake8 
+        run: |
+          # flake8을 사용하여 코드 린팅을 수행하고 결과를 출력
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+        # 6. 테스트 파일 존재 여부 확인
+      - name: Check for test files
+        id: check_tests
+        run: |
+          if [ -n "$(find . -name 'test_*.py')" ]; then echo "has_tests=true" >> $GITHUB_OUTPUT; else echo "has_tests=false" >> $GITHUB_OUTPUT; fi
+
+        # 7. 테스트 실행 (테스트가 있는 경우에만)
+      - name: Test with pytest
+        if: steps.check_tests.outputs.has_tests == 'true'
+        run: |
+          pytest --junitxml=test-results/results.xml || true
+
+        # 8. 테스트 결과를 PR 코멘트로 게시 (테스트가 있는 경우에만)
+      - name: Publish test results as PR comment
+        if: steps.check_tests.outputs.has_tests == 'true'
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: 'test-results/results.xml'
+          check_name: 'Unit Tests Results'
+
+        # 테스트가 실패했을 경우
+      - name: Comment on PR for failed test lines
+        if: steps.check_tests.outputs.has_tests != '0'
+        uses: mikepenz/action-junit-report@v3
+        with:
+          report_paths: 'test-results/results.xml'
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+         # 테스트가 없을 경우
+      - name: Comment on PR if no tests
+        if: steps.check_tests.outputs.has_tests == '0'  
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const comments = ["LGTM", "GOOD", "PERFECT"];  
+            const comment = comments[Math.floor(Math.random() * comments.length)];
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
+
+        # 9. GPT를 활용한 코드 리뷰
+      - name: Run GPT Code Review
+        if: github.event_name == 'pull_request'
+        uses: anc95/ChatGPT-CodeReview@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LANGUAGE: Korean
+          MODEL: gpt-4o
+
+         # 10. PR 머지 시 관련 이슈에 코멘트 남기기
+      - name: Comment on related issue 
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == true }}  # PR이 병합된 경우에만 이 스텝이 실행됩니다.
+        uses: actions/github-script@v6
+        with:
+          # PR 본문에서 연관된 이슈(#숫자) 정보를 추출한 후, 해당 이슈에 무작위 코멘트를 남깁니다.
+          script: |
+            const prBody = github.event.pull_request.body || "";
+            const comments = ["LGTM", "GOOD", "PERFECT"];  
+            const issueRegex = /#(\d+)/g;  
+            let match;
+            while ((match = issueRegex.exec(prBody)) !== null) {
+              const issueNumber = parseInt(match[1]);
+              const comment = comments[Math.floor(Math.random() * comments.length)];
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: comment+'PR이 머지되었습니다.'
+              });
+            }
