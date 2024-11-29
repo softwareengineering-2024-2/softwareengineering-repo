@@ -3,9 +3,13 @@ name: flask-ci
 # main과 develop 브랜치에 푸시되거나 풀 리퀘스트가 열렸을 때 워크플로우 실행
 on:
   push:
-    branches: [ "main", "develop" ]
+    branches: 
+      - "main"
+      - "develop"
   pull_request:
-    branches: [ "main", "develop" ]
+    branches: 
+      - "main"
+      - "develop"
     
 permissions:
   contents: read 
