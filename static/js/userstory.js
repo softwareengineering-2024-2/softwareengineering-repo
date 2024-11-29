@@ -231,6 +231,12 @@ document.addEventListener("DOMContentLoaded", function () {
         tooltip.style.position = "absolute";
         tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`;
         tooltip.style.left = `${Math.min(rect.left + window.scrollX, window.innerWidth - tooltip.offsetWidth - 10)}px`;
+        // 버튼 텍스트 및 동작 변경
+        if (stepIndex === onboardingSteps.length - 1) {
+            nextButton.textContent = "완료"; // 버튼 텍스트를 "완료"로 변경
+        } else {
+            nextButton.textContent = "다음"; // 버튼 텍스트를 "다음"으로 설정
+        }
 
         // 오버레이 표시
         overlay.classList.remove("hidden");

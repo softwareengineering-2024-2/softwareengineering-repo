@@ -71,7 +71,7 @@ function startOnboarding() {
   const onboardingSteps = [
     {
       element: document.querySelector(".milestone-line-container"),
-      text: "마일스톤 타임라인에서 현재 진행 상황과 완료된 마일스톤을 확인할 수 있어요.",
+      text: "마일스톤 타임라인에서 현재 진행 상황과 <br>완료된 마일스톤을 확인할 수 있어요.",
     },
     {
       element: document.querySelector(".milestone-list-container"),
@@ -131,6 +131,12 @@ function startOnboarding() {
       tooltip.style.position = "absolute";
       tooltip.style.top = `${tooltipTop}px`;
       tooltip.style.left = `${tooltipLeft}px`;
+      // 버튼 텍스트 및 동작 변경
+      if (stepIndex === onboardingSteps.length - 1) {
+        nextButton.textContent = "완료"; // 버튼 텍스트를 "완료"로 변경
+      } else {
+        nextButton.textContent = "다음"; // 버튼 텍스트를 "다음"으로 설정
+      }
   }
   };
 
