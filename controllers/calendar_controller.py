@@ -1,5 +1,6 @@
 from flask import request
 from models.calendar_model import Calendar
+from models.milestone_model import Milestone
 from flask_login import current_user
 
 # 모든 일정(팀+개인)을 가져오는 로직
@@ -62,7 +63,7 @@ def create_schedules(user_id,project_id, title, place, start_date, due_date, tea
 def update_schedules(calendar_id,title, place, start_date, due_date, team, color, content, important):
     if not title or not start_date or not due_date:
         return "일정 제목과 기간을 입력해야 합니다."
-    schedule = Calendar.query.filter_by(calendar_id=calendar_id).first()
+    schedule = Calendar.find_by_id(calendar_id)
     schedule.update_calendar( title, place, start_date, due_date, team, color, content, important)
     return [{'title': schedule.title,
             'place': schedule.place,
@@ -76,6 +77,13 @@ def update_schedules(calendar_id,title, place, start_date, due_date, team, color
 
 # 일정 삭제
 def delete_schedules(calendar_id):
-    schedule = Calendar.query.filter_by(calendar_id=calendar_id).first_or_404()
+    schedule = Calendar.find_by_id(calendar_id)
+    schedule.delete_from_db()
+    return None
+
+# 마일스톤 일정 삭제
+def delete_milestone_schedules(project_id, milestone_id):
+    milestone_content = Milestone.find_by_id(milestone_id).milestone_content
+    schedule = Calendar.find_by_title(project_id, milestone_content)
     schedule.delete_from_db()
     return None
