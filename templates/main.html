@@ -80,13 +80,24 @@
 
           <!-- 2주 캘린더 -->
           <div class="calendar-box">
-            <a
-              class="calendar-title"
-              href="{{ url_for('calendar.calendar_view', project_id=project.project_id) }}"
-            >
-              <h2 id="two-week-calendar-title">2주 캘린더</h2>
-            </a>
+            <div class="calendar-nav">
+              <div class="nav-buttons">
+                <button id="prevBtn">
+                  <img src="../static/icons/nav-arrow-left.svg" />
+                </button>
+                <a class="calendar-title" href="{{ url_for('calendar.calendar_view', project_id=project.project_id) }}">
+                  <h2 id="two-week-calendar-title">2주 캘린더</h2>
+                </a>
+                <button id="nextBtn">
+                  <img src="../static/icons/nav-arrow-right.svg" />
+                </button>
+              </div>
 
+                <button id="todayBtn" >
+                  <span>TODAY</span>
+                </button>
+            </div>
+          
             <div class="calendar-days">
               <div class="day" style="color: red">일요일</div>
               <div class="day">월요일</div>

@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, render_template, request
 from flask_login import login_required, current_user
+from controllers.calendar_controller import show_schedules
 from controllers.todolist_controller import change_todo_status, delete_todos, show_todos, update_todos, write_todo
 from models.project_model import UserProject, Project
 from controllers.sprint_controller import get_current_sprint_backlogs
@@ -63,3 +64,10 @@ def delete_todo(todo_id):
 def change_status(todo_id):
     todo = change_todo_status(todo_id)
     return jsonify(todo)
+
+# 2주 캘린더
+@project_main_bp.route('/calendar/<int:project_id>',methods=['GET'])
+def get_schedule(project_id):
+    user_id = current_user.id
+    schedule = show_schedules(project_id, user_id)
+    return schedule
