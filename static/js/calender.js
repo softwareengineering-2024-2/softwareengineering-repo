@@ -335,6 +335,13 @@ function showScheduleDetails(schedule) {
   };
 
   document.getElementById("deleteScheduleButton").onclick = function () {
+    // color 정보를 확인하여 삭제 가능 여부를 결정
+    console.log(schedule.color);
+    if (schedule.color === '#eeeeee') {
+      alert("마일스톤과 스프린트 일정은 지울 수 없습니다."); // color가 0일 경우 삭제 방지
+      return; // 함수 종료
+    }
+  
     deleteSchedule(schedule.calendar_id); // 일정 삭제
   };
 
