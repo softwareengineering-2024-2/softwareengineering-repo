@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", function () {
   fetchTodos(projectId); // 페이지 로드 시 투두리스트를 조회합니다.
   // 온보딩 시작
   startOnboarding();
+  // 온보딩 시작
+  startOnboarding();
 
   // 캘린더 초기화
   initCalendar2();
