@@ -36,7 +36,7 @@
             </div>
 
             <!-- Not List Input -->
-            <div class="userstory-input-container">
+            <div class="notlist-input-container">
                 <form action="{{ url_for('userstory.create_keywords_route', project_id=project.project_id) }}" method="POST">
                     <input type="text" name="keyword" placeholder="not list를 작성해주세요. 엔터를 누를 시 자동으로 not list에 등록됩니다.">
                 </form>
@@ -91,6 +91,16 @@
                 <p id="modalMessage">메시지 내용이 여기에 표시됩니다.</p>
                 <button onclick="closeMessageModal()" class="modal-close-btn">닫기</button>
                 </div>
+            </div>
+        </div>
+    </div>
+    <!-- 온보딩 오버레이 -->
+    <div id="onboarding-overlay" class="onboarding-overlay hidden">
+        <!-- 온보딩 툴팁 -->
+        <div id="onboarding-tooltip" class="onboarding-tooltip">
+            <p id="onboarding-text">여기에 온보딩 설명 텍스트가 표시됩니다.</p>
+            <div class="onboarding-buttons">
+                <button id="onboarding-next-button" class="onboarding-next-button">다음</button>
             </div>
         </div>
     </div>

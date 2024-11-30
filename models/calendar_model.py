@@ -49,3 +49,13 @@ class Calendar(db.Model):
         self.content = content
         self.important = important
         db.session.commit()
+
+    # 일정 ID를 기준으로 일정을 검색하는 메서드
+    @classmethod
+    def find_by_id(cls, calendar_id):
+        return cls.query.filter_by(calendar_id=calendar_id).first()
+    
+    # 일정 이름을 기준으로 일정을 검색하는 메서드
+    @classmethod
+    def find_by_title(cls, project_id, title):
+        return cls.query.filter_by(project_id=project_id, title=title, team=1, important=1).first()
