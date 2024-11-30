@@ -24,6 +24,8 @@ jobs:
     steps:
         # 1. 리포지토리 체크아웃
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       
         # 2. Python 환경 설정
       - name: Set up Python
