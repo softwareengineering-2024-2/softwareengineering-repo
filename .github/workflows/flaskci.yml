@@ -96,7 +96,7 @@ jobs:
 
         # 9. GPT를 활용한 코드 리뷰
       - name: Run GPT Code Review
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request_target' && github.event.pull_request.state == 'open'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
