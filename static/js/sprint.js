@@ -52,12 +52,33 @@ function openSprintCreateModal() {
   document.getElementById("sprint_create_modal").style.display = "flex";
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+  const backlogContainer = document.getElementById("product-backlog-container");
+  backlogContainer.addEventListener("click", function (event) {
+    if (event.target.classList.contains("product-backlog-item")) {
+      event.target.classList.toggle("selected");
+      updateSelectedBacklogs();
+    }
+  });
+});
+function updateSelectedBacklogs() {
+  const selectedItems = document.querySelectorAll(
+    ".product-backlog-item.selected"
+  );
+  const selectedIds = Array.from(selectedItems).map(
+    (item) => item.dataset.backlogId
+  );
+  document.getElementById("selected-backlog-ids").value = selectedIds.join(",");
+}
+
 //스프린트 생성시 검사해서 백엔드로 보내기
 function submitSprintForm() {
   const sprintName = document.getElementById("sprint-name").value.trim();
   const sprintStartDate = document.getElementById("sprint-start-date").value;
   const sprintEndDate = document.getElementById("sprint-end-date").value;
-  const productBacklogSelect = document.getElementById("product-backlog");
+  const productBacklogSelect = document.querySelectorAll(
+    ".product-backlog-item.selected"
+  );
   const today = new Date();
   today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정하여 날짜만 비교
 
@@ -86,15 +107,15 @@ function submitSprintForm() {
     return;
   }
 
-  if (productBacklogSelect.options.length === 0) {
+  if (productBacklogSelect.length === 0) {
     showMessageModal("오류", "프로덕트 백로그를 생성해야합니다.");
     return;
   }
 
-  if (productBacklogSelect.selectedOptions.length === 0) {
-    showMessageModal("오류", "프로덕트 백로그를 지정해야합니다.");
-    return;
-  }
+  const backlogIds = Array.from(productBacklogSelect).map(
+    (item) => item.dataset.backlogId
+  );
+  document.getElementById("selected-backlog-ids").value = backlogIds.join(",");
 
   // 모든 필드가 올바르게 입력되었을 때 폼 제출
   document.querySelector("#sprint_create_modal form").submit();
@@ -170,13 +191,17 @@ function toggleSprintOptionsModal(
 }
 
 function submitEditSprintForm() {
-  const productBacklogContainer = document.getElementById("edit-product-backlog-container");
+  const productBacklogContainer = document.getElementById(
+    "edit-product-backlog-container"
+  );
   const selectedBacklogs = [];
-  const backlogItems = productBacklogContainer.getElementsByClassName("product-backlog-item");
+  const backlogItems = productBacklogContainer.getElementsByClassName(
+    "product-backlog-item"
+  );
 
   for (let i = 0; i < backlogItems.length; i++) {
     const item = backlogItems[i];
-    if (item.classList.contains('assigned')) {
+    if (item.classList.contains("assigned")) {
       selectedBacklogs.push(item.dataset.backlogId);
     }
   }
@@ -191,12 +216,12 @@ function submitEditSprintForm() {
   const editForm = document.getElementById("edit-sprint-form");
   // 기존의 히든 인풋 제거
   const existingInputs = editForm.querySelectorAll('input[name="backlogs"]');
-  existingInputs.forEach(input => input.remove());
+  existingInputs.forEach((input) => input.remove());
 
-  selectedBacklogs.forEach(function(backlogId) {
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'backlogs';
+  selectedBacklogs.forEach(function (backlogId) {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "backlogs";
     input.value = backlogId;
     editForm.appendChild(input);
   });
@@ -250,16 +275,18 @@ function openSprintEditModal(
   const editForm = document.getElementById("edit-sprint-form");
   editForm.action = editUrl;
   // 프로덕트 백로그 컨테이너 초기화
-  const productBacklogContainer = document.getElementById("edit-product-backlog-container");
-  productBacklogContainer.innerHTML = ''; // 기존 내용 제거
+  const productBacklogContainer = document.getElementById(
+    "edit-product-backlog-container"
+  );
+  productBacklogContainer.innerHTML = ""; // 기존 내용 제거
 
   // 현재 스프린트를 sprintsData에서 찾기
-  var currentSprint = sprintsData.find(function(sprint) {
+  var currentSprint = sprintsData.find(function (sprint) {
     return sprint.sprint_id === sprintId;
   });
 
   // 현재 스프린트에 할당된 프로덕트 백로그 ID 리스트 생성
-  var assignedBacklogIds = currentSprint.product_backlogs.map(function(backlog) {
+  var assignedBacklogIds = currentSprint.product_backlogs.map(function (backlog) {
     return backlog.product_backlog_id;
   });
 
@@ -271,7 +298,7 @@ function openSprintEditModal(
     relevantBacklogs.push({
       product_backlog_id: backlog.product_backlog_id,
       content: backlog.content,
-      assigned: true
+      assigned: true,
     });
   });
 
@@ -280,23 +307,23 @@ function openSprintEditModal(
     relevantBacklogs.push({
       product_backlog_id: backlog.product_backlog_id,
       content: backlog.product_backlog_content,
-      assigned: false
+      assigned: false,
     });
   });
 
   // 프로덕트 백로그 리스트 생성
-  relevantBacklogs.forEach(function(backlog) {
-    var backlogItem = document.createElement('div');
-    backlogItem.className = 'product-backlog-item';
+  relevantBacklogs.forEach(function (backlog) {
+    var backlogItem = document.createElement("div");
+    backlogItem.className = "product-backlog-item";
     backlogItem.dataset.backlogId = backlog.product_backlog_id;
     backlogItem.textContent = backlog.content;
     if (backlog.assigned) {
-      backlogItem.classList.add('assigned'); // 할당된 백로그 스타일 적용
+      backlogItem.classList.add("assigned"); // 할당된 백로그 스타일 적용
     }
 
     // 클릭 이벤트 리스너 추가
-    backlogItem.addEventListener('click', function() {
-      backlogItem.classList.toggle('assigned');
+    backlogItem.addEventListener("click", function () {
+      backlogItem.classList.toggle("assigned");
     });
 
     productBacklogContainer.appendChild(backlogItem);
@@ -472,31 +499,31 @@ window.addEventListener("DOMContentLoaded", function() {
   const navButtons = document.querySelectorAll(".nav-btn");
 
   if (sprintContainerNone) {
-      navButtons.forEach(button => {
-          button.style.display = "none";
-      });
+    navButtons.forEach((button) => {
+      button.style.display = "none";
+    });
   }
 });
 
 function moveBacklogs(sprintId, projectId) {
   fetch(`/sprint/move-backlogs/${sprintId}/${projectId}`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({}),
   })
-    .then(response => {
+    .then((response) => {
       if (response.ok) {
-        showMessageModal('성공', '백로그가 다음 스프린트로 이전되었습니다.');
+        showMessageModal("성공", "백로그가 다음 스프린트로 이전되었습니다.");
         setTimeout(() => location.reload(), 2000);
       } else {
-        showMessageModal('오류', '백로그 이전에 실패했습니다.');
+        showMessageModal("오류", "백로그 이전에 실패했습니다.");
       }
     })
-    .catch(error => {
-      console.error('Error:', error);
-      showMessageModal('오류', '백로그 이전 중 오류가 발생했습니다.');
+    .catch((error) => {
+      console.error("Error:", error);
+      showMessageModal("오류", "백로그 이전 중 오류가 발생했습니다.");
     });
 }
 
