@@ -527,6 +527,8 @@ function moveBacklogs(sprintId, projectId) {
     });
 }
 
+
+
 function startOnboarding() {
   const onboardingSteps = [
     {
