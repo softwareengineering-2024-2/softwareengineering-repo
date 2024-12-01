@@ -28,7 +28,7 @@ def calendar_view(project_id):
         schedules = show_schedules(project_id, current_user.id)
 
         # HTML 페이지를 렌더링
-        return render_template('calendar_back.html', project=Project.find_by_id(project_id), userproject=userproject,schedules=schedules)
+        return render_template('calendar.html', project=Project.find_by_id(project_id), userproject=userproject,schedules=schedules)
     except Exception as e:
     # 로그 출력
         current_app.logger.error(f"An error occurred: {e}")
