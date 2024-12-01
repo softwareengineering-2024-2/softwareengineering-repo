@@ -11,7 +11,7 @@ from database import db
 productbacklog_bp = Blueprint('productbacklog', __name__)
 
 # Product Backlog 관리 페이지
-@productbacklog_bp.route('/product_backlog/<int:project_id>', methods=['GET'])
+@productbacklog_bp.route('/<int:project_id>', methods=['GET'])
 def product_backlog_view(project_id):
     user_stories = get_user_stories(project_id) or [] # 프로젝트 ID에 따른 유저스토리 목록 가져오기
 
@@ -24,7 +24,7 @@ def product_backlog_view(project_id):
                            product_backlog_groups=product_backlog_groups)
 
 # 새로운 백로그 그룹 생성 또는 업데이트
-@productbacklog_bp.route('/product_backlog/create_or_update_group', methods=['POST'])
+@productbacklog_bp.route('/create_or_update_group', methods=['POST'])
 def create_or_update_backlog_group():
     group_name = request.form.get('group_name')  # 사용자 입력으로 받은 백로그 이름
     story_ids = request.form.getlist('story_ids')  # 그룹화할 유저스토리 ID 목록
@@ -34,7 +34,7 @@ def create_or_update_backlog_group():
     return jsonify({"success": True, "product_backlog_id": product_backlog_id})
 
 # 유저스토리 이동
-@productbacklog_bp.route('/product_backlog/move', methods=['POST'])
+@productbacklog_bp.route('/move', methods=['POST'])
 def move_user_story():
     story_id = request.form.get('story_id')
     backlog_id = request.form.get('backlog_id')
@@ -42,7 +42,7 @@ def move_user_story():
     return jsonify({"success": success})
 
 # 백로그 저장
-@productbacklog_bp.route('/product_backlog/save_groups', methods=['POST'])
+@productbacklog_bp.route('/save_groups', methods=['POST'])
 def save_backlog_groups():
     data = request.get_json()
     backlog_groups = data.get('backlogGroups', [])
@@ -51,13 +51,13 @@ def save_backlog_groups():
     return jsonify({"success": success})
 
 # 백로그 삭제
-@productbacklog_bp.route('/product_backlog/delete/<int:backlog_id>', methods=['DELETE'])
+@productbacklog_bp.route('/delete/<int:backlog_id>', methods=['DELETE'])
 def delete_backlog_view(backlog_id):
     success = delete_product_backlog(backlog_id)
     return jsonify({"success": success})
 
 # 백로그 박스 순서를 저장
-@productbacklog_bp.route('/product_backlog/save_order', methods=['POST'])
+@productbacklog_bp.route('/save_order', methods=['POST'])
 def save_backlog_order_view():
     backlog_order_list = request.get_json().get('backlogOrderList', [])
     success = save_backlog_order(backlog_order_list)

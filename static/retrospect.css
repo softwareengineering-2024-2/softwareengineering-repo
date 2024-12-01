@@ -16,6 +16,7 @@
 }
 
 .btn-register {
+    font-family: 'Pretendard', sans-serif;
     padding: 8px 16px;
     background-color: var(--color-green-500);
     color: var(--color-white);
@@ -45,10 +46,11 @@
 }
 
 .filter .btn-filter {
+    font-family: 'Pretendard', sans-serif;
     padding: 6px 12px;
     border: 1px solid var(--color-grey-300);
     border-radius: 4px;
-    background-color: var(--color-grey-100);
+    background-color: var(--color-white);
     cursor: pointer;
 }
 
