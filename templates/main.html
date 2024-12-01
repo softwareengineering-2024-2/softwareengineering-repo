@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>메인 프레임</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='global.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='topbar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='sidebar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='main.css') }}"
+    />
+  </head>
+  <body>
+    {% include 'topbar.html' %}
+    <div class="main-container">
+      {% include 'sidebar.html' %}
+      <div class="content">
+        <div class="dashboard">
+          <!-- 우리팀의 프로덕트 백로그 달성률 -->
+          <div class="progress-section">
+            <h2>우리팀의 스프린트 백로그 달성률</h2>
+            <div class="progress-bar-container">
+              <div class="progress-bar">
+                <div
+                  class="progress"
+                  style="width: {{ progress_percentage }}%"
+                ></div>
+              </div>
+              <div class="progress-percentage">
+                {{ progress_percentage | round(1) }}%
+              </div>
+            </div>
+          </div>
+          <!-- 내가 담당받은 작업 목록과 TODO LIST -->
+          <div class="task-sections">
+            <div class="task-box">
+              <h2>내가 담당받은 작업 목록</h2>
+              {% if current_sprint_backlogs and current_sprint_backlogs.backlogs
+              %}
+              <ul class="task-list">
+                {% for backlog in current_sprint_backlogs.backlogs %}
+                <li>
+                  {{ backlog.sprint_backlog_content }} - 상태: {{ backlog.status
+                  }}
+                </li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              <p>현재 진행 중인 작업이 없습니다.</p>
+              {% endif %}
+            </div>
+            <input
+              type="hidden"
+              id="project-id"
+              value="{{ project.project_id }}"
+            />
+            <div class="todo-box">
+              <h2>TODO LIST</h2>
+              <ul id="todo-list">
+                <!-- 할 일이 추가되면 여기에 항목이 표시됨 -->
+              </ul>
+              <p id="add-todo" onclick="addNewTodoInput()">+ 할 일 추가하기</p>
+            </div>
+          </div>
+
+          <!-- 2주 캘린더 -->
+          <div class="calendar-box">
+            <div class="calendar-nav">
+              <div class="nav-buttons">
+                <button id="prevBtn">
+                  <img src="../static/icons/nav-arrow-left.svg" />
+                </button>
+                <a class="calendar-title" href="{{ url_for('calendar.calendar_view', project_id=project.project_id) }}">
+                  <h2 id="two-week-calendar-title">2주 캘린더</h2>
+                </a>
+                <button id="nextBtn">
+                  <img src="../static/icons/nav-arrow-right.svg" />
+                </button>
+              </div>
+
+                <button id="todayBtn" >
+                  <span>TODAY</span>
+                </button>
+            </div>
+          
+            <div class="calendar-days">
+              <div class="day" style="color: red">일요일</div>
+              <div class="day">월요일</div>
+              <div class="day">화요일</div>
+              <div class="day">수요일</div>
+              <div class="day">목요일</div>
+              <div class="day">금요일</div>
+              <div class="day">토요일</div>
+            </div>
+            <div class="calendar-dates" id="calendarDates"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="onboarding-overlay" class="onboarding-overlay hidden">
+      <div id="onboarding-tooltip" class="onboarding-tooltip">
+        <p id="onboarding-text"></p>
+        
+        <button id="onboarding-next-button">확인</button>
+      </div>
+    </div>    
+    <!-- JavaScript 파일 추가 -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
+</html>

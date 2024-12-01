@@ -1,6 +1,6 @@
 import json
 import os
-from flask import Blueprint, redirect, request, session, url_for
+from flask import Blueprint, redirect, request, session, url_for, render_template, flash
 from flask_login import (
     LoginManager,
     current_user,
@@ -13,6 +13,7 @@ from flask_login import (
 from oauthlib.oauth2 import WebApplicationClient
 import requests
 from dotenv import load_dotenv
+from models.user_model import Users
 
 # .env 파일 로드
 load_dotenv()
@@ -54,7 +55,7 @@ def init_login_manager(app):
 
     @login_manager.unauthorized_handler
     def unauthorized():
-        return "로그인 하여야 접근 가능합니다.", 403
+        return render_template("login.html")
 
 @auth_bp.route("/login")
 def login():
@@ -92,6 +93,9 @@ def callback():
     
     client.parse_request_body_response(json.dumps(token_response.json()))
     
+    # 액세스 토큰 저장
+    access_token = token_response.json().get("access_token")
+    
     userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
     uri, headers, body = client.add_token(userinfo_endpoint)
     userinfo_response = requests.get(uri, headers=headers, data=body)
@@ -112,11 +116,14 @@ def callback():
         "profile_pic": picture,
     }
     
-    # 사용자 생성 및 로그인
-    user = User(id_=unique_id, name=users_name, email=users_email, profile_pic=picture)
-    login_user(user)
+    # 사용자 생성 후 로그인
+    Users.create_user(unique_id, access_token)
     
-    return redirect(url_for("index"))  # 로그인 후 인덱스 페이지로 리다이렉트
+    user = User(id_=unique_id, name=users_name, email=users_email, profile_pic=picture)
+    
+    login_user(user)
+        
+    return redirect(url_for("manage_project.manage_project_view"))
 
 @auth_bp.route("/logout")
 @login_required

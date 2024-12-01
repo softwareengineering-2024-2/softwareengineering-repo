@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>캘린더 페이지</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='global.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='calender.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='topbar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='sidebar.css') }}"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body data-project-id="{{ project.project_id }}">
+    {% include 'topbar.html' %}
+    <div class="main-container">
+      {% include 'sidebar.html' %}
+      <div class="content">
+        <div class="calendar-container">
+          <div class="calendar-header-wrapper">
+            <div class="calendar-header">
+              <button id="prevBtn">
+                <img src="../static/icons/nav-arrow-left.svg" />
+              </button>
+              <h1 id="currentMonth"></h1>
+              <button id="nextBtn">
+                <img src="../static/icons/nav-arrow-right.svg" />
+              </button>
+            </div>
+            <div class="header-right">
+              <div class="filter-options">
+                <label
+                  ><input
+                    type="checkbox"
+                    id="team"
+                    checked
+                    onchange="filterSchedules()"
+                    class="b2-regular"
+                  />팀 일정</label
+                >
+                <label
+                  ><input
+                    type="checkbox"
+                    id="personal"
+                    checked
+                    onchange="filterSchedules()"
+                    class="b2-regular"
+                  />개인 일정</label
+                >
+              </div>
+              <input
+                type="hidden"
+                id="project-id"
+                value="{{ project.project_id }}"
+              />
+              <button id="openModalButton" class="add-schedule-button">
+                <p>일정 추가하기</p>
+              </button>
+            </div>
+          </div>
+
+          <div class="calendar-days">
+            <div class="day" style="color: red">일요일</div>
+            <div class="day">월요일</div>
+            <div class="day">화요일</div>
+            <div class="day">수요일</div>
+            <div class="day">목요일</div>
+            <div class="day">금요일</div>
+            <div class="day">토요일</div>
+          </div>
+          <div class="calendar-dates" id="calendarDates"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 일정 추가 모달 -->
+    <div id="newscheduleModal" class="modal">
+      <div class="schedule-form-wrapper">
+        <div class="schedule-form" id="editScheduleForm">
+          <h1>일정 추가하기</h1>
+          <form id="createForm" class="create-form" method="POST">
+            <div class="title-wrapper">
+              <div class="form-group">
+                <label class="b2-semibold" for="title">제목</label>
+                <input
+                  class="b2-regular"
+                  type="text"
+                  id="title"
+                  name="title"
+                  placeholder="일정을 입력하세요"
+                />
+              </div>
+              <div class="important-select">
+                <label class="b2-semibold" for="important">중요</label>
+                <input type="checkbox" id="important" name="important" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="b2-semibold" for="location">장소</label>
+              <input
+                class="b2-regular"
+                type="text"
+                id="place"
+                name="place"
+                placeholder="장소를 입력하세요"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="b2-semibold" for="date">일시</label>
+              <input
+                class="b2-regular start_date"
+                type="date"
+                id="start_date"
+                name="start_date"
+                placeholder="시작일을 입력하세요"
+              />
+              <input
+                class="b2-regular due_date"
+                type="date"
+                id="due_date"
+                name="due_date"
+                placeholder="종료일을 입력하세요"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="b2-semibold" for="category">분류</label>
+              <input
+                class="b2-regular personal_radio"
+                type="radio"
+                id="team"
+                name="category"
+                value="team"
+                checked
+              />
+              <label class="b2-semibold" for="team">팀 일정</label>
+              <input
+                class="b2-regular team_radio"
+                type="radio"
+                id="personal"
+                name="category"
+                value="personal"
+              />
+              <label class="b2-semibold" for="team">개인 일정</label>
+            </div>
+
+            <div class="form-group">
+              <label class="b2-semibold" for="color">범주</label>
+              <select id="color" name="color" placeholder="색상 선택">
+                <option value="2">주황</option>
+                <option value="3">노랑</option>
+                <option value="4">초록</option>
+                <option value="5">파랑</option>
+                <option value="6">남색</option>
+                <option value="7">보라</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="b2-semibold" for="description">설명</label>
+              <input
+                class="b2-regular description"
+                type="text"
+                id="description"
+                name="content"
+                placeholder="설명을 입력하세요"
+              />
+            </div>
+
+            <div class="form-buttons">
+              <button type="submit" class="add-button">일정 추가</button>
+              <button
+                type="button"
+                id="cancelModalButton"
+                class="cancel-button"
+              >
+                취소하기
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- 일정 수정 모달 -->
+    <div id="editScheduleModal" class="modal">
+      <div class="schedule-form-wrapper">
+        <div class="schedule-form">
+          <h1>일정 수정하기</h1>
+          <form id="editScheduleForm" class="create-form" method="POST">
+            <div class="title-wrapper">
+              <div class="form-group">
+                <label class="b2-semibold" for="editTitle">제목</label>
+                <input
+                  class="b2-regular"
+                  type="text"
+                  id="editTitle"
+                  name="title"
+                  placeholder="일정을 입력하세요"
+                />
+              </div>
+              <div class="important-select">
+                <label class="b2-semibold" for="editImportant">중요</label>
+                <input type="checkbox" id="editImportant" name="important" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="b2-semibold" for="editPlace">장소</label>
+              <input
+                class="b2-regular"
+                type="text"
+                id="editPlace"
+                name="place"
+                placeholder="장소를 입력하세요"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="b2-semibold" for="editStartDate">일시</label>
+              <input
+                class="b2-regular start_date"
+                type="date"
+                id="editStartDate"
+                name="start_date"
+                placeholder="시작일을 입력하세요"
+              />
+              <input
+                class="b2-regular due_date"
+                type="date"
+                id="editEndDate"
+                name="due_date"
+                placeholder="종료일을 입력하세요"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="b2-semibold" for="editCategory">분류</label>
+              <input
+                class="b2-regular personal_radio"
+                type="radio"
+                id="editTeam"
+                name="editCategory"
+                value="team"
+              />
+              <label class="b2-semibold" for="editTeam">팀 일정</label>
+              <input
+                class="b2-regular team_radio"
+                type="radio"
+                id="editPersonal"
+                name="editCategory"
+                value="personal"
+              />
+              <label class="b2-semibold" for="editPersonal">개인 일정</label>
+            </div>
+
+            <div class="form-group">
+              <label class="b2-semibold" for="editColor">범주</label>
+              <select id="editColor" name="color" placeholder="색상 선택">
+                <option value="2">주황</option>
+                <option value="3">노랑</option>
+                <option value="4">초록</option>
+                <option value="5">파랑</option>
+                <option value="6">남색</option>
+                <option value="7">보라</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="b2-semibold" for="editDescription">설명</label>
+              <input
+                class="b2-regular description"
+                type="text"
+                id="editDescription"
+                name="content"
+                placeholder="설명을 입력하세요"
+              />
+            </div>
+
+            <div class="form-buttons">
+              <button type="submit" class="add-button" id="editbutton">
+                수정
+              </button>
+              <button
+                type="button"
+                id="cancelEditModalButton"
+                class="cancel-button"
+              >
+                취소하기
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- 일정 상세보기 모달 -->
+    <div id="scheduleDetailModal" class="modal">
+      <div class="modal-content">
+        <div class="header-title-wrapper">
+          <h2>일정 상세</h2>
+          <button type="button" id="cancelModalButton2" class="cancel-button2">
+            &times;
+          </button>
+        </div>
+        <p><strong>제목:</strong> <span id="scheduleTitle"></span></p>
+        <p><strong>장소:</strong> <span id="schedulePlace"></span></p>
+        <p><strong>시작일:</strong> <span id="scheduleStartDate"></span></p>
+        <p><strong>종료일:</strong> <span id="scheduleEndDate"></span></p>
+        <p><strong>중요:</strong> <span id="scheduleImportant"></span></p>
+        <p><strong>설명:</strong> <span id="scheduleDescription"></span></p>
+
+        <div class="detail-button-wrapper">
+          <button id="editScheduleButton">
+            <div class="b2-regular">수정</div>
+          </button>
+          <button id="deleteScheduleButton">
+            <div class="b2-regular">삭제</div>
+          </button>
+        </div>
+      </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/calender.js') }}"></script>
+  </body>
+</html>
