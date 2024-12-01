@@ -44,9 +44,9 @@ def add_sprint():
     selected_backlogs = [int(backlog_id) for item in selected_backlogs for backlog_id in item.split(',')]
 
     new_sprint, error = create_sprint(project_id, sprint_name, start_date, end_date, status)
-    create_schedules(current_user.id,project_id, sprint_name, None, start_date, end_date, True, 0, None, True)
     if new_sprint:
         assign_backlogs_to_sprint(new_sprint.sprint_id, selected_backlogs)
+        create_schedules(current_user.id,project_id, sprint_name, None, start_date, end_date, True, 0, None, True)
         return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id, status=1))
     else:
         return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id, status=-1, error_message=error))
@@ -65,11 +65,10 @@ def edit_sprint(sprint_id, project_id):
     }
     
     updated_sprint = update_sprint(sprint_id, updates)
-    update_sprint_schedules(project_id, sprint_name, start_date, end_date)
     if updated_sprint:
         assign_backlogs_to_sprint(sprint_id, selected_backlogs)
+        update_sprint_schedules(project_id, sprint_name, start_date, end_date)    
         flash('스프린트가 성공적으로 수정되었습니다.')
-        #project_id = updated_sprint.project_id
     else:
         flash('스프린트 수정에 실패했습니다.')
 

@@ -26,9 +26,7 @@ def join_project(project_id):
     if project:
         user_project = UserProject(user_id=current_user.id, project_id=project_id, user_name=current_user.name, user_role="Member")
         user_project.save_to_db()
-        return f"프로젝트 {project.project_name}에 성공적으로 참여했습니다."
-    else:
-        return "유효하지 않은 프로젝트 링크입니다."
+        return None
 
 # 사용자의 모든 프로젝트를 가져오는 로직
 def get_user_projects():
@@ -41,17 +39,14 @@ def delete_project(project_id):
         user_project = UserProject.find_by_user_and_project(current_user.id, project_id)
         if user_project:
             user_project.delete_from_db()
-            return f"프로젝트 {project.project_name}에서 성공적으로 나갔습니다."
-        else:
-            return "프로젝트에 소속되지 않았습니다."
-    return "프로젝트가 존재하지 않습니다."
+            return None
 
 # 사용자의 프로필 정보를 설정하는 로직
 def set_profile(project_id, user_name, user_role):
     userproject = UserProject.find_by_user_and_project(current_user.id, project_id)
     if userproject:
         userproject.set_user_profile(current_user.id, project_id, user_name=user_name, user_role=user_role)
-        return f"프로필이 설정되었습니다."
+        return None
     
 # 프로젝트에 PM이 존재하는지 확인하는 로직
 def check_pm(project_id):
