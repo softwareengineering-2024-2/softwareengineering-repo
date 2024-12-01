@@ -152,7 +152,7 @@ function saveBacklogGroup() {
     }
   }
 
-  fetch("/productbacklog/save_groups", {
+  fetch("/productbacklog/product_backlog/save_groups", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ backlogGroups, unassignedStoryIds }),
@@ -169,7 +169,7 @@ function saveBacklogGroup() {
 }
 
 function deleteBacklog(backlogId, shouldReload = true) {
-  fetch(`/productbacklog/delete/${backlogId}`, {
+  fetch(`/productbacklog/product_backlog/delete/${backlogId}`, {
     method: "DELETE",
   })
     .then((response) => response.json())

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from controllers.project_controller import create_project, join_project, get_user_projects, delete_project, set_profile, check_pm
 from models.project_model import UserProject, Project
 from flask_login import login_required, current_user
@@ -48,7 +48,8 @@ def link_check_view():
 @login_required
 def join_project_view():
     project_id = session['project_id']
-    join_project(project_id)
+    message = join_project(project_id)
+    flash(message)
     session.pop('project_id', None)
     session.pop('project_name', None)
     return redirect(url_for('manage_project.set_profile_view', project_id=project_id))
@@ -57,7 +58,8 @@ def join_project_view():
 @manage_project_bp.route('/<int:project_id>/delete', methods=['POST'])
 @login_required
 def delete_project_view(project_id):
-    delete_project(project_id)
+    message = delete_project(project_id)
+    flash(message)
     return redirect(url_for('manage_project.manage_project_view'))
 
 # 사용자 프로필 설정 로직

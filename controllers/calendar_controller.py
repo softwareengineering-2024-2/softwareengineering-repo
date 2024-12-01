@@ -55,11 +55,15 @@ def show_schedules(project_id, user_id):
 
 # 일정 추가
 def create_schedules(user_id,project_id, title, place, start_date, due_date, team, color, content, important):
+    if not title or not start_date or not due_date:
+        return "일정 제목과 기간을 입력해야 합니다."
     schedule = Calendar(user_id=user_id, project_id=project_id, title=title, place=place, start_date=start_date, due_date=due_date, team=team, color=color, content=content, important=important)
     schedule.save_to_db()
 
 # 일정 수정
 def update_schedules(calendar_id,title, place, start_date, due_date, team, color, content, important):
+    if not title or not start_date or not due_date:
+        return "일정 제목과 기간을 입력해야 합니다."
     schedule = Calendar.find_by_id(calendar_id)
     schedule.update_calendar( title, place, start_date, due_date, team, color, content, important)
     return [{'title': schedule.title,
