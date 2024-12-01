@@ -1,3 +1,59 @@
+  // 쿠키 읽기 함수
+  function getCookie(name) {
+    const cookies = document.cookie.split("; ").reduce((acc, cookie) => {
+      const [key, value] = cookie.split("=");
+      acc[key] = value;
+      return acc;
+    }, {});
+    return cookies[name];
+  }
+
+  // 쿠키 저장 함수
+  function setCookie(name, value, days = 7) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${value}; path=/; expires=${expires.toUTCString()}`;
+  }
+
+  // 현재 스프린트와 프로젝트 정보를 쿠키에 저장
+  function saveCurrentSprintAndProject(sprintId) {
+    if (projectId) {
+      setCookie(`currentSprintId_${projectId}`, sprintId);
+    } else {
+      console.error("Project ID is not defined.");
+    }
+  }
+
+  // 스프린트 변경 함수
+  function changeSprint(sprintId) {
+    // 쿠키에 현재 스프린트 ID 저장
+    saveCurrentSprintAndProject(sprintId);
+
+    // URL 파라미터 업데이트
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("sprint_id", sprintId);
+    window.location.search = urlParams.toString(); // 페이지 새로고침
+  }
+
+  // 페이지 로드 시 초기화 함수
+  document.addEventListener("DOMContentLoaded", () => {
+    if (!projectId) {
+      console.error("Project ID is not defined.");
+      return;
+    }
+
+    const savedSprintId = getCookie(`currentSprintId_${projectId}`); // 쿠키에서 스프린트 ID 읽기
+
+    if (savedSprintId) {
+      // 쿠키에 저장된 스프린트 ID가 있으면 해당 스프린트로 표시
+      const urlParams = new URLSearchParams(window.location.search);
+      if (!urlParams.get("sprint_id")) {
+        urlParams.set("sprint_id", savedSprintId);
+        window.location.search = urlParams.toString(); // 페이지 새로고침
+      }
+    }
+  });
+
 // 드래그가 가능한 항목을 끌 때 발생하는 이벤트
 function drag(ev) {
   ev.dataTransfer.setData("text", ev.target.id); // 드래그된 요소의 ID를 저장
@@ -84,13 +140,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
-
-// 스프린트 변경 함수
-function changeSprint(sprint_id) {
-  const urlParams = new URLSearchParams(window.location.search);
-  urlParams.set("sprint_id", sprint_id);
-  window.location.search = urlParams.toString();
-}
 
 // 스프린트 드롭다운 토글 함수
 function toggleSprintDropdown() {
