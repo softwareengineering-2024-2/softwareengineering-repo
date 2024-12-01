@@ -23,10 +23,6 @@ def test_get_product_backlogs_view_authenticated(authenticated_user, test_app):
                         with patch('controllers.sprint_controller.get_unassigned_product_backlogs', return_value=[]):
                             response = authenticated_user.get(f'/sprint/{project_id}')
                             
-                            # 디버깅용 출력
-                            print(f"Response data: {response.get_data(as_text=True)}")
-                            print(f"Response status code: {response.status_code}")
-                            
                             # 인증 실패 여부 확인
                             assert response.status_code != 302, "Authentication failed. Check authenticated_user fixture."
                             
@@ -53,10 +49,6 @@ def test_add_sprint(authenticated_user, mocker, test_app):
     with test_app.app_context():
         # 실제 URL에 맞게 수정
         response = authenticated_user.post('/sprint/add-sprint', data=form_data)
-
-        # 디버깅용 출력
-        print(f"Response status: {response.status_code}")
-        print(f"Response data: {response.get_data(as_text=True)}")
 
         assert response.status_code == 302
         assert '/sprint/1' in response.headers['Location']
@@ -101,10 +93,6 @@ def test_delete_sprint(authenticated_user, mocker, test_app):
     with test_app.app_context():
         response = authenticated_user.post(f'/sprint/delete-sprint/{sprint_id}')
 
-        # 디버깅용 출력
-        print(f"Response status: {response.status_code}")
-        print(f"Response data: {response.get_data(as_text=True)}")
-
         assert response.status_code == 302
         assert f'/sprint/{project_id}' in response.headers['Location']
 
@@ -120,10 +108,6 @@ def test_update_backlog_status(authenticated_user, mocker, test_app):
 
     with test_app.app_context():
         response = authenticated_user.post(f'/sprint/edit-backlog-status/{backlog_id}', data=form_data)
-
-        # 디버깅용 출력
-        print(f"Response status: {response.status_code}")
-        print(f"Response data: {response.get_data(as_text=True)}")
 
         assert response.status_code == 302
         assert '/sprint/1' in response.headers['Location']
@@ -144,10 +128,6 @@ def test_create_sprint_invalid_dates(authenticated_user, mocker, test_app):
     with test_app.app_context():
         response = authenticated_user.post('/sprint/add-sprint', data=form_data)
 
-        # 디버깅용 출력
-        print(f"Response status: {response.status_code}")
-        print(f"Response data: {response.get_data(as_text=True)}")
-
         assert response.status_code == 302
         assert '/sprint/1' in response.headers['Location']
 
@@ -161,10 +141,6 @@ def test_move_incomplete_backlogs_to_next_sprint(authenticated_user, mocker, tes
 
     with test_app.app_context():
         response = authenticated_user.post(f'/sprint/move-backlogs/{sprint_id}/{project_id}')
-
-        # 디버깅용 출력
-        print(f"Response status: {response.status_code}")
-        print(f"Response data: {response.get_data(as_text=True)}")
 
         assert response.status_code == 200
         # JSON 응답을 파싱하여 메시지 확인
@@ -271,10 +247,6 @@ def test_create_sprint_date_overlap(authenticated_user, mocker, test_app):
 
     with test_app.app_context():
         response = authenticated_user.post('/sprint/add-sprint', data=form_data)
-
-        # 디버깅용 출력
-        print(f"Response status: {response.status_code}")
-        print(f"Response data: {response.get_data(as_text=True)}")
 
         assert response.status_code == 302
         assert '/sprint/1' in response.headers['Location']
