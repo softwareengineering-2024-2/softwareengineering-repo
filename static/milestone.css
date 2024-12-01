@@ -1,0 +1,321 @@
+@import url("global.css");
+
+.main-container {
+  margin-top: 2vh; /* 탑바 밑 여백 추가 */
+  margin-left: 25vh; /* 사이드바 너비만큼 왼쪽 여백 추가 */
+}
+
+.content {
+  padding: 20px;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+}
+
+.milestone-line-container {
+  position: relative; /* 점들이 선을 기준으로 위치할 수 있도록 설정 */
+  border-radius: 10px;
+  border: 1px solid var(--color-grey-100);
+  background: var(--color-white);
+  height: 20vh;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center; /* 수직 가운데 정렬 */
+}
+
+.line {
+  position: relative;
+  width: 100%;
+  height: 5px;
+  background: var(--color-grey-300); /* 회색으로 변경 */
+  border-radius: 2px;
+}
+
+.completed-section {
+  position: absolute;
+  height: 5px;
+  background: var(--color-green-500); /* 초록색 */
+  top: 0;
+  left: 0;
+  border-radius: 2px;
+}
+
+.milestone-dot {
+  position: absolute;
+  top: -6.5px; /* 선 중앙에 위치시키기 위해 조정 */
+  width: 15px;
+  height: 15px;
+  background: var(--color-grey-500); /* 기본 회색 점 */
+  border-radius: 50%;
+}
+
+.milestone-dot.completed {
+  background: var(--color-green-500); /* 완료된 점은 초록색 */
+}
+
+.milestone-dot.last {
+  width: 15px;
+  height: 15px;
+}
+
+.milestone-icon {
+  position: absolute;
+  top: -45px; /* 이미지가 점 위에 나타나도록 조정 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px; /* 이미지 크기 */
+  height: 30px;
+}
+
+.sprint-icon {
+  position: absolute;
+  top: -10px; /* 점 위에 이미지가 표시되도록 조정 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 25px; /* 이미지 크기 */
+  height: 25px;
+}
+
+.milestone-list-container {
+  border-radius: 10px;
+  border: 1px solid var(--color-grey-100);
+  background: var(--color-white);
+  margin-top: 2vh;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  height: 60vh;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.milestone-lists-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 4vh;
+  align-items: center;
+}
+
+.milestone-list {
+  border-radius: 10px;
+  background: var(--color-grey-50);
+  display: flex;
+  padding: 2vh;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1vh;
+  width: 100%;
+}
+
+.milestone-button-wrapper {
+  display: flex;
+  gap: 3vh;
+}
+
+.milestone-list {
+  margin-bottom: 10px;
+}
+
+.create-milstone-btn {
+  border-radius: 10px;
+  border: 1px solid var(--color-grey-300);
+  background: #fff;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+.milestone-button-wrapper button {
+  border: none;
+  background-color: transparent;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  cursor: pointer;
+}
+
+.delete-milestone-btn {
+  color: var(--color-red);
+}
+
+#check {
+  display: none;
+}
+label {
+  display: block;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+/* off */
+#check + label {
+  background-repeat: no-repeat; /* 반복 방지 */
+  background-image: url("../static/icons/checkbox-off.svg"); /*off 이미지*/
+}
+/* on */
+#check:checked + label {
+  background-repeat: no-repeat; /* 반복 방지 */
+  background-image: url("../static/icons/checkbox.svg"); /*on 이미지*/
+}
+.modal-background {
+  display: none; /* 기본적으로 숨김 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* 어두운 배경 */
+  z-index: 999;
+}
+
+.milestone-modal {
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  width: 600px;
+  background-color: var(--color-white);
+  border-radius: 10px;
+  height: fit-content;
+  padding: 4vh 6vh;
+  top: 50%;
+  left: 50%;
+  display: none;
+  transform: translate(-50%, -50%);
+  position: fixed;
+  z-index: 1000;
+}
+
+.modal-buttons-wrapper {
+  display: flex;
+  gap: 1vh;
+  align-items: center; /* 수직 가운데 정렬 */
+  justify-content: center; /* 수평 가운데 정렬 */
+}
+
+/* 추가적인 스타일 */
+.milestone-modal h1,
+.milestone-modal p {
+  text-align: center; /* 중앙 정렬 */
+  margin: 0; /* 기본 마진 제거 */
+}
+
+.milestone-input-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2vh;
+  gap: 6px;
+  text-align: left;
+}
+
+.milestone-input-wrapper .b2-regular {
+  margin-bottom: 1vh;
+}
+
+.input-box {
+  margin: 0; /* 기본 마진 제거 */
+  padding: 12px; /* 필요시 패딩 추가 */
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid var(--color-grey-300);
+  display: flex;
+  align-self: stretch;
+  width: 75%;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.input-box:focus {
+  outline: none;
+}
+
+.modal-buttons-wrapper button {
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  padding: 8px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.create-button {
+  background-color: var(--color-green-500);
+}
+
+.cancel-button {
+  background-color: var(--color-grey-100);
+}
+
+.onboarding-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.onboarding-overlay.hidden {
+  display: none; /* 숨김 상태 */
+}
+
+.onboarding-tooltip {
+  background: var(--color-white);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: left;
+  width: 400px;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  z-index: 1002; /* 툴팁이 오버레이 위에 보이도록 설정 */
+}
+
+.onboarding-tooltip p {
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: var(--color-grey-900);
+  text-align: left; /* 텍스트를 항상 왼쪽 정렬 */
+}
+
+.onboarding-tooltip button {
+  padding: 8px 16px; /* 버튼 내부 여백 조정 */
+  background-color: var(--color-green-400);
+  color: var(--color-black);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: flex-end; /* 버튼을 오른쪽으로 정렬 */
+  width: fit-content; /* 버튼 크기를 텍스트에 맞게 조정 */
+  font-size: 0.875rem; /* 버튼 텍스트 크기 조정 */
+  font-weight: 500; /* 텍스트 굵기 조정 */
+}
+
+.onboarding-tooltip button:hover {
+  background-color: var(--color-green-600);
+}
+
+/* 공통 강조 스타일 */
+.onboarding-highlight {
+  z-index: 1001;
+  position: relative;
+  background-color: white !important;
+  border: 2px solid var(--color-green-200); /* 기본 테두리 색상 */
+  border-radius: 8px;
+  box-sizing: border-box;
+}

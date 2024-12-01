@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>join project</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='manage_project.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='global.css') }}"
+    />
+  </head>
+  <body>
+    <div class="join-modal-content">
+      <!-- 메인 콘텐츠가 들어갈 부분 -->
+      {% block content %}
+      <div class="join-modal">
+        <h1>프로젝트 참여하기</h1>
+        <form
+          action="{{ url_for('manage_project.link_check_view') }}"
+          method="POST"
+          class="join-form"
+        >
+          <div class="project-input-wrapper">
+            <div class="b2-regular" style="text-align: left">
+              프로젝트 참여코드
+            </div>
+            <div class="code-check-input-wrapper">
+              <input
+                type="text"
+                id="project_link"
+                name="project_link"
+                required
+                placeholder="프로젝트 참여코드를 입력해주세요"
+              />
+              <button class="code-check-button" type="submit">
+                <div class="b2-regular">코드확인</div>
+              </button>
+            </div>
+          </div>
+          <!-- 링크 확인 메세지 출력(스타일 추가 필요) -->
+          <div>
+            <div class="caption">
+              {% if link_check == 1 %}발견된 프로젝트 : {{
+              session['project_name'] }} {% elif link_check == 0 %}존재하지 않는
+              참여코드입니다. 다시 입력해주세요. {% endif %}
+            </div>
+          </div>
+        </form>
+        <div class="modal-buttons-wrapper">
+          <form
+            action="{{ url_for('manage_project.join_project_view') }}"
+            method="POST"
+          >
+            <button class="create-button" id="joinProjectButton" type="submit">
+              <div class="b2-regular">참여하기</div>
+            </button>
+          </form>
+          <form
+            action="{{ url_for('manage_project.manage_project_view') }}"
+            method="GET"
+          >
+            <button class="cancel-button" id="cancelButton">
+              <div class="b2-regular">취소하기</div>
+            </button>
+          </form>
+        </div>
+      </div>
+      {% endblock %}
+    </div>
+  </body>
+</html>

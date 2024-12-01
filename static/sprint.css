@@ -1,0 +1,494 @@
+.content {
+  margin-top: 2vh;
+  margin-left: 25vh;
+  padding: 2vh;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sprint-create-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 5vh;
+}
+
+.create-sprint-btn {
+  display: flex;
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--color-grey-100);
+  background: var(--color-white);
+}
+
+.sprint-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  font-size: 2em;
+  cursor: pointer;
+  color: var(--color-grey-500);
+}
+
+.sprint-container {
+  background-color: var(--color-white);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 95%;
+  min-height: 45vh;
+  margin: 0 auto;
+  overflow-y: auto; /* 스크롤 추가 */
+}
+.sprint-container::-webkit-scrollbar {
+  display: none; /* 스크롤바 숨기기 */
+}
+
+.sprint-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sprint-title-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 스프린트 이름과 날짜 사이의 간격 */
+}
+
+.sprint-actions {
+  margin-left: auto; /* 설정 버튼을 오른쪽 끝으로 밀기 */
+  margin-right: 2vh; /* 오른쪽 끝에서 2vh 정도의 여백 추가 */
+}
+
+.header-options-btn {
+  margin-left: auto; /* 설정 버튼을 오른쪽 끝으로 밀기 */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-right: 0.5vh;
+}
+
+.header-options-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+.sprint-backlog-container {
+  margin-top: 10px;
+}
+
+.product-backlog-section {
+  background-color: var(--color-green-100);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.backlog-header {
+  display: flex;
+}
+
+.add-backlog-btn {
+  margin-left: auto;
+  padding: 4px 8px;
+  border: 1px solid var(--color-grey-300);
+  background-color: var(--color-white);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.sprint-backlog-list {
+  margin-top: 10px;
+}
+
+.sprint-backlog-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-white);
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.status-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-dropdown {
+  padding: 4px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.user-initials {
+  background-color: var(--color-grey-500);
+  color: var(--color-white);
+  padding: 5px 8px;
+  border-radius: 50%;
+  font-size: 0.9em;
+  font-weight: bold;
+}
+
+.options-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.options-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+.backlog-div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+.product-backlog {
+  background-color: var(--color-white);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 95%;
+  min-height: 30vh;
+  margin: 0 auto;
+}
+
+.product-backlog-list {
+  margin-top: 10px;
+}
+
+.product-backlog-item {
+  background-color: var(--color-green-100);
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+.product-backlog-item.assigned {
+  background-color: gray;
+  color: white;
+  text-decoration: line-through; 
+}
+.product-backlog-item.selected {
+  background-color: gray;
+  color: white;
+}
+
+/* 모달 배경 */
+.modal {
+  display: none; /* 기본은 숨김 */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 모달 콘텐츠 */
+.modal-content {
+  background-color: var(--color-white);
+  padding: 20px 20px;
+  border-radius: 10px;
+  width: 450px;
+  max-width: 500px;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 1.5em;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.modal-content label {
+  display: block;
+  font-weight: bold;
+  margin-top: 15px;
+  font-size: 0.9em;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="date"],
+.modal-content select {
+  width: calc(100% - 10px);
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid var(--color-grey-300);
+  border-radius: 5px;
+  font-size: 0.9em;
+}
+
+.date-inputs {
+  display: flex;
+  gap: 10px;
+}
+
+.date-inputs input[type="date"] {
+  width: 100%;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* 닫기 */
+.modal-close-btn {
+  background-color: var(--color-grey-100);
+  color: var(--color-black);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  float: right; /* 버튼을 오른쪽으로 정렬 */
+}
+
+#modalMessage {
+  text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+#messageModal {
+  z-index: 100;
+}
+
+.modal-confirm-btn {
+  background-color: var(--color-red); /* 확인 버튼 색상 */
+  color: var(--color-white);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* 취소 */
+.modal-cancel-btn {
+  background-color: var(--color-grey-100);
+  color: var(--color-black);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-sprint-btn {
+  padding: 10px 20px;
+  background-color: var(--color-green-500);
+  color: var(--color-black);
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.modal-add-backlog-btn {
+  background-color: var(--color-green-500);
+  color: var(--color-white);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background-color: var(--color-grey-300);
+  color: var(--color-black);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.small-modal {
+  position: absolute;
+  background-color: var(--color-white);
+  padding: 10px;
+  border-radius: 10px; /* 모서리를 둥글게 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center; /* 중앙 정렬 추가 */
+  z-index: 2;
+
+  max-width: 130px; /* 최대 너비를 설정해 모달이 너무 넓어지지 않도록 제한 */
+  border: 1px solid var(--color-grey-300); /* 테두리 추가 */
+}
+
+.small-modal button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 0.9em;
+  color: var(--color-black);
+  width: 110px; /* 너비를 내용에 맞게 자동으로 조정 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+.small-modal button:hover {
+  background-color: var(--color-grey-50);
+}
+
+/* 삭제 버튼 색상 적용 */
+.small-modal .delete-btn {
+  color: var(--color-red); /* 삭제 버튼에 색상 지정 */
+}
+
+/* 스프린트가 없을때 */
+.sprint-container-none {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 95%;
+  min-height: 45vh;
+  background-color: var(--color-white);
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-btn-lt,
+.nav-btn-gt {
+  background-color: var(--color-white); /* 하얀색 배경 */
+  padding: 8px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 */
+  position: absolute;
+  top: 40vh;
+  transform: translateY(-50%); /* 세로 중앙 정렬 */
+}
+
+.nav-btn-lt {
+  left: 27vh; /* 왼쪽 여백 설정 */
+}
+
+.nav-btn-gt {
+  right: 2vh; /* 오른쪽 여백 설정 */
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  font-size: 2em;
+  cursor: pointer;
+  color: var(--color-grey-500);
+}
+.sprint-status-label {
+  background-color: #28a745;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-left: 10px;
+}
+.sprint-container.past-due {
+  opacity: 0.5; /* 불투명도 조정 */
+}
+
+.move-backlog-btn {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.product-backlog-item.selected {
+  background-color: gray;
+  color: white;
+}
+
+/* Onboarding Overlay */
+.onboarding-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.onboarding-overlay.hidden {
+  display: none; /* 숨김 상태 */
+}
+
+.onboarding-tooltip {
+  background: var(--color-white);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: left;
+  width: 400px;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  z-index: 1002; /* 툴팁이 오버레이 위에 보이도록 설정 */
+}
+.onboarding-tooltip .onboarding-buttons {
+  display: flex; /* 버튼 컨테이너 */
+  justify-content: flex-end; /* 오른쪽 정렬 */
+}
+.onboarding-tooltip p {
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: var(--color-grey-900);
+  text-align: left; /* 텍스트를 항상 왼쪽 정렬 */
+}
+
+.onboarding-tooltip button {
+  padding: 8px 16px; /* 버튼 내부 여백 조정 */
+  background-color: var(--color-green-400);
+  color: var(--color-black);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: auto; /* 버튼을 오른쪽 정렬 */
+  width: fit-content; /* 버튼 크기를 텍스트에 맞게 조정 */
+  font-size: 0.875rem; /* 버튼 텍스트 크기 조정 */
+  font-weight: 500; /* 텍스트 굵기 조정 */
+}
+
+.onboarding-tooltip button:hover {
+  background-color: var(--color-green-600);
+}
+
+.onboarding-highlight {
+  z-index: 1001;
+  position: relative;
+  background-color: white !important;
+  border: 2px solid var(--color-green-200); /* 기본 테두리 색상 */
+  border-radius: 8px;
+  box-sizing: border-box;
+}
