@@ -194,17 +194,18 @@
           </div>
 
           <label for="product-backlog">프로덕트 백로그</label>
-          <select id="product-backlog" name="backlogs" multiple size="3">
-            {% if backlogs %} {% for backlog in backlogs.unassigned_backlogs %}
-            <option value="{{ backlog.product_backlog_id }}">
+          <div id="product-backlog-container" class="product-backlog-list">
+            {% for backlog in backlogs.unassigned_backlogs %}
+            <div class="product-backlog-item" data-backlog-id="{{ backlog.product_backlog_id }}">
               {{ backlog.product_backlog_content }}
-            </option>
-            {% endfor %} {% else %}
-            <option disabled>백로그가 없습니다.</option>
-            {% endif %}
-          </select>
+            </div>
+            {% else %}
+            <p>백로그가 없습니다.</p>
+            {% endfor %}
+          </div>
 
           <div class="modal-buttons">
+            <input type="hidden" id="selected-backlog-ids" name="backlogs" value=""/>
             <input type="hidden" name="project_id" value="{{ project_id }}" />
             <button
               type="button"
