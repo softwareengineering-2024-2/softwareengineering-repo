@@ -9,11 +9,12 @@ from controllers.burnup_controller import increment_total_backlog, decrement_tot
 from controllers.burnup_controller import increment_total_backlog, decrement_total_backlog
 from models.project_model import Project, UserProject
 from flask_login import current_user, login_required
+from models.calendar_model import Calendar
 
 # 블루프린트 생성
 sprint_bp = Blueprint('sprint', __name__)
 
-@sprint_bp.route('/sprint/<int:project_id>', methods=['GET'])
+@sprint_bp.route('/<int:project_id>', methods=['GET'])
 @login_required 
 def get_product_backlogs_view(project_id):
     if not current_user.is_authenticated:
@@ -131,10 +132,12 @@ def edit_backlog_status_view(backlog_id):
 def delete_backlog_view(backlog_id):
     success, message, project_id = delete_backlog(backlog_id)
     flash(message)
+    if not project_id or not success:
+        flash("Invalid project ID or deletion failed.")
+        return redirect(url_for('sprint.dashboard'))
     if success:
         decrement_total_backlog(project_id) # 백로그 삭제 시 총 백로그 수 감소
-        return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id))
-    return redirect(url_for('sprint.get_product_backlogs_view')) 
+    return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id))
 
 @sprint_bp.route('/move-backlogs/<int:sprint_id>/<int:project_id>', methods=['POST'])
 def move_backlogs(sprint_id, project_id):

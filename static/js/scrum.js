@@ -1,58 +1,61 @@
-  // 쿠키 읽기 함수
-  function getCookie(name) {
-    const cookies = document.cookie.split("; ").reduce((acc, cookie) => {
-      const [key, value] = cookie.split("=");
-      acc[key] = value;
-      return acc;
-    }, {});
-    return cookies[name];
+// 쿠키 읽기 함수
+function getCookie(name) {
+  const cookies = document.cookie.split("; ").reduce((acc, cookie) => {
+    const [key, value] = cookie.split("=");
+    acc[key] = value;
+    return acc;
+  }, {});
+  return cookies[name];
+}
+
+// 쿠키 저장 함수
+function setCookie(name, value, days = 7) {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${value}; path=/; expires=${expires.toUTCString()}`;
+}
+
+// 현재 스프린트와 프로젝트 정보를 쿠키에 저장
+function saveCurrentSprintAndProject(sprintId) {
+  if (projectId) {
+    setCookie(`currentSprintId_${projectId}`, sprintId);
   }
+}
 
-  // 쿠키 저장 함수
-  function setCookie(name, value, days = 7) {
-    const expires = new Date();
-    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-    document.cookie = `${name}=${value}; path=/; expires=${expires.toUTCString()}`;
-  }
+// 스프린트 변경 함수
+function changeSprint(sprintId) {
+  // 쿠키에 현재 스프린트 ID 저장
+  saveCurrentSprintAndProject(sprintId);
 
-  // 현재 스프린트와 프로젝트 정보를 쿠키에 저장
-  function saveCurrentSprintAndProject(sprintId) {
-    if (projectId) {
-      setCookie(`currentSprintId_${projectId}`, sprintId);
-    }
-  }
+  // URL 파라미터 업데이트
+  const urlParams = new URLSearchParams(window.location.search);
+  urlParams.set("sprint_id", sprintId);
+  window.location.search = urlParams.toString(); // 페이지 새로고침
+}
 
-  // 스프린트 변경 함수
-  function changeSprint(sprintId) {
-    // 쿠키에 현재 스프린트 ID 저장
-    saveCurrentSprintAndProject(sprintId);
+// 페이지 로드 시 초기화 함수
+document.addEventListener("DOMContentLoaded", () => {
+  const savedSprintId = getCookie(`currentSprintId_${projectId}`); // 쿠키에서 스프린트 ID 읽기
 
-    // URL 파라미터 업데이트
+  if (savedSprintId) {
+    // 쿠키에 저장된 스프린트 ID가 있으면 해당 스프린트로 표시
     const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set("sprint_id", sprintId);
-    window.location.search = urlParams.toString(); // 페이지 새로고침
-  }
-
-  // 페이지 로드 시 초기화 함수
-  document.addEventListener("DOMContentLoaded", () => {
-    const savedSprintId = getCookie(`currentSprintId_${projectId}`); // 쿠키에서 스프린트 ID 읽기
-
-    if (savedSprintId) {
-      // 쿠키에 저장된 스프린트 ID가 있으면 해당 스프린트로 표시
-      const urlParams = new URLSearchParams(window.location.search);
-      if (!urlParams.get("sprint_id")) {
-        urlParams.set("sprint_id", savedSprintId);
-        window.location.search = urlParams.toString(); // 페이지 새로고침
-      }
+    if (!urlParams.get("sprint_id")) {
+      urlParams.set("sprint_id", savedSprintId);
+      window.location.search = urlParams.toString(); // 페이지 새로고침
     }
-  });
+  }
+});
 
 // 스프린트 완료율 업데이트 함수
 function updateCompletionPercentage() {
   const totalItems = document.querySelectorAll(".scrum-sprint-item").length;
-  const doneItems = document.querySelectorAll("#done .scrum-sprint-item").length;
+  const doneItems = document.querySelectorAll(
+    "#done .scrum-sprint-item"
+  ).length;
 
-  const percentage = totalItems > 0 ? Math.round((doneItems / totalItems) * 100) : 0;
+  const percentage =
+    totalItems > 0 ? Math.round((doneItems / totalItems) * 100) : 0;
 
   // 완료율 업데이트
   const percentageBar = document.querySelector(".sprint-bar-inner");
@@ -205,20 +208,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // 스프린트 드롭다운 토글 함수
 function toggleSprintDropdown() {
-  const dropdowns = document.getElementsByClassName('sprint-dropdown');
+  const dropdowns = document.getElementsByClassName("sprint-dropdown");
   if (dropdowns.length > 0) {
-    const dropdown = dropdowns[0]; 
-    dropdown.classList.toggle('show'); 
+    const dropdown = dropdowns[0];
+    dropdown.classList.toggle("show");
   } else {
     console.error("No dropdown elements found.");
   }
 }
 
 // 드롭다운 외부 클릭 시 닫기
-window.onclick = function(event) {
-  const dropdown = document.getElementById('sprintDropdown');
-  if (!event.target.matches('.sprint-change-btn') && !event.target.closest('.sprint-change-btn') && dropdown.classList.contains('show')) {
-    dropdown.classList.remove('show');
+window.onclick = function (event) {
+  const dropdown = document.getElementById("sprintDropdown");
+  if (
+    !event.target.matches(".sprint-change-btn") &&
+    !event.target.closest(".sprint-change-btn") &&
+    dropdown.classList.contains("show")
+  ) {
+    dropdown.classList.remove("show");
   }
 };
 
