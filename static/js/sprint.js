@@ -387,7 +387,8 @@ function deleteSprint() {
   // Small modal 닫기
   closeSmallModal();
   // 모달 메시지 변경
-  document.getElementById("confirmDeleteMessage").textContent = "정말로 이 스프린트를 삭제하시겠습니까?";
+  document.getElementById("confirmDeleteMessage").innerHTML = 
+    "스프린트를 삭제하면 스프린트에 대한 회고도 <br>함께 삭제됩니다.<br>정말로 이 스프린트를 삭제하시겠습니까?";
   // 확인 버튼에 스프린트 삭제 함수 연결
   document.querySelector(".modal-confirm-btn").onclick = confirmDelete;
   // 삭제 확인 모달 표시
