@@ -14,14 +14,12 @@ project_main_bp = Blueprint('project_main', __name__)
 def project_main_view(project_id):
     userproject=UserProject.find_by_user_and_project(current_user.id, project_id)
     project = Project.find_by_id(project_id)
-    # 전체 스프린트의 진행률과 백로그 데이터 가져오기
-    sprint_data = get_current_sprint_backlogs(current_user.id, project_id)
+    # 현재 스프린트 백로그 데이터 가져오기
+    current_sprint_backlogs = get_current_sprint_backlogs(current_user.id, project_id)
 
-    # `overall_progress_percentage`가 존재하는지 확인하고 전달
-    overall_progress_percentage = sprint_data.get('overall_progress_percentage', 0) if sprint_data else 0
+    # `progress_percentage`가 존재하는지 확인하고 전달
+    progress_percentage = current_sprint_backlogs.get('progress_percentage', 0) if current_sprint_backlogs else 0
 
-    # 개별 스프린트 데이터 전달
-    sprint_backlogs = sprint_data.get('sprints', []) if sprint_data else []
     # todo 리스트 전달하기
     todo_list = show_todos(project_id, current_user.id)
 
@@ -29,9 +27,9 @@ def project_main_view(project_id):
         'main.html',
         userproject=userproject,
         project=project,
-        overall_progress_percentage=overall_progress_percentage,
-        sprint_backlogs=sprint_backlogs,  # 개별 스프린트 데이터 전달
-        todo_list=todo_list
+        progress_percentage=progress_percentage,
+        current_sprint_backlogs=current_sprint_backlogs,
+        todo_list = todo_list
     )
 
 # 투두리스트 저장

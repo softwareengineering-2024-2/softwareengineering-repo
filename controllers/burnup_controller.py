@@ -20,7 +20,7 @@ def increment_total_backlog(project_id):
         last_change = BacklogChanges.get_last_change(project_id) # 최근 변경사항
         change = BacklogChanges(project_id=project_id, changed_date=today, total_backlog=last_change.total_backlog+1, completed_backlog=last_change.completed_backlog)
     change.save_to_db()
-    return None
+    return "총 백로그 수가 업데이트되었습니다."
 
 # 스프린트 백로그 삭제 시 총 백로그 수를 감소시키는 함수
 def decrement_total_backlog(project_id):
@@ -32,7 +32,7 @@ def decrement_total_backlog(project_id):
         last_change = BacklogChanges.get_last_change(project_id) # 최근 변경사항
         change = BacklogChanges(project_id=project_id, changed_date=today, total_backlog=last_change.total_backlog-1, completed_backlog=last_change.completed_backlog)
     change.save_to_db()
-    return None
+    return "총 백로그 수가 업데이트되었습니다."
 
 # 스크럼보드에서 스프린트 백로그의 상태를 'done'으로 변경하거나 'done'에서 다른 상태로 변경 시 완료된 백로그 수를 업데이트하는 함수
 def update_completed_backlog(project_id, done_backlog_count):
@@ -44,9 +44,9 @@ def update_completed_backlog(project_id, done_backlog_count):
         last_change = BacklogChanges.get_last_change(project_id) # 최근 변경사항
         change = BacklogChanges(project_id=project_id, changed_date=today, total_backlog=last_change.total_backlog, completed_backlog=last_change.completed_backlog+done_backlog_count)
     change.save_to_db()
-    return None
+    return "완료된 백로그 수가 업데이트되었습니다."
 
-# 스프린트 수정/삭제로 인한 백로그 삭제 시 변경된 백로그 수를 업데이트하는 함수
+# 스프린트 수정으로 인한 백로그 삭제 시 변경된 백로그 수를 업데이트하는 함수
 def decrement_total_and_completed_backlog(project_id, total_backlog_count, done_backlog_count):
     today = datetime.today().date()
     try:
@@ -57,4 +57,4 @@ def decrement_total_and_completed_backlog(project_id, total_backlog_count, done_
         last_change = BacklogChanges.get_last_change(project_id) # 최근 변경사항
         change = BacklogChanges(project_id=project_id, changed_date=today, total_backlog=last_change.total_backlog-total_backlog_count, completed_backlog=last_change.completed_backlog-done_backlog_count)
     change.save_to_db()
-    return None
+    return "완료된 백로그 수가 업데이트되었습니다."

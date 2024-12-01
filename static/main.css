@@ -49,61 +49,9 @@
   display: flex;
   gap: 20px;
 }
-/* 스프린트 이름 스타일 */
-.sprint-name {
-  font-size: 18px; /* 작업 글씨 크기와 동일하게 설정 */
-  font-weight: bold; /* 두께를 일반 텍스트와 동일하게 설정 */
-  color: var(--color-grey-800); /* 작업과 일관된 색상 */
-  margin-bottom: 2px; /* 아래 여백 추가 */
-}
 
-.task-box p {
-  font-size: 18px; /* 작업 항목과 동일한 크기 */
-  margin: 0; /* 기본 여백 제거 */
-  color: var(--color-grey-800); /* 텍스트 색상 */
-}
-
-/* 작업 목록 기본 스타일 */
 .task-list {
-  list-style-type: none;
-  padding-left: 0;
-}
-
-.task-list > li {
-  margin-bottom: 20px;
-}
-
-.task-list ul {
-  list-style-type: none;
-  padding-left: 20px; /* 들여쓰기 */
-}
-
-.task-list ul li {
-  margin-bottom: 10px;
-}
-
-/* 작업 컨테이너 기본 스타일 */
-.backlog-container {
-  border-radius: 5px;
-  color: #ffffff;
-  margin-bottom: 5px;
-  padding: 8px; /* 패딩을 약간 줄임 */
-}
-
-/* 상태별 배경색 */
-.todo-container {
-  background-color: #c8e4f2; /* To Do 색상 */
-  color: #000000; /* 가독성을 위해 텍스트 색상 변경 */
-}
-
-.inprogress-container {
-  background-color: #fefbd1; /* In Progress 색상 */
-  color: #000000; /* 가독성을 위해 텍스트 색상 변경 */
-}
-
-.done-container {
-  background-color: #ffdada; /* Done 색상 */
-    color: #000000; /* 가독성을 위해 텍스트 색상 변경 */
+  padding: 20px;
 }
 
 .task-box,
@@ -113,8 +61,6 @@
   padding: 15px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-height: 200px; /* 최대 높이 지정 */
-  overflow-y: auto; /* 스크롤 처리 */
 }
 
 /* TODO LIST 설정 */

@@ -1,5 +1,5 @@
 from models.project_model import Project, UserProject
-from flask_login import current_user, login_required
+from flask_login import current_user
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session,jsonify
 from controllers.userstory_controller import show_stories, create_story, update_story, delete_story
 from controllers.notlist_controller import create_keywords, delete_keyword, show_notlist 
@@ -9,7 +9,6 @@ userstory_bp = Blueprint('userstory', __name__)
 
 # 유저스토리 목록 보기
 @userstory_bp.route('/<int:project_id>', methods=['GET'])
-@login_required 
 def view_stories_route(project_id):
     stories = show_stories(project_id)
     not_list = show_notlist(project_id)

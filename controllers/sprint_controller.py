@@ -34,6 +34,7 @@ def get_sprint(project_id):
         return str(e)
 
 # 스프린트를 생성하는 로직
+# 스프린트를 생성하는 로직
 def create_sprint(project_id, sprint_name, start_date, end_date, status=None):
     try:
         start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
@@ -87,53 +88,36 @@ def update_sprint(sprint_id, updates):
 def delete_sprint(sprint_id):
     try:
         sprint = Sprint.query.get(sprint_id)
-        deleted_sprint_backlogs = SprintBacklog.find_all_by_sprint_id(sprint_id) 
         if sprint:
             project_id = sprint.project_id
             db.session.delete(sprint)
             db.session.commit()
-            
-            # 관련된 SprintBacklog 수 계산
-            total_count = 0 # 삭제할 총 백로그 수
-            done_count = 0  # 삭제할 'Done' 상태의 백로그 수
-            for sb in deleted_sprint_backlogs:
-                total_count += 1
-                if sb.status == 'Done':
-                    done_count += 1
-            
-            # 삭제된 스프린트 백로그 수만큼 총 백로그 수와 완료된 백로그 수 감소
-            decrement_total_and_completed_backlog(project_id, total_count, done_count)
-            
             return sprint
         return None
     except SQLAlchemyError as e:
         db.session.rollback()
         return None
 
-# 특정 스프린트의 백로그를 불러오는 함수
-def get_sprints_with_backlogs(project_id, sprint_id=None):
+# 스프린트를 불러오는 로직
+def get_sprints_with_backlogs(project_id):
     try:
-        query = Sprint.query.options(
+        sprints = Sprint.query.options(
             joinedload(Sprint.product_backlog)
-        ).filter_by(project_id=project_id)
-        
-        if sprint_id:
-            query = query.filter(Sprint.sprint_id == sprint_id)
+        ).filter_by(project_id=project_id).all()
 
-        sprints = query.all()
         sprint_details = []
-
         for sprint in sprints:
             is_past_due = date.today() > sprint.sprint_end_date
             backlog_details = []
             for backlog in sprint.product_backlog:
+                # SprintBacklog와 UserProject를 조인하여 project_id와 user_id를 모두 검사
                 sprint_backlogs = (
                     db.session.query(SprintBacklog, UserProject.user_name)
                     .join(UserProject, (SprintBacklog.user_id == UserProject.user_id) & (UserProject.project_id == project_id))
                     .filter(SprintBacklog.product_backlog_id == backlog.product_backlog_id)
                     .all()
                 )
-
+                
                 sprint_backlog_contents = [
                     {
                         'sprint_backlog_id': sb.SprintBacklog.sprint_backlog_id,
@@ -144,7 +128,7 @@ def get_sprints_with_backlogs(project_id, sprint_id=None):
                     }
                     for sb in sprint_backlogs
                 ]
-
+                
                 backlog_details.append({
                     'product_backlog_id': backlog.product_backlog_id,
                     'content': backlog.product_backlog_content,
@@ -211,9 +195,9 @@ def assign_backlogs_to_sprint(sprint_id, new_backlog_ids):
         return True
     except SQLAlchemyError as e:
         db.session.rollback()
-        return False, str(e)
+        return str(e)
     
-
+    
 # 모든 스프린트 백로그를 가져오는 로직
 def get_sprint_backlogs(sprint_id):
     try:
@@ -247,8 +231,7 @@ def delete_backlog(backlog_id):
         db.session.delete(backlog)
         db.session.commit()
         return True, "Deleted Successfully", project_id
-    else:
-        return False, "Backlog Not Found", None
+    return False, "Backlog Not Found"
 
 # 스프린트 백로그 업데이트
 def update_backlog_details(backlog_id, content, user_id):
@@ -298,122 +281,55 @@ def get_users_by_project_id(project_id):
     return users
 
 
-# def get_current_sprint_backlogs(user_id, project_id):
-#     try:
-#         # 현재 사용자가 참여 중인 프로젝트의 ID 확인
-#         user_projects = UserProject.query.filter_by(user_id=user_id, project_id=project_id).all()
-#         project_ids = [up.project_id for up in user_projects]
-
-#         # 오늘 날짜 기준으로 현재 스프린트 찾기
-#         today = datetime.today().date()
-#         current_sprint = Sprint.query.filter(
-#             Sprint.project_id.in_(project_ids),
-#             Sprint.sprint_start_date <= today,
-#             Sprint.sprint_end_date >= today,
-#         ).first()
-
-#         # 현재 스프린트가 있는지 확인
-#         if current_sprint:
-#             # 스프린트 ID로 전체 백로그 가져오기 (퍼센트 계산용)
-#             all_sprint_backlogs = SprintBacklog.query.filter_by(sprint_id=current_sprint.sprint_id).all()
-            
-#             # 전체 백로그 개수
-#             total_backlogs = len(all_sprint_backlogs)
-#             # 'Done' 상태인 백로그 개수
-#             done_backlogs = sum(1 for backlog in all_sprint_backlogs if backlog.status == 'Done')
-
-#             # 퍼센트 계산 (총 백로그가 0이 아닌 경우)
-#             progress_percentage = (done_backlogs / total_backlogs * 100) if total_backlogs > 0 else 0
-
-#             # 현재 사용자 ID로 필터링된 스프린트 백로그 가져오기 (사용자별 콘텐츠 표시용)
-#             user_sprint_backlogs = SprintBacklog.query.filter_by(sprint_id=current_sprint.sprint_id, user_id=user_id).all()
-
-#             # 스프린트 백로그 정보를 반환할 데이터 구조
-#             backlog_details = [
-#                 {
-#                     'sprint_backlog_content': backlog.sprint_backlog_content,
-#                     'status': backlog.status
-#                 }
-#                 for backlog in user_sprint_backlogs
-#             ]
-
-#             return {
-#                 'sprint_id': current_sprint.sprint_id,
-#                 'sprint_name': current_sprint.sprint_name,
-#                 'backlogs': backlog_details,
-#                 'progress_percentage': round(progress_percentage, 2)  # 소수점 두 자리까지 반올림
-#             }
-#         else:
-#             return {'message': 'No current sprint found'}
-
-#     except SQLAlchemyError as e:
-#         return {'error': str(e)}
 def get_current_sprint_backlogs(user_id, project_id):
     try:
-        # 사용자가 참여 중인 프로젝트의 ID 확인
+        # 현재 사용자가 참여 중인 프로젝트의 ID 확인
         user_projects = UserProject.query.filter_by(user_id=user_id, project_id=project_id).all()
         project_ids = [up.project_id for up in user_projects]
 
-        # 프로젝트 ID로 모든 스프린트 가져오기
-        all_sprints = Sprint.query.filter(Sprint.project_id.in_(project_ids)).all()
-        if not all_sprints:
-            return {'message': 'No sprints found for the project'}
+        # 오늘 날짜 기준으로 현재 스프린트 찾기
+        today = datetime.today().date()
+        current_sprint = Sprint.query.filter(
+            Sprint.project_id.in_(project_ids),
+            Sprint.sprint_start_date <= today,
+            Sprint.sprint_end_date >= today,
+        ).first()
 
-        sprint_backlog_details = []
-        total_backlogs = 0
-        total_done_backlogs = 0
+        # 현재 스프린트가 있는지 확인
+        if current_sprint:
+            # 스프린트 ID로 전체 백로그 가져오기 (퍼센트 계산용)
+            all_sprint_backlogs = SprintBacklog.query.filter_by(sprint_id=current_sprint.sprint_id).all()
+            
+            # 전체 백로그 개수
+            total_backlogs = len(all_sprint_backlogs)
+            # 'Done' 상태인 백로그 개수
+            done_backlogs = sum(1 for backlog in all_sprint_backlogs if backlog.status == 'Done')
 
-        for sprint in all_sprints:
-            print(f"Processing Sprint ID: {sprint.sprint_id}")  # 스프린트 ID 출력
+            # 퍼센트 계산 (총 백로그가 0이 아닌 경우)
+            progress_percentage = (done_backlogs / total_backlogs * 100) if total_backlogs > 0 else 0
 
-            # 각 스프린트의 백로그 가져오기
-            sprint_backlogs = SprintBacklog.query.filter_by(sprint_id=sprint.sprint_id).all()
+            # 현재 사용자 ID로 필터링된 스프린트 백로그 가져오기 (사용자별 콘텐츠 표시용)
+            user_sprint_backlogs = SprintBacklog.query.filter_by(sprint_id=current_sprint.sprint_id, user_id=user_id).all()
 
-            # 디버깅: 각 백로그 ID와 상태 출력
-            for backlog in sprint_backlogs:
-                print(f"Sprint ID: {sprint.sprint_id}, Backlog ID: {backlog.sprint_backlog_id}, Status: {backlog.status}")
+            # 스프린트 백로그 정보를 반환할 데이터 구조
+            backlog_details = [
+                {
+                    'sprint_backlog_content': backlog.sprint_backlog_content,
+                    'status': backlog.status
+                }
+                for backlog in user_sprint_backlogs
+            ]
 
-            # 스프린트 백로그 개수와 완료된 백로그 개수 계산
-            sprint_total = len(sprint_backlogs)
-            sprint_done = sum(1 for backlog in sprint_backlogs if backlog.status.lower() == 'done')  # 대소문자 처리 추가
-
-            # 디버깅: 스프린트별 개수 출력
-            print(f"Sprint ID: {sprint.sprint_id}, Total Backlogs: {sprint_total}, Done Backlogs: {sprint_done}")
-
-            # 전체 백로그에 합산
-            total_backlogs += sprint_total
-            total_done_backlogs += sprint_done
-
-            # 스프린트 별 백로그 정보 저장
-            sprint_backlog_details.append({
-                'sprint_id': sprint.sprint_id,
-                'sprint_name': sprint.sprint_name,
-                'start_date': sprint.sprint_start_date.strftime('%Y-%m-%d'),
-                'end_date': sprint.sprint_end_date.strftime('%Y-%m-%d'),
-                'backlogs': [
-                    {
-                        'sprint_backlog_content': backlog.sprint_backlog_content,
-                        'status': backlog.status
-                    }
-                    for backlog in sprint_backlogs
-                ],
-                'progress_percentage': (sprint_done / sprint_total * 100) if sprint_total > 0 else 0
-            })
-
-        # 전체 진행률 계산
-        overall_progress_percentage = (total_done_backlogs / total_backlogs * 100) if total_backlogs > 0 else 0
-
-        # 디버깅: 전체 진행률 출력
-        print(f"Total Backlogs: {total_backlogs}, Total Done: {total_done_backlogs}, Overall Progress: {overall_progress_percentage:.2f}%")
-
-        return {
-            'project_id': project_id,
-            'overall_progress_percentage': round(overall_progress_percentage, 2),  # 전체 진행률
-            'sprints': sprint_backlog_details
-        }
+            return {
+                'sprint_id': current_sprint.sprint_id,
+                'sprint_name': current_sprint.sprint_name,
+                'backlogs': backlog_details,
+                'progress_percentage': round(progress_percentage, 2)  # 소수점 두 자리까지 반올림
+            }
+        else:
+            return {'message': 'No current sprint found'}
 
     except SQLAlchemyError as e:
-        print(f"Error: {str(e)}")  # 예외 메시지 출력
         return {'error': str(e)}
 
 def move_incomplete_backlogs_to_next_sprint(sprint_id, project_id):

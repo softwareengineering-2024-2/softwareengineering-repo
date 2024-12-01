@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from controllers.milestone_controller import get_milestones, create_milestone, delete_milestone, get_milestone_counts
 from controllers.calendar_controller import create_schedules, delete_milestone_schedules
 from models.project_model import UserProject, Project
@@ -35,6 +35,7 @@ def create_milestone_view(project_id):
 def delete_milestone_view(project_id, milestone_id):
     userproject = UserProject.find_by_user_and_project(current_user.id, project_id)
     if not userproject:
+        flash("프로젝트를 찾을 수 없습니다.")
         return redirect(url_for('project_main.project_main_view', project_id=project_id))
     delete_milestone_schedules(project_id, milestone_id)
     delete_milestone(milestone_id)

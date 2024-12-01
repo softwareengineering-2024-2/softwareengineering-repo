@@ -61,7 +61,7 @@
 
 .milestone-icon {
   position: absolute;
-  top: -45px; /* 이미지가 점 위에 나타나도록 조정 */
+  top: -35px; /* 이미지가 점 위에 나타나도록 조정 */
   left: 50%;
   transform: translateX(-50%);
   width: 30px; /* 이미지 크기 */
@@ -70,7 +70,7 @@
 
 .sprint-icon {
   position: absolute;
-  top: -10px; /* 점 위에 이미지가 표시되도록 조정 */
+  top: -30px; /* 점 위에 이미지가 표시되도록 조정 */
   left: 50%;
   transform: translateX(-50%);
   width: 25px; /* 이미지 크기 */

@@ -38,11 +38,11 @@
               <div class="progress-bar">
                 <div
                   class="progress"
-                  style="width: {{ overall_progress_percentage }}%"
+                  style="width: {{ progress_percentage }}%"
                 ></div>
               </div>
               <div class="progress-percentage">
-                {{ overall_progress_percentage | round(1) }}%
+                {{ progress_percentage | round(1) }}%
               </div>
             </div>
           </div>
@@ -50,36 +50,20 @@
           <div class="task-sections">
             <div class="task-box">
               <h2>내가 담당받은 작업 목록</h2>
-              {% if sprint_backlogs %}
+              {% if current_sprint_backlogs and current_sprint_backlogs.backlogs
+              %}
               <ul class="task-list">
-                {% for sprint in sprint_backlogs %}
-                  {% set has_pending_backlogs = sprint.backlogs|selectattr('status', '!=', 'Done')|list %} 
-                  {% if has_pending_backlogs|length > 0 %}
-                  <li>
-                    <div class="sprint-name">
-                      스프린트: {{ sprint.sprint_name }}
-                    </div>
-                    <ul>
-                      {% for backlog in sprint.backlogs %}
-                      {% if backlog.status != 'Done' %}
-                      <li>
-                        <div
-                          class="backlog-container {% if backlog.status == 'To Do' %}todo-container{% elif backlog.status == 'In Progress' %}inprogress-container{% endif %}"
-                        >
-                          <p>{{ backlog.sprint_backlog_content }} - 상태: {{ backlog.status }}</p>
-                        </div>
-                      </li>
-                      {% endif %}
-                      {% endfor %}
-                    </ul>
-                  </li>
-                  {% endif %}
+                {% for backlog in current_sprint_backlogs.backlogs %}
+                <li>
+                  {{ backlog.sprint_backlog_content }} - 상태: {{ backlog.status
+                  }}
+                </li>
                 {% endfor %}
               </ul>
               {% else %}
               <p>현재 진행 중인 작업이 없습니다.</p>
               {% endif %}
-            </div>                                
+            </div>
             <input
               type="hidden"
               id="project-id"
