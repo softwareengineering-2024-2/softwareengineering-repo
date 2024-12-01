@@ -88,10 +88,23 @@ def update_sprint(sprint_id, updates):
 def delete_sprint(sprint_id):
     try:
         sprint = Sprint.query.get(sprint_id)
+        deleted_sprint_backlogs = SprintBacklog.find_all_by_sprint_id(sprint_id) 
         if sprint:
             project_id = sprint.project_id
             db.session.delete(sprint)
             db.session.commit()
+            
+            # 관련된 SprintBacklog 수 계산
+            total_count = 0 # 삭제할 총 백로그 수
+            done_count = 0  # 삭제할 'Done' 상태의 백로그 수
+            for sb in deleted_sprint_backlogs:
+                total_count += 1
+                if sb.status == 'Done':
+                    done_count += 1
+            
+            # 삭제된 스프린트 백로그 수만큼 총 백로그 수와 완료된 백로그 수 감소
+            decrement_total_and_completed_backlog(project_id, total_count, done_count)
+            
             return sprint
         return None
     except SQLAlchemyError as e:

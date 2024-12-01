@@ -46,7 +46,7 @@ def update_completed_backlog(project_id, done_backlog_count):
     change.save_to_db()
     return None
 
-# 스프린트 수정으로 인한 백로그 삭제 시 변경된 백로그 수를 업데이트하는 함수
+# 스프린트 수정/삭제로 인한 백로그 삭제 시 변경된 백로그 수를 업데이트하는 함수
 def decrement_total_and_completed_backlog(project_id, total_backlog_count, done_backlog_count):
     today = datetime.today().date()
     try:
