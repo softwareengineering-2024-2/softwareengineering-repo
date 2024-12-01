@@ -34,7 +34,6 @@ def get_sprint(project_id):
         return str(e)
 
 # 스프린트를 생성하는 로직
-# 스프린트를 생성하는 로직
 def create_sprint(project_id, sprint_name, start_date, end_date, status=None):
     try:
         start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
@@ -111,26 +110,30 @@ def delete_sprint(sprint_id):
         db.session.rollback()
         return None
 
-# 스프린트를 불러오는 로직
-def get_sprints_with_backlogs(project_id):
+# 특정 스프린트의 백로그를 불러오는 함수
+def get_sprints_with_backlogs(project_id, sprint_id=None):
     try:
-        sprints = Sprint.query.options(
+        query = Sprint.query.options(
             joinedload(Sprint.product_backlog)
-        ).filter_by(project_id=project_id).all()
+        ).filter_by(project_id=project_id)
+        
+        if sprint_id:
+            query = query.filter(Sprint.sprint_id == sprint_id)
 
+        sprints = query.all()
         sprint_details = []
+
         for sprint in sprints:
             is_past_due = date.today() > sprint.sprint_end_date
             backlog_details = []
             for backlog in sprint.product_backlog:
-                # SprintBacklog와 UserProject를 조인하여 project_id와 user_id를 모두 검사
                 sprint_backlogs = (
                     db.session.query(SprintBacklog, UserProject.user_name)
                     .join(UserProject, (SprintBacklog.user_id == UserProject.user_id) & (UserProject.project_id == project_id))
                     .filter(SprintBacklog.product_backlog_id == backlog.product_backlog_id)
                     .all()
                 )
-                
+
                 sprint_backlog_contents = [
                     {
                         'sprint_backlog_id': sb.SprintBacklog.sprint_backlog_id,
@@ -141,7 +144,7 @@ def get_sprints_with_backlogs(project_id):
                     }
                     for sb in sprint_backlogs
                 ]
-                
+
                 backlog_details.append({
                     'product_backlog_id': backlog.product_backlog_id,
                     'content': backlog.product_backlog_content,
@@ -208,9 +211,9 @@ def assign_backlogs_to_sprint(sprint_id, new_backlog_ids):
         return True
     except SQLAlchemyError as e:
         db.session.rollback()
-        return str(e)
+        return False, str(e)
     
-    
+
 # 모든 스프린트 백로그를 가져오는 로직
 def get_sprint_backlogs(sprint_id):
     try:
@@ -244,7 +247,8 @@ def delete_backlog(backlog_id):
         db.session.delete(backlog)
         db.session.commit()
         return True, "Deleted Successfully", project_id
-    return False, "Backlog Not Found"
+    else:
+        return False, "Backlog Not Found", None
 
 # 스프린트 백로그 업데이트
 def update_backlog_details(backlog_id, content, user_id):

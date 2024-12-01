@@ -5,7 +5,6 @@ function getCookie(name) {
     acc[key] = value;
     return acc;
   }, {});
-  console.log(`모든 쿠키: ${JSON.stringify(cookies)}`); // 모든 쿠키 디버깅 로그
   return cookies[name];
 }
 
@@ -15,26 +14,25 @@ function setCookie(name, value, days = 7) {
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
   const cookieString = `${name}=${value}; path=/; expires=${expires.toUTCString()}`;
   document.cookie = cookieString;
-  console.log(`쿠키 저장됨: ${cookieString}`); // 쿠키 저장 디버깅 로그
 }
 
-  // 현재 스프린트와 프로젝트 정보를 쿠키에 저장
-  function saveCurrentSprintAndProject(sprintId) {
-    if (projectId) {
-      setCookie(`currentSprintId_${projectId}`, sprintId);
-    }
+// 현재 스프린트와 프로젝트 정보를 쿠키에 저장
+function saveCurrentSprintAndProject(sprintId) {
+  if (projectId) {
+    setCookie(`currentSprintId_${projectId}`, sprintId);
   }
+}
 
-  // 스프린트 변경 함수
-  function changeSprint(sprintId) {
-    // 쿠키에 현재 스프린트 ID 저장
-    saveCurrentSprintAndProject(sprintId);
+// 스프린트 변경 함수
+function changeSprint(sprintId) {
+  // 쿠키에 현재 스프린트 ID 저장
+  saveCurrentSprintAndProject(sprintId);
 
-    // URL 파라미터 업데이트
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set("sprint_id", sprintId);
-    window.location.search = urlParams.toString(); // 페이지 새로고침
-  }
+  // URL 파라미터 업데이트
+  const urlParams = new URLSearchParams(window.location.search);
+  urlParams.set("sprint_id", sprintId);
+  window.location.search = urlParams.toString(); // 페이지 새로고침
+}
 
 // 페이지 로드 시 초기화
 document.addEventListener("DOMContentLoaded", () => {
@@ -64,7 +62,6 @@ function saveBacklogOrder() {
   }, {});
 
   const backlogOrderString = JSON.stringify(backlogOrder);
-  console.log(`저장할 백로그 순서: ${backlogOrderString}`); // 디버깅 로그
 
   setCookie(`backlogOrder_${projectId}`, backlogOrderString, 7); // 7일간 유지
 }
@@ -72,7 +69,6 @@ function saveBacklogOrder() {
 // 백로그 순서 복원 함수
 function restoreBacklogOrder() {
   const savedOrder = getCookie(`backlogOrder_${projectId}`);
-  console.log(`복원할 백로그 순서: ${savedOrder}`); // 복원 디버깅 로그
   if (!savedOrder) return;
 
   const backlogOrder = JSON.parse(savedOrder);
@@ -86,12 +82,8 @@ function restoreBacklogOrder() {
         );
         if (backlogItem) {
           column.appendChild(backlogItem); // 순서대로 요소를 추가
-        } else {
-          console.warn(`백로그 ID ${backlogId}를 찾을 수 없습니다.`); // 디버깅 로그
         }
       });
-    } else {
-      console.warn(`컬럼 ID ${columnId}를 찾을 수 없습니다.`); // 디버깅 로그
     }
   });
 }
@@ -99,9 +91,12 @@ function restoreBacklogOrder() {
 // 스프린트 완료율 업데이트 함수
 function updateCompletionPercentage() {
   const totalItems = document.querySelectorAll(".scrum-sprint-item").length;
-  const doneItems = document.querySelectorAll("#done .scrum-sprint-item").length;
+  const doneItems = document.querySelectorAll(
+    "#done .scrum-sprint-item"
+  ).length;
 
-  const percentage = totalItems > 0 ? Math.round((doneItems / totalItems) * 100) : 0;
+  const percentage =
+    totalItems > 0 ? Math.round((doneItems / totalItems) * 100) : 0;
 
   // 완료율 업데이트
   const percentageBar = document.querySelector(".sprint-bar-inner");
@@ -255,20 +250,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // 스프린트 드롭다운 토글 함수
 function toggleSprintDropdown() {
-  const dropdowns = document.getElementsByClassName('sprint-dropdown');
+  const dropdowns = document.getElementsByClassName("sprint-dropdown");
   if (dropdowns.length > 0) {
-    const dropdown = dropdowns[0]; 
-    dropdown.classList.toggle('show'); 
+    const dropdown = dropdowns[0];
+    dropdown.classList.toggle("show");
   } else {
     console.error("No dropdown elements found.");
   }
 }
 
 // 드롭다운 외부 클릭 시 닫기
-window.onclick = function(event) {
-  const dropdown = document.getElementById('sprintDropdown');
-  if (!event.target.matches('.sprint-change-btn') && !event.target.closest('.sprint-change-btn') && dropdown.classList.contains('show')) {
-    dropdown.classList.remove('show');
+window.onclick = function (event) {
+  const dropdown = document.getElementById("sprintDropdown");
+  if (
+    !event.target.matches(".sprint-change-btn") &&
+    !event.target.closest(".sprint-change-btn") &&
+    dropdown.classList.contains("show")
+  ) {
+    dropdown.classList.remove("show");
   }
 };
 

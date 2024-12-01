@@ -167,7 +167,6 @@ function submitSprintForm() {
   document.querySelector("#sprint_create_modal form").submit();
 }
 
-
 // 스프린트 생성 모달 닫기 함수
 function closeSprintCreateModal() {
   document.getElementById("sprint_create_modal").style.display = "none";
@@ -212,7 +211,6 @@ function addSprintBacklog() {
   // 모든 필드가 올바르게 입력되었을 때 폼 제출
   document.getElementById("add-sprint-backlog-form").submit();
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////////
 // 스프린트 설정 팝업 모달 열기/닫기
@@ -332,7 +330,9 @@ function openSprintEditModal(
   });
 
   // 현재 스프린트에 할당된 프로덕트 백로그 ID 리스트 생성
-  var assignedBacklogIds = currentSprint.product_backlogs.map(function (backlog) {
+  var assignedBacklogIds = currentSprint.product_backlogs.map(function (
+    backlog
+  ) {
     return backlog.product_backlog_id;
   });
 
@@ -340,7 +340,7 @@ function openSprintEditModal(
   var relevantBacklogs = [];
 
   // 현재 스프린트에 할당된 백로그 추가
-  currentSprint.product_backlogs.forEach(function(backlog) {
+  currentSprint.product_backlogs.forEach(function (backlog) {
     relevantBacklogs.push({
       product_backlog_id: backlog.product_backlog_id,
       content: backlog.content,
@@ -349,7 +349,7 @@ function openSprintEditModal(
   });
 
   // 할당되지 않은 백로그 추가
-  unassignedBacklogsData.forEach(function(backlog) {
+  unassignedBacklogsData.forEach(function (backlog) {
     relevantBacklogs.push({
       product_backlog_id: backlog.product_backlog_id,
       content: backlog.product_backlog_content,
@@ -387,7 +387,7 @@ function deleteSprint() {
   // Small modal 닫기
   closeSmallModal();
   // 모달 메시지 변경
-  document.getElementById("confirmDeleteMessage").innerHTML = 
+  document.getElementById("confirmDeleteMessage").innerHTML =
     "스프린트를 삭제하면 스프린트에 대한 회고도 <br>함께 삭제됩니다.<br>정말로 이 스프린트를 삭제하시겠습니까?";
   // 확인 버튼에 스프린트 삭제 함수 연결
   document.querySelector(".modal-confirm-btn").onclick = confirmDelete;
@@ -395,8 +395,10 @@ function deleteSprint() {
   document.getElementById("confirmDeleteModal").style.display = "flex";
 }
 
-function confirmDelete() { //스프린트 삭제 확인 함수
-  const sprintId = document.getElementById("sprint-options-modal").dataset.sprintId;
+function confirmDelete() {
+  //스프린트 삭제 확인 함수
+  const sprintId = document.getElementById("sprint-options-modal").dataset
+    .sprintId;
 
   fetch(`/sprint/delete-sprint/${sprintId}`, {
     method: "POST",
@@ -427,7 +429,6 @@ function closeConfirmDeleteModal() {
   document.getElementById("confirmDeleteModal").style.display = "none";
 }
 
-
 // 메시지 모달 열기 함수
 function showMessageModal(title, message) {
   document.getElementById("modalTitle").textContent = title;
@@ -446,7 +447,8 @@ function deleteBacklog() {
   closeSmallModal();
 
   // 모달 메시지 변경
-  document.getElementById("confirmDeleteMessage").textContent = "정말로 이 스프린트 백로그를 삭제하시겠습니까?";
+  document.getElementById("confirmDeleteMessage").textContent =
+    "정말로 이 스프린트 백로그를 삭제하시겠습니까?";
 
   // 확인 버튼에 백로그 삭제 함수 연결
   document.querySelector(".modal-confirm-btn").onclick = confirmBacklogDelete;
@@ -470,7 +472,6 @@ window.onload = function () {
   const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
   window.history.replaceState({}, document.title, newUrl);
 };
-
 
 // 스프린트 백로그 수정 모달 열기 함수
 function openSprintBacklogEditModal() {
@@ -504,7 +505,10 @@ function confirmBacklogDelete() {
       })
       .catch((error) => {
         console.error("Error:", error);
-        showMessageModal("오류", "스프린트 백로그 삭제 중 오류가 발생했습니다.");
+        showMessageModal(
+          "오류",
+          "스프린트 백로그 삭제 중 오류가 발생했습니다."
+        );
       });
   }
 
@@ -539,9 +543,8 @@ window.addEventListener("click", function (event) {
   }
 });
 
-
 // 스프린트가 없는 경우 nav-btn 숨기기
-window.addEventListener("DOMContentLoaded", function() {
+window.addEventListener("DOMContentLoaded", function () {
   const sprintContainerNone = document.querySelector(".sprint-container-none");
   const navButtons = document.querySelectorAll(".nav-btn");
 
@@ -573,8 +576,6 @@ function moveBacklogs(sprintId, projectId) {
       showMessageModal("오류", "백로그 이전 중 오류가 발생했습니다.");
     });
 }
-
-
 
 function startOnboarding() {
   const onboardingSteps = [
