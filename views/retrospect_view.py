@@ -49,10 +49,7 @@ def create_retrospect_view(project_id):
         "label": request.form.get("label"),
         "file_link": file_link
     }
-    if create_retrospect(data):
-        flash("회고가 성공적으로 생성되었습니다.", "success")
-    else:
-        flash("회고 생성에 실패했습니다.", "error")
+    create_retrospect(data)
     return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
 
 # 회고 수정 페이지
@@ -63,7 +60,6 @@ def get_edit_retrospect_view(project_id, retrospect_id):
     retrospect = Retrospect.query.get_or_404(retrospect_id)
     sprints = get_sprints(project_id)
     if retrospect.user_id != current_user.id:
-        flash("본인이 작성한 글만 수정할 수 있습니다.", "error")
         return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
     return render_template('create_retrospect.html', project=project, retrospect=retrospect, sprints=sprints, userproject=UserProject.find_by_user_and_project(current_user.id, project_id))
 
@@ -73,7 +69,6 @@ def get_edit_retrospect_view(project_id, retrospect_id):
 def edit_retrospect_view(project_id, retrospect_id):
     retrospect = Retrospect.query.get_or_404(retrospect_id)
     if retrospect.user_id != current_user.id:
-        flash("본인이 작성한 글만 수정할 수 있습니다.", "error")
         return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
     file = request.files.get('file')
     file_link = handle_file_upload(file) or retrospect.file_link
@@ -84,10 +79,7 @@ def edit_retrospect_view(project_id, retrospect_id):
         "sprint_id": request.form.get("sprint_id"),
         "file_link": file_link
     }
-    if update_retrospect(retrospect_id, data):
-        flash("회고가 성공적으로 수정되었습니다.", "success")
-    else:
-        flash("회고 수정에 실패했습니다.", "error")
+    update_retrospect(retrospect_id, data)
     return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
 
 # 회고 조회 페이지
@@ -112,11 +104,7 @@ def view_retrospect_view(project_id, retrospect_id):
 def delete_retrospect_view(project_id, retrospect_id):
     retrospect = Retrospect.query.get_or_404(retrospect_id)
     if retrospect.user_id != current_user.id:
-        flash("본인이 작성한 글만 삭제할 수 있습니다.", "error")
         return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
-    if delete_retrospect(retrospect_id):
-        flash("회고가 성공적으로 삭제되었습니다.", "success")
-    else:
-        flash("회고 삭제에 실패했습니다.", "error")
+    delete_retrospect(retrospect_id)
     return redirect(url_for('retrospect.retrospect_view', project_id=project_id))
 

@@ -9,11 +9,12 @@ from controllers.burnup_controller import increment_total_backlog, decrement_tot
 from controllers.burnup_controller import increment_total_backlog, decrement_total_backlog
 from models.project_model import Project, UserProject
 from flask_login import current_user, login_required
+from models.calendar_model import Calendar
 
 # 블루프린트 생성
 sprint_bp = Blueprint('sprint', __name__)
 
-@sprint_bp.route('/sprint/<int:project_id>', methods=['GET'])
+@sprint_bp.route('/<int:project_id>', methods=['GET'])
 @login_required 
 def get_product_backlogs_view(project_id):
     if not current_user.is_authenticated:
@@ -32,6 +33,7 @@ def get_product_backlogs_view(project_id):
 
 # 스프린트 추가
 @sprint_bp.route('/add-sprint', methods=['POST'])
+@login_required 
 def add_sprint():
     project_id = request.form['project_id']
     sprint_name = request.form['sprint_name']
@@ -39,11 +41,13 @@ def add_sprint():
     end_date = request.form['end_date']
     status = request.form.get('status', None)
     selected_backlogs = request.form.getlist('backlogs')
+    # 쉼표로 구분된 문자열을 리스트로 변환
+    selected_backlogs = [int(backlog_id) for item in selected_backlogs for backlog_id in item.split(',')]
 
     new_sprint, error = create_sprint(project_id, sprint_name, start_date, end_date, status)
-    create_schedules(current_user.id,project_id, sprint_name, None, start_date, end_date, True, 0, None, True)
     if new_sprint:
         assign_backlogs_to_sprint(new_sprint.sprint_id, selected_backlogs)
+        create_schedules(current_user.id,project_id, sprint_name, None, start_date, end_date, True, 0, None, True)
         return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id, status=1))
     else:
         return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id, status=-1, error_message=error))
@@ -62,11 +66,10 @@ def edit_sprint(sprint_id, project_id):
     }
     
     updated_sprint = update_sprint(sprint_id, updates)
-    update_sprint_schedules(project_id, sprint_name, start_date, end_date)
     if updated_sprint:
         assign_backlogs_to_sprint(sprint_id, selected_backlogs)
+        update_sprint_schedules(project_id, sprint_name, start_date, end_date)    
         flash('스프린트가 성공적으로 수정되었습니다.')
-        #project_id = updated_sprint.project_id
     else:
         flash('스프린트 수정에 실패했습니다.')
 
@@ -129,10 +132,12 @@ def edit_backlog_status_view(backlog_id):
 def delete_backlog_view(backlog_id):
     success, message, project_id = delete_backlog(backlog_id)
     flash(message)
+    if not project_id or not success:
+        flash("Invalid project ID or deletion failed.")
+        return redirect(url_for('sprint.dashboard'))
     if success:
         decrement_total_backlog(project_id) # 백로그 삭제 시 총 백로그 수 감소
-        return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id))
-    return redirect(url_for('sprint.get_product_backlogs_view')) 
+    return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id))
 
 @sprint_bp.route('/move-backlogs/<int:sprint_id>/<int:project_id>', methods=['POST'])
 def move_backlogs(sprint_id, project_id):
