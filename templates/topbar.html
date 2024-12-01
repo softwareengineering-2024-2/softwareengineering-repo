@@ -19,8 +19,9 @@
             <li class="notification-dropdown">
                 <div class="notification-dropdown">
                     <a href="#" onclick="toggleNotificationDropdown(event, '{{ project.project_id }}')">
-                        <img src="{{ url_for('static', filename='icons/alarm.svg') }}" alt="알림 아이콘"> 알림
-                    </a>
+                        <img src="{{ url_for('static', filename='icons/alarm.svg') }}" alt="알림 아이콘">
+                        <span class="alert-text">알림</span>
+                    </a>                    
                     <div class="notification-content" style="display: none;">
                         <h3>알림</h3>
                         <ul>
@@ -53,6 +54,15 @@
         </ul>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const projectId = "{{ project.project_id or '' }}";
 
+        // 프로젝트 ID가 유효하면 알림 요청
+        if (projectId) {
+            fetchAlerts(projectId);
+        }
+    });
+</script>
 <!-- JavaScript 파일 추가 -->
 <script src="{{ url_for('static', filename='js/topbar.js') }}"></script>
