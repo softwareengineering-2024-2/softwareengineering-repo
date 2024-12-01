@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>스크럼 보드</title>
+    <title>A.T.M</title>
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
@@ -148,9 +152,11 @@
           </button>
         </div>
       </div>
-    </div>    
+    </div>
     <!-- 외부 JavaScript 파일 연결 -->
-    <script>const projectId = "{{ project_id }}";</script>
+    <script>
+      const projectId = "{{ project_id }}";
+    </script>
     <script src="{{ url_for('static', filename='js/scrum.js') }}"></script>
   </body>
 </html>

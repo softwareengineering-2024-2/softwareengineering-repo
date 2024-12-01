@@ -52,7 +52,7 @@ function openExitProjectModal(event) {
 // 모달 닫기
 function closeModal(modalId) {
   document.getElementById(modalId).style.display = "none";
-  modalBackground.style.display = "block";
+  modalBackground.style.display = "none";
 }
 
 // 나가기 확인 버튼 클릭 시 폼 제출
