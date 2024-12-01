@@ -18,7 +18,6 @@ sprint_bp = Blueprint('sprint', __name__)
 @login_required 
 def get_product_backlogs_view(project_id):
     if not current_user.is_authenticated:
-        flash('로그인이 필요합니다.')  # 사용자에게 로그인이 필요하다는 메시지를 표시
         return redirect(url_for('auth.login'))  # 로그인 페이지로 리디렉트
     sprints = get_sprints_with_backlogs(project_id)
     backlogs = {
@@ -69,9 +68,6 @@ def edit_sprint(sprint_id, project_id):
     if updated_sprint:
         assign_backlogs_to_sprint(sprint_id, selected_backlogs)
         update_sprint_schedules(project_id, sprint_name, start_date, end_date)    
-        flash('스프린트가 성공적으로 수정되었습니다.')
-    else:
-        flash('스프린트 수정에 실패했습니다.')
 
     if project_id:
         return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id))
@@ -84,11 +80,9 @@ def edit_sprint(sprint_id, project_id):
 def delete_sprint_route(sprint_id):
     deleted_sprint = delete_sprint(sprint_id)
     if deleted_sprint:
-        flash('스프린트가 성공적으로 삭제되었습니다.')
         delete_sprint_schedules(deleted_sprint.project_id, deleted_sprint.sprint_name)
         return redirect(url_for('sprint.get_product_backlogs_view', project_id=deleted_sprint.project_id))
     else:
-        flash('스프린트 삭제에 실패했습니다.')
         return redirect(url_for('sprint.get_product_backlogs_view', project_id=sprint_id))
     
 
@@ -113,7 +107,6 @@ def edit_backlog_details_view(backlog_id):
     content = request.form.get('content')
     user_id = request.form.get('user_id')
     success, message, project_id = update_backlog_details(backlog_id, content, user_id)
-    flash(message)
     if success:
         return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id))
     return redirect(url_for('sprint.get_product_backlogs_view'))
@@ -125,7 +118,7 @@ def edit_backlog_status_view(backlog_id):
     flash(message)
     if success:
         return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id))
-    return redirect(url_for('sprint.get_product_backlogs_view'))
+    return redirect(url_for('sprint.get_product_backlogs_view', project_id=project_id))
 
 
 @sprint_bp.route('/delete-backlog/<int:backlog_id>', methods=['POST'])

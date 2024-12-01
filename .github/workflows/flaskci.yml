@@ -3,30 +3,30 @@ name: flask-ci
 # main과 develop 브랜치에 푸시되거나 풀 리퀘스트가 열렸을 때 워크플로우 실행
 on:
   push:
-    branches: 
+    branches:
       - main
       - develop
   pull_request_target:
-    branches: 
+    branches:
       - main
       - develop
-    
+
 permissions:
-  contents: read 
-  checks: write 
-  issues: write 
-  pull-requests: write 
-  
+  contents: read
+  checks: write
+  issues: write
+  pull-requests: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
-        # 1. 리포지토리 체크아웃
+      # 1. 리포지토리 체크아웃
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      
+
         # 2. Python 환경 설정
       - name: Set up Python
         uses: actions/setup-python@v3
@@ -39,13 +39,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest openai PyGithub
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          
+
         # 4. 테스트 결과 디렉토리 생성
       - name: Create Test Results Directory
         run: mkdir -p test-results
-        
+
         # 5. flake8(코드 린팅) 수행
-      - name: Lint with flake8 
+      - name: Lint with flake8
         run: |
           # flake8을 사용하여 코드 린팅을 수행하고 결과를 출력
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
@@ -68,20 +68,20 @@ jobs:
         if: steps.check_tests.outputs.has_tests == 'true'
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          files: 'test-results/results.xml'
-          check_name: 'Unit Tests Results'
+          files: "test-results/results.xml"
+          check_name: "Unit Tests Results"
 
         # 테스트가 실패했을 경우
       - name: Comment on PR for failed test lines
         if: steps.check_tests.outputs.has_tests != '0'
         uses: mikepenz/action-junit-report@v3
         with:
-          report_paths: 'test-results/results.xml'
+          report_paths: "test-results/results.xml"
           token: ${{ secrets.GITHUB_TOKEN }}
 
-         # 테스트가 없을 경우
+          # 테스트가 없을 경우
       - name: Comment on PR if no tests
-        if: steps.check_tests.outputs.has_tests == '0'  
+        if: steps.check_tests.outputs.has_tests == '0'
         uses: actions/github-script@v6
         with:
           script: |
@@ -105,9 +105,9 @@ jobs:
           pip install openai PyGithub
           python .github/scripts/gpt_code_review.py
 
-         # 10. PR 머지 시 관련 이슈에 코멘트 남기기
-      - name: Comment on related issue 
-        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == true }}  # PR이 병합된 경우에만 이 스텝이 실행됩니다.
+        # 10. PR 머지 시 관련 이슈에 코멘트 남기기
+      - name: Comment on related issue
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == true }} # PR이 병합된 경우에만 이 스텝이 실행됩니다.
         uses: actions/github-script@v6
         with:
           # PR 본문에서 연관된 이슈(#숫자) 정보를 추출한 후, 해당 이슈에 무작위 코멘트를 남깁니다.

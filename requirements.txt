@@ -12,3 +12,4 @@ google-auth-httplib2
 pytest
 pytest-flask
 pytest-mock
+pytest-cov
