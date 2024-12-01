@@ -1,3 +1,118 @@
+// 쿠키 읽기 함수
+function getCookie(name) {
+  const cookies = document.cookie.split("; ").reduce((acc, cookie) => {
+    const [key, value] = cookie.split("=");
+    acc[key] = value;
+    return acc;
+  }, {});
+  return cookies[name];
+}
+
+// 쿠키 저장 함수
+function setCookie(name, value, days = 7) {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${value}; path=/; expires=${expires.toUTCString()}`;
+}
+
+// 현재 스프린트와 프로젝트 정보를 쿠키에 저장
+function saveCurrentSprintAndProject(sprintId) {
+  if (projectId) {
+    setCookie(`currentSprintId_${projectId}`, sprintId);
+  }
+}
+
+// 스프린트 변경 함수
+function changeSprint(sprintId) {
+  // 쿠키에 현재 스프린트 ID 저장
+  saveCurrentSprintAndProject(sprintId);
+
+  // URL 파라미터 업데이트
+  const urlParams = new URLSearchParams(window.location.search);
+  urlParams.set("sprint_id", sprintId);
+  window.location.search = urlParams.toString(); // 페이지 새로고침
+}
+
+// 페이지 로드 시 초기화 함수
+document.addEventListener("DOMContentLoaded", () => {
+  const savedSprintId = getCookie(`currentSprintId_${projectId}`); // 쿠키에서 스프린트 ID 읽기
+
+  if (savedSprintId) {
+    // 쿠키에 저장된 스프린트 ID가 있으면 해당 스프린트로 표시
+    const urlParams = new URLSearchParams(window.location.search);
+    if (!urlParams.get("sprint_id")) {
+      urlParams.set("sprint_id", savedSprintId);
+      window.location.search = urlParams.toString(); // 페이지 새로고침
+    }
+  }
+});
+
+// 스프린트 완료율 업데이트 함수
+function updateCompletionPercentage() {
+  const totalItems = document.querySelectorAll(".scrum-sprint-item").length;
+  const doneItems = document.querySelectorAll(
+    "#done .scrum-sprint-item"
+  ).length;
+
+  const percentage =
+    totalItems > 0 ? Math.round((doneItems / totalItems) * 100) : 0;
+
+  // 완료율 업데이트
+  const percentageBar = document.querySelector(".sprint-bar-inner");
+  const percentageText = document.querySelector(".sprint-bar span");
+
+  if (percentageBar && percentageText) {
+    percentageBar.style.width = `${percentage}%`;
+    percentageText.textContent = `${percentage}%`;
+  }
+}
+
+// 백로그 상태 자동 저장 함수
+function autoSaveStatuses() {
+  const updatedBacklogs = [];
+  document.querySelectorAll(".scrum-sprint-item").forEach((item) => {
+    const backlogId = item.getAttribute("data-backlog-id");
+    const parentColumn = item.parentElement;
+    let status = "";
+
+    if (parentColumn.id === "to-do") {
+      status = "To Do";
+    } else if (parentColumn.id === "in-progress") {
+      status = "In Progress";
+    } else if (parentColumn.id === "done") {
+      status = "Done";
+    }
+
+    updatedBacklogs.push({
+      backlog_id: backlogId,
+      new_status: status,
+    });
+  });
+
+  // 서버에 업데이트된 상태를 전송
+  fetch("/scrum/update_sprint_backlog_statuses", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      updated_backlogs: updatedBacklogs,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (!data.success) {
+        console.error("상태 저장 실패:", data.message);
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+
+  // 완료율 업데이트
+  updateCompletionPercentage();
+}
+
 // 드래그가 가능한 항목을 끌 때 발생하는 이벤트
 function drag(ev) {
   ev.dataTransfer.setData("text", ev.target.id); // 드래그된 요소의 ID를 저장
@@ -24,34 +139,7 @@ function drop(ev) {
   // 드롭 대상이 scrum-content이고, 드래그된 항목이 해당 scrum-content의 자식이 아닐 경우 항목을 추가
   if (dropTarget && dropTarget !== draggedItem.parentNode) {
     dropTarget.appendChild(draggedItem); // 드래그된 항목을 드롭된 scrum-content에 추가
-    // 상태 업데이트
-    var newStatus = dropZone.id.replace("-", " ").titleCase();
-    var backlogId = draggedItem.getAttribute("data-backlog-id");
-
-    // 서버에 상태 업데이트 요청 보내기
-    fetch("/update_sprint_backlog_status", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCookie("csrf_token"), // CSRF 토큰이 필요한 경우
-      },
-      body: JSON.stringify({
-        backlog_id: backlogId,
-        new_status: newStatus,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (!data.success) {
-          alert("상태 업데이트에 실패했습니다.");
-          location.reload();
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        alert("상태 업데이트 중 오류가 발생했습니다.");
-        location.reload();
-      });
+    autoSaveStatuses(); // 상태 저장 및 완료율 업데이트
   }
 }
 
@@ -61,9 +149,14 @@ document.querySelectorAll(".scrum-sprint-item").forEach((item) => {
 });
 
 // 각 scrum-content 영역에 드롭 이벤트 핸들러 추가
-document.querySelectorAll(".scrum-content").forEach((content) => {
-  content.addEventListener("dragover", allowDrop); // 드래그 오버 시
-  content.addEventListener("drop", drop); // 드롭 시
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".scrum-content").forEach((content) => {
+    content.addEventListener("dragover", allowDrop); // 드래그 오버 시
+    content.addEventListener("drop", drop); // 드롭 시
+  });
+
+  // 초기 완료율 업데이트
+  updateCompletionPercentage();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -113,13 +206,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// 스프린트 변경 함수
-function changeSprint(sprint_id) {
-  const urlParams = new URLSearchParams(window.location.search);
-  urlParams.set("sprint_id", sprint_id);
-  window.location.search = urlParams.toString();
-}
-
 // 스프린트 드롭다운 토글 함수
 function toggleSprintDropdown() {
   const dropdowns = document.getElementsByClassName("sprint-dropdown");
@@ -153,61 +239,11 @@ String.prototype.titleCase = function () {
     .join(" ");
 };
 
-function saveStatuses() {
-  // 모든 백로그 아이템의 현재 상태를 수집합니다.
-  var updatedBacklogs = [];
-  document.querySelectorAll(".scrum-sprint-item").forEach(function (item) {
-    var backlogId = item.getAttribute("data-backlog-id");
-    var parentColumn = item.parentElement;
-    var status = "";
-    if (parentColumn.id === "to-do") {
-      status = "To Do";
-    } else if (parentColumn.id === "in-progress") {
-      status = "In Progress";
-    } else if (parentColumn.id === "done") {
-      status = "Done";
-    }
-    updatedBacklogs.push({
-      backlog_id: backlogId,
-      new_status: status,
-    });
-  });
-
-  // 서버에 업데이트된 상태를 전송합니다.
-  fetch("/scrum/update_sprint_backlog_statuses", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      updated_backlogs: updatedBacklogs,
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.success) {
-        alert("상태가 성공적으로 저장되었습니다.");
-        // 필요하다면 페이지를 새로고침하거나 추가 작업을 수행합니다.
-      } else {
-        alert("상태 저장에 실패했습니다: " + data.message);
-      }
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      alert("상태 저장 중 오류가 발생했습니다.");
-    });
-}
-
 function startOnboarding() {
   const onboardingSteps = [
     {
       element: document.querySelector(".sprint-change-btn"),
       text: "스프린트를 선택하려면 이 버튼을 클릭하세요.",
-      tooltipPosition: "bottom", // 툴팁 위치
-    },
-    {
-      element: document.querySelector(".save-button"),
-      text: "현재 스프린트의 상태를 저장할 수 있습니다.",
       tooltipPosition: "bottom", // 툴팁 위치
     },
     {

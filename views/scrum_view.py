@@ -87,7 +87,7 @@ def scrum_view(project_id):
         backlog.user_name = user.user_name
         backlogs_by_status[backlog.status].append(backlog)
 
-    return render_template('scrum.html', project=project, sprints=sprints, selected_sprint=selected_sprint, backlogs_by_status=backlogs_by_status, userproject=userprojects, completion_percentage=completion_percentage, is_past_due=is_past_due)
+    return render_template('scrum.html', project=project, sprints=sprints, selected_sprint=selected_sprint, backlogs_by_status=backlogs_by_status, userproject=userprojects, completion_percentage=completion_percentage, is_past_due=is_past_due, project_id=project_id)
 
 # 스프린트 백로그 상태 업데이트 API
 @scrum_bp.route('/update_sprint_backlog_statuses', methods=['POST'])

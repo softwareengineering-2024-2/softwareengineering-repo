@@ -29,18 +29,6 @@
   line-height: normal;
 }
 
-.save-button {
-  display: flex;
-  padding: 8px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  border-radius: 10px;
-  border: 1px solid var(--Grey-grey-300, #9f9f9f);
-  background: #fff;
-  cursor: pointer;
-}
-
 .title-left-wrapper > * {
   word-wrap: break-word; /* 단어가 너무 길면 줄바꿈 */
   word-break: break-word; /* 단어를 강제로 끊음 */

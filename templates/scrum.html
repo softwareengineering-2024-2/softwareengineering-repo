@@ -50,20 +50,6 @@
                 </ul>
               </div>
             </div>
-            <button
-              onclick="saveStatuses()"
-              class="save-button"
-              {%
-              if
-              is_past_due
-              %}disabled
-              style="cursor: not-allowed; opacity: 0.5"
-              {%
-              endif
-              %}
-            >
-              <div class="b2-regular">상태 저장</div>
-            </button>
           </div>
 
           <div class="sprint-percentage-container">
@@ -164,6 +150,7 @@
       </div>
     </div>    
     <!-- 외부 JavaScript 파일 연결 -->
+    <script>const projectId = "{{ project_id }}";</script>
     <script src="{{ url_for('static', filename='js/scrum.js') }}"></script>
   </body>
 </html>

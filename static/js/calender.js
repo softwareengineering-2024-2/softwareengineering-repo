@@ -1,6 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
   const projectId = document.getElementById("project-id").value; // 프로젝트 ID 가져오기
 
+  // Pretendard 폰트를 적용하기 위한 <link> 태그 추가
+  const linkElement = document.createElement("link");
+  linkElement.rel = "stylesheet";
+  linkElement.href = "https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css";
+
+  // <head> 요소에 추가
+  document.head.appendChild(linkElement);
+
   // 초기화
   initCalendar();
   fetchSchedules(projectId);

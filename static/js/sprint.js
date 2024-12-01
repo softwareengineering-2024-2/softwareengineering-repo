@@ -1,6 +1,24 @@
-// 스프린트 네비게이션 함수
+// 쿠키 읽기 함수
+function getCookie(name) {
+  const cookies = document.cookie.split("; ").reduce((acc, cookie) => {
+    const [key, value] = cookie.split("=");
+    acc[key] = value;
+    return acc;
+  }, {});
+  return cookies[name];
+}
+
+// 쿠키 저장 함수
+function setCookie(name, value, days = 7) {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${value}; path=/; expires=${expires.toUTCString()}`;
+}
+
+// 스프린트 네비게이션 변수
 let currentSprintIndex = 1;
 
+// 스프린트 네비게이션 함수
 function navigateSprints(direction) {
   const sprints = document.querySelectorAll(".sprint-container");
   const navBtnLt = document.querySelector(".nav-btn-lt");
@@ -12,39 +30,59 @@ function navigateSprints(direction) {
   // 스프린트 인덱스 업데이트
   currentSprintIndex += direction;
 
-  // 첫 번째와 마지막 스프린트에서 버튼을 숨김
-  if (currentSprintIndex <= 1) {
-    currentSprintIndex = 1;
-    navBtnLt.style.display = "none"; // 첫 번째 스프린트에서는 왼쪽 버튼 숨김
-  } else {
-    navBtnLt.style.display = "flex"; // 첫 번째가 아니면 왼쪽 버튼 표시
-  }
-
-  if (currentSprintIndex >= sprints.length) {
-    currentSprintIndex = sprints.length;
-    navBtnGt.style.display = "none"; // 마지막 스프린트에서는 오른쪽 버튼 숨김
-  } else {
-    navBtnGt.style.display = "flex"; // 마지막이 아니면 오른쪽 버튼 표시
-  }
-
   // 새로 선택된 스프린트 표시
   sprints[currentSprintIndex - 1].style.display = "block";
+
+  // 현재 스프린트 인덱스를 프로젝트 ID와 함께 쿠키에 저장
+  setCookie(`currentSprintIndex_${projectId}`, currentSprintIndex);
+
+  // 버튼 상태 업데이트
+  updateNavButtons();
 }
 
-// 초기화 시 버튼 상태 설정
-document.addEventListener("DOMContentLoaded", function () {
+// 네비게이션 버튼 상태 업데이트
+function updateNavButtons() {
   const sprints = document.querySelectorAll(".sprint-container");
   const navBtnLt = document.querySelector(".nav-btn-lt");
   const navBtnGt = document.querySelector(".nav-btn-gt");
 
-  // 스프린트가 없을 때 네비게이션 버튼 숨기기
-  if (sprints.length === 0) {
-    navBtnLt.style.display = "none";
-    navBtnGt.style.display = "none";
+  // 왼쪽 버튼 표시 여부
+  if (currentSprintIndex === 1) {
+    navBtnLt.style.display = "none"; // 첫 번째 스프린트에서는 숨김
   } else {
-    // 스프린트가 있을 때 초기 상태 설정
-    navigateSprints(0);
+    navBtnLt.style.display = "inline-block"; // 첫 번째가 아니면 표시
   }
+
+  // 오른쪽 버튼 표시 여부
+  if (currentSprintIndex === sprints.length) {
+    navBtnGt.style.display = "none"; // 마지막 스프린트에서는 숨김
+  } else {
+    navBtnGt.style.display = "inline-block"; // 마지막이 아니면 표시
+  }
+}
+
+// 초기화 함수
+document.addEventListener("DOMContentLoaded", function () {
+  const sprints = document.querySelectorAll(".sprint-container");
+
+  // 쿠키에서 저장된 인덱스를 불러옴
+  let savedIndex = parseInt(getCookie(`currentSprintIndex_${projectId}`), 10);
+
+  // 유효한 저장된 인덱스가 없으면 기본값으로 설정
+  if (!savedIndex || savedIndex <= 0 || savedIndex > sprints.length) {
+    savedIndex = 1; // 기본값
+    setCookie(`currentSprintIndex_${projectId}`, savedIndex);
+  }
+
+  currentSprintIndex = savedIndex;
+
+  // 초기 스프린트 표시
+  sprints.forEach((sprint, index) => {
+    sprint.style.display = index + 1 === currentSprintIndex ? "block" : "none";
+  });
+
+  // 버튼 상태 초기화
+  updateNavButtons();
 });
 
 // 스프린트 생성 모달 열기 함수
@@ -53,6 +91,14 @@ function openSprintCreateModal() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  const sprintForm = document.querySelector("#sprint_create_modal form");
+
+  // Enter 키 입력 방지
+  sprintForm.addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault(); // 기본 동작 방지
+    }
+  });
   const backlogContainer = document.getElementById("product-backlog-container");
   backlogContainer.addEventListener("click", function (event) {
     if (event.target.classList.contains("product-backlog-item")) {
@@ -341,8 +387,8 @@ function deleteSprint() {
   // Small modal 닫기
   closeSmallModal();
   // 모달 메시지 변경
-  document.getElementById("confirmDeleteMessage").textContent =
-    "정말로 이 스프린트를 삭제하시겠습니까?";
+  document.getElementById("confirmDeleteMessage").innerHTML =
+    "스프린트를 삭제하면 스프린트에 대한 회고도 <br>함께 삭제됩니다.<br>정말로 이 스프린트를 삭제하시겠습니까?";
   // 확인 버튼에 스프린트 삭제 함수 연결
   document.querySelector(".modal-confirm-btn").onclick = confirmDelete;
   // 삭제 확인 모달 표시
