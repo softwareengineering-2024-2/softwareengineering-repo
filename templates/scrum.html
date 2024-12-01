@@ -153,6 +153,9 @@
         </div>
       </div>
     </div>
+    {% if message %}
+    <div class="alert alert-info">{{ message }}</div>
+    {% endif %}
     <!-- 외부 JavaScript 파일 연결 -->
     <script>
       const projectId = "{{ project_id }}";
