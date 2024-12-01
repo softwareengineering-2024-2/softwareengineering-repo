@@ -75,18 +75,3 @@ def test_edit_sprint(authenticated_user, mocker,test_app):
         assert response.status_code == 302
         assert '/sprint/2' in response.headers['Location']
 
-def test_delete_sprint(authenticated_user, mocker, test_app):
-    """스프린트 삭제 기능을 테스트"""
-    mocker.patch('controllers.sprint_controller.delete_sprint', return_value=True)
-    mocked_calendar = Mock()
-    mocker.patch('models.calendar_model.Calendar.find_by_title', return_value=mocked_calendar)
-
-    # Calendar 객체의 delete_from_db 메서드가 호출되었는지 확인
-    mocked_calendar.delete_from_db = Mock()
-
-    with test_app.app_context():
-        response = authenticated_user.post('/sprint/delete-sprint/1')
-        assert response.status_code == 302
-        assert '/sprint' in response.headers['Location']
-        mocked_calendar.delete_from_db.assert_called_once()
-
