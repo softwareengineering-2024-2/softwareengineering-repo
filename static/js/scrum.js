@@ -240,11 +240,6 @@ function startOnboarding() {
       tooltipPosition: "bottom", // 툴팁 위치
     },
     {
-      element: document.querySelector(".save-button"),
-      text: "현재 스프린트의 상태를 저장할 수 있습니다.",
-      tooltipPosition: "bottom", // 툴팁 위치
-    },
-    {
       element: document.querySelector(".sprint-percentage-container"),
       text: "현재 스프린트의 작업 진도율을 확인할 수 있습니다.",
       tooltipPosition: "top", // 툴팁 위치
