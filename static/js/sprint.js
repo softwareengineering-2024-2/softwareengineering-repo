@@ -1,6 +1,24 @@
-// 스프린트 네비게이션 함수
+// 쿠키 읽기 함수
+function getCookie(name) {
+  const cookies = document.cookie.split("; ").reduce((acc, cookie) => {
+    const [key, value] = cookie.split("=");
+    acc[key] = value;
+    return acc;
+  }, {});
+  return cookies[name];
+}
+
+// 쿠키 저장 함수
+function setCookie(name, value, days = 7) {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${value}; path=/; expires=${expires.toUTCString()}`;
+}
+
+// 스프린트 네비게이션 변수
 let currentSprintIndex = 1;
 
+// 스프린트 네비게이션 함수
 function navigateSprints(direction) {
   const sprints = document.querySelectorAll(".sprint-container");
   const navBtnLt = document.querySelector(".nav-btn-lt");
@@ -12,39 +30,53 @@ function navigateSprints(direction) {
   // 스프린트 인덱스 업데이트
   currentSprintIndex += direction;
 
-  // 첫 번째와 마지막 스프린트에서 버튼을 숨김
+  // 첫 번째와 마지막 스프린트에서 버튼 숨김 처리
   if (currentSprintIndex <= 1) {
     currentSprintIndex = 1;
-    navBtnLt.style.display = "none"; // 첫 번째 스프린트에서는 왼쪽 버튼 숨김
+    navBtnLt.disabled = true; // 이전 버튼 비활성화
   } else {
-    navBtnLt.style.display = "flex"; // 첫 번째가 아니면 왼쪽 버튼 표시
+    navBtnLt.disabled = false;
   }
 
   if (currentSprintIndex >= sprints.length) {
     currentSprintIndex = sprints.length;
-    navBtnGt.style.display = "none"; // 마지막 스프린트에서는 오른쪽 버튼 숨김
+    navBtnGt.disabled = true; // 다음 버튼 비활성화
   } else {
-    navBtnGt.style.display = "flex"; // 마지막이 아니면 오른쪽 버튼 표시
+    navBtnGt.disabled = false;
   }
 
   // 새로 선택된 스프린트 표시
   sprints[currentSprintIndex - 1].style.display = "block";
+
+  // 현재 스프린트 인덱스를 프로젝트 ID와 함께 쿠키에 저장
+  setCookie(`currentSprintIndex_${projectId}`, currentSprintIndex);
 }
 
-// 초기화 시 버튼 상태 설정
-document.addEventListener("DOMContentLoaded", function() {
+// 초기화 함수
+document.addEventListener("DOMContentLoaded", function () {
   const sprints = document.querySelectorAll(".sprint-container");
   const navBtnLt = document.querySelector(".nav-btn-lt");
   const navBtnGt = document.querySelector(".nav-btn-gt");
 
-  // 스프린트가 없을 때 네비게이션 버튼 숨기기
-  if (sprints.length === 0) {
-      navBtnLt.style.display = "none";
-      navBtnGt.style.display = "none";
-  } else {
-      // 스프린트가 있을 때 초기 상태 설정
-      navigateSprints(0);
+  // 쿠키에서 저장된 인덱스를 불러옴
+  let savedIndex = parseInt(getCookie(`currentSprintIndex_${projectId}`), 10);
+
+  // 유효한 저장된 인덱스가 없으면 기본값으로 설정
+  if (!savedIndex || savedIndex <= 0 || savedIndex > sprints.length) {
+    savedIndex = 1; // 기본값
+    setCookie(`currentSprintIndex_${projectId}`, savedIndex);
   }
+
+  currentSprintIndex = savedIndex;
+
+  // 초기 스프린트 표시
+  sprints.forEach((sprint, index) => {
+    sprint.style.display = index + 1 === currentSprintIndex ? "block" : "none";
+  });
+
+  // 버튼 상태 초기화
+  navBtnLt.disabled = currentSprintIndex === 1;
+  navBtnGt.disabled = currentSprintIndex === sprints.length;
 });
 
 // 스프린트 생성 모달 열기 함수
