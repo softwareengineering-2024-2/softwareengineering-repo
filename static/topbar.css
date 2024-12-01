@@ -47,6 +47,7 @@
     padding: 5px;
     max-height: 22vh;
     overflow-y: auto;
+    z-index: 9999;
 }
 
 .notification-content h3 {
@@ -92,7 +93,6 @@
 }
 
 /* 마이페이지 토글에 필요한 css */
-/* 마이페이지 드롭다운 스타일 */
 
 .my-page-dropdown {
     margin-left: 2vh; /* 필요한 만큼 간격 조정 */

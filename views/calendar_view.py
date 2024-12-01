@@ -6,7 +6,6 @@ from controllers.calendar_controller import (
     delete_schedules
 )
 from models.project_model import Project, UserProject
-from models.calendar_model import Calendar
 from flask_login import login_required, current_user
 import traceback
 from flask import current_app
@@ -14,25 +13,18 @@ from flask import current_app
 # Blueprint 객체 생성
 calendar_bp = Blueprint('calendar', __name__)
 
-# HTML 페이지 렌더링
+# 캘린더 페이지 렌더링
 @calendar_bp.route('/<int:project_id>', methods=['GET'])
 @login_required
 def calendar_view(project_id):
     try:
         userproject = UserProject.find_by_user_and_project(current_user.id, project_id)
         if not userproject:
-            flash("프로젝트를 찾을 수 없습니다.")
             return redirect(url_for('project_main.project_main_view', project_id=project_id))
 
-        # 일정 조회
         schedules = show_schedules(project_id, current_user.id)
-
-        # HTML 페이지를 렌더링
         return render_template('calendar.html', project=Project.find_by_id(project_id), userproject=userproject,schedules=schedules)
     except Exception as e:
-    # 로그 출력
-        current_app.logger.error(f"An error occurred: {e}")
-        current_app.logger.error(traceback.format_exc())  # 상세 에러 스택 트레이스 출력
         return "Internal Server Error", 500
 
 # 일정 조회
