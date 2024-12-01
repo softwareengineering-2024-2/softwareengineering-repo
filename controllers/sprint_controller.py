@@ -366,8 +366,11 @@ def get_current_sprint_backlogs(user_id, project_id):
         for sprint in all_sprints:
             print(f"Processing Sprint ID: {sprint.sprint_id}")  # 스프린트 ID 출력
 
-            # 각 스프린트의 백로그 가져오기
-            sprint_backlogs = SprintBacklog.query.filter_by(sprint_id=sprint.sprint_id).all()
+            # 현재 사용자의 백로그만 필터링
+            sprint_backlogs = SprintBacklog.query.filter_by(
+                sprint_id=sprint.sprint_id,
+                user_id=user_id  # 현재 사용자의 백로그만 가져옴
+            ).all()
 
             # 디버깅: 각 백로그 ID와 상태 출력
             for backlog in sprint_backlogs:
@@ -415,6 +418,7 @@ def get_current_sprint_backlogs(user_id, project_id):
     except SQLAlchemyError as e:
         print(f"Error: {str(e)}")  # 예외 메시지 출력
         return {'error': str(e)}
+
 
 def move_incomplete_backlogs_to_next_sprint(sprint_id, project_id):
     try:
