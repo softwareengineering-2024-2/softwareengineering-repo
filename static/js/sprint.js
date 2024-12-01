@@ -3,15 +3,31 @@ let currentSprintIndex = 1;
 
 function navigateSprints(direction) {
   const sprints = document.querySelectorAll(".sprint-container");
+  const navBtnLt = document.querySelector(".nav-btn-lt");
+  const navBtnGt = document.querySelector(".nav-btn-gt");
+
+  // 현재 스프린트를 숨기기
   sprints[currentSprintIndex - 1].style.display = "none";
 
+  // 스프린트 인덱스 업데이트
   currentSprintIndex += direction;
-  if (currentSprintIndex < 1) {
-    currentSprintIndex = sprints.length;
-  } else if (currentSprintIndex > sprints.length) {
+
+  // 첫 번째와 마지막 스프린트에서 버튼을 숨김
+  if (currentSprintIndex <= 1) {
     currentSprintIndex = 1;
+    navBtnLt.style.display = "none"; // 첫 번째 스프린트에서는 왼쪽 버튼 숨김
+  } else {
+    navBtnLt.style.display = "flex"; // 첫 번째가 아니면 왼쪽 버튼 표시
   }
 
+  if (currentSprintIndex >= sprints.length) {
+    currentSprintIndex = sprints.length;
+    navBtnGt.style.display = "none"; // 마지막 스프린트에서는 오른쪽 버튼 숨김
+  } else {
+    navBtnGt.style.display = "flex"; // 마지막이 아니면 오른쪽 버튼 표시
+  }
+
+  // 새로 선택된 스프린트 표시
   sprints[currentSprintIndex - 1].style.display = "block";
 }
 
@@ -35,6 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function openSprintCreateModal() {
   document.getElementById("sprint_create_modal").style.display = "flex";
 }
+
 document.addEventListener("DOMContentLoaded", function () {
   const backlogContainer = document.getElementById("product-backlog-container");
   backlogContainer.addEventListener("click", function (event) {
@@ -44,7 +61,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
-
 function updateSelectedBacklogs() {
   const selectedItems = document.querySelectorAll(
     ".product-backlog-item.selected"
@@ -100,6 +116,7 @@ function submitSprintForm() {
     (item) => item.dataset.backlogId
   );
   document.getElementById("selected-backlog-ids").value = backlogIds.join(",");
+
   // 모든 필드가 올바르게 입력되었을 때 폼 제출
   document.querySelector("#sprint_create_modal form").submit();
 }
@@ -175,20 +192,13 @@ function submitEditSprintForm() {
   const productBacklogContainer = document.getElementById(
     "edit-product-backlog-container"
   );
-  const productBacklogContainer = document.getElementById(
-    "edit-product-backlog-container"
-  );
   const selectedBacklogs = [];
-  const backlogItems = productBacklogContainer.getElementsByClassName(
-    "product-backlog-item"
-  );
   const backlogItems = productBacklogContainer.getElementsByClassName(
     "product-backlog-item"
   );
 
   for (let i = 0; i < backlogItems.length; i++) {
     const item = backlogItems[i];
-    if (item.classList.contains("assigned")) {
     if (item.classList.contains("assigned")) {
       selectedBacklogs.push(item.dataset.backlogId);
     }
@@ -205,12 +215,7 @@ function submitEditSprintForm() {
   // 기존의 히든 인풋 제거
   const existingInputs = editForm.querySelectorAll('input[name="backlogs"]');
   existingInputs.forEach((input) => input.remove());
-  existingInputs.forEach((input) => input.remove());
 
-  selectedBacklogs.forEach(function (backlogId) {
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = "backlogs";
   selectedBacklogs.forEach(function (backlogId) {
     const input = document.createElement("input");
     input.type = "hidden";
@@ -272,21 +277,13 @@ function openSprintEditModal(
     "edit-product-backlog-container"
   );
   productBacklogContainer.innerHTML = ""; // 기존 내용 제거
-  const productBacklogContainer = document.getElementById(
-    "edit-product-backlog-container"
-  );
-  productBacklogContainer.innerHTML = ""; // 기존 내용 제거
 
   // 현재 스프린트를 sprintsData에서 찾기
-  var currentSprint = sprintsData.find(function (sprint) {
   var currentSprint = sprintsData.find(function (sprint) {
     return sprint.sprint_id === sprintId;
   });
 
   // 현재 스프린트에 할당된 프로덕트 백로그 ID 리스트 생성
-  var assignedBacklogIds = currentSprint.product_backlogs.map(function (
-    backlog
-  ) {
   var assignedBacklogIds = currentSprint.product_backlogs.map(function (
     backlog
   ) {
@@ -298,22 +295,18 @@ function openSprintEditModal(
 
   // 현재 스프린트에 할당된 백로그 추가
   currentSprint.product_backlogs.forEach(function (backlog) {
-  currentSprint.product_backlogs.forEach(function (backlog) {
     relevantBacklogs.push({
       product_backlog_id: backlog.product_backlog_id,
       content: backlog.content,
-      assigned: true,
       assigned: true,
     });
   });
 
   // 할당되지 않은 백로그 추가
   unassignedBacklogsData.forEach(function (backlog) {
-  unassignedBacklogsData.forEach(function (backlog) {
     relevantBacklogs.push({
       product_backlog_id: backlog.product_backlog_id,
       content: backlog.product_backlog_content,
-      assigned: false,
       assigned: false,
     });
   });
@@ -322,19 +315,13 @@ function openSprintEditModal(
   relevantBacklogs.forEach(function (backlog) {
     var backlogItem = document.createElement("div");
     backlogItem.className = "product-backlog-item";
-  relevantBacklogs.forEach(function (backlog) {
-    var backlogItem = document.createElement("div");
-    backlogItem.className = "product-backlog-item";
     backlogItem.dataset.backlogId = backlog.product_backlog_id;
     backlogItem.textContent = backlog.content;
     if (backlog.assigned) {
       backlogItem.classList.add("assigned"); // 할당된 백로그 스타일 적용
-      backlogItem.classList.add("assigned"); // 할당된 백로그 스타일 적용
     }
 
     // 클릭 이벤트 리스너 추가
-    backlogItem.addEventListener("click", function () {
-      backlogItem.classList.toggle("assigned");
     backlogItem.addEventListener("click", function () {
       backlogItem.classList.toggle("assigned");
     });
@@ -356,18 +343,12 @@ function deleteSprint() {
   // 모달 메시지 변경
   document.getElementById("confirmDeleteMessage").textContent =
     "정말로 이 스프린트를 삭제하시겠습니까?";
-  document.getElementById("confirmDeleteMessage").textContent =
-    "정말로 이 스프린트를 삭제하시겠습니까?";
   // 확인 버튼에 스프린트 삭제 함수 연결
   document.querySelector(".modal-confirm-btn").onclick = confirmDelete;
   // 삭제 확인 모달 표시
   document.getElementById("confirmDeleteModal").style.display = "flex";
 }
 
-function confirmDelete() {
-  //스프린트 삭제 확인 함수
-  const sprintId = document.getElementById("sprint-options-modal").dataset
-    .sprintId;
 function confirmDelete() {
   //스프린트 삭제 확인 함수
   const sprintId = document.getElementById("sprint-options-modal").dataset
@@ -420,8 +401,6 @@ function deleteBacklog() {
   closeSmallModal();
 
   // 모달 메시지 변경
-  document.getElementById("confirmDeleteMessage").textContent =
-    "정말로 이 스프린트 백로그를 삭제하시겠습니까?";
   document.getElementById("confirmDeleteMessage").textContent =
     "정말로 이 스프린트 백로그를 삭제하시겠습니까?";
 
@@ -484,10 +463,6 @@ function confirmBacklogDelete() {
           "오류",
           "스프린트 백로그 삭제 중 오류가 발생했습니다."
         );
-        showMessageModal(
-          "오류",
-          "스프린트 백로그 삭제 중 오류가 발생했습니다."
-        );
       });
   }
 
@@ -524,14 +499,10 @@ window.addEventListener("click", function (event) {
 
 // 스프린트가 없는 경우 nav-btn 숨기기
 window.addEventListener("DOMContentLoaded", function () {
-window.addEventListener("DOMContentLoaded", function () {
   const sprintContainerNone = document.querySelector(".sprint-container-none");
   const navButtons = document.querySelectorAll(".nav-btn");
 
   if (sprintContainerNone) {
-    navButtons.forEach((button) => {
-      button.style.display = "none";
-    });
     navButtons.forEach((button) => {
       button.style.display = "none";
     });
@@ -541,21 +512,16 @@ window.addEventListener("DOMContentLoaded", function () {
 function moveBacklogs(sprintId, projectId) {
   fetch(`/sprint/move-backlogs/${sprintId}/${projectId}`, {
     method: "POST",
-    method: "POST",
     headers: {
-      "Content-Type": "application/json",
       "Content-Type": "application/json",
     },
     body: JSON.stringify({}),
   })
     .then((response) => {
-    .then((response) => {
       if (response.ok) {
-        showMessageModal("성공", "백로그가 다음 스프린트로 이전되었습니다.");
         showMessageModal("성공", "백로그가 다음 스프린트로 이전되었습니다.");
         setTimeout(() => location.reload(), 2000);
       } else {
-        showMessageModal("오류", "백로그 이전에 실패했습니다.");
         showMessageModal("오류", "백로그 이전에 실패했습니다.");
       }
     })

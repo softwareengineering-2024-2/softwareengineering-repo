@@ -197,3 +197,141 @@ function saveStatuses() {
       alert("상태 저장 중 오류가 발생했습니다.");
     });
 }
+
+function startOnboarding() {
+  const onboardingSteps = [
+    {
+      element: document.querySelector(".sprint-change-btn"),
+      text: "스프린트를 선택하려면 이 버튼을 클릭하세요.",
+      tooltipPosition: "bottom", // 툴팁 위치
+    },
+    {
+      element: document.querySelector(".save-button"),
+      text: "현재 스프린트의 상태를 저장할 수 있습니다.",
+      tooltipPosition: "bottom", // 툴팁 위치
+    },
+    {
+      element: document.querySelector(".sprint-percentage-container"),
+      text: "현재 스프린트의 작업 진도율을 확인할 수 있습니다.",
+      tooltipPosition: "top", // 툴팁 위치
+    },
+    {
+      element: document.querySelector(".scrum-board-container"),
+      text: "각각의 스프린트 백로그 진행 상태를 드래그를 통해 <br>이동시켜 관리할 수 있습니다.",
+      tooltipPosition: "top", // 툴팁 위치
+    },
+  ];
+
+  let currentStep = 0;
+  const overlay = document.getElementById("onboarding-overlay");
+  const tooltip = document.getElementById("onboarding-tooltip");
+  const tooltipText = document.getElementById("onboarding-text");
+  const nextButton = document.getElementById("onboarding-next-button");
+
+  const showStep = (stepIndex) => {
+    const step = onboardingSteps[stepIndex];
+    if (!step) {
+      endOnboarding();
+      return;
+    }
+
+    const element = step.element;
+
+    if (element) {
+      // 강조 스타일 적용
+      element.classList.add("onboarding-highlight");
+
+      // 툴팁 내용 설정
+      tooltipText.innerHTML = step.text;
+
+      // 툴팁 위치 계산
+      const rect = element.getBoundingClientRect();
+      const tooltipWidth = tooltip.offsetWidth;
+      const tooltipHeight = tooltip.offsetHeight;
+
+      let tooltipTop, tooltipLeft;
+
+      switch (step.tooltipPosition) {
+        case "top":
+          tooltipTop = rect.top - tooltipHeight - 10;
+          tooltipLeft = rect.left + rect.width / 2 - tooltipWidth / 2;
+          break;
+        case "bottom":
+          tooltipTop = rect.bottom + 10;
+          tooltipLeft = rect.left + rect.width / 2 - tooltipWidth / 2;
+          break;
+        case "left":
+          tooltipTop = rect.top + rect.height / 2 - tooltipHeight / 2;
+          tooltipLeft = rect.left - tooltipWidth - 10;
+          break;
+        case "right":
+          tooltipTop = rect.top + rect.height / 2 - tooltipHeight / 2;
+          tooltipLeft = rect.right + 10;
+          break;
+        default:
+          tooltipTop = rect.bottom + 10;
+          tooltipLeft = rect.left + rect.width / 2 - tooltipWidth / 2;
+          break;
+      }
+
+      // 화면 밖으로 나가는 경우 조정
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      if (tooltipLeft + tooltipWidth > viewportWidth) {
+        tooltipLeft = viewportWidth - tooltipWidth - 10;
+      }
+      if (tooltipTop + tooltipHeight > viewportHeight) {
+        tooltipTop = rect.top - tooltipHeight - 10;
+      }
+      if (tooltipLeft < 0) {
+        tooltipLeft = 10;
+      }
+      if (tooltipTop < 0) {
+        tooltipTop = rect.bottom + 10;
+      }
+
+      // 툴팁 위치 적용
+      tooltip.style.top = `${tooltipTop}px`;
+      tooltip.style.left = `${tooltipLeft}px`;
+    }
+  };
+
+  const nextStep = () => {
+    const previousStep = onboardingSteps[currentStep];
+    if (previousStep && previousStep.element) {
+      previousStep.element.classList.remove("onboarding-highlight");
+    }
+
+    currentStep++;
+    if (currentStep < onboardingSteps.length - 1) {
+      nextButton.innerText = "다음"; // 다음 버튼
+    } else if (currentStep === onboardingSteps.length - 1) {
+      nextButton.innerText = "완료"; // 마지막 단계에서 완료 버튼
+    }
+
+    showStep(currentStep);
+  };
+
+  nextButton.addEventListener("click", nextStep);
+
+  // 첫 방문 시 온보딩 시작
+  if (!document.cookie.includes("onboarding_done_scrum=true")) {
+    overlay.classList.remove("hidden");
+    showStep(currentStep);
+  }
+}
+
+const endOnboarding = () => {
+  const overlay = document.getElementById("onboarding-overlay");
+  const tooltip = document.getElementById("onboarding-tooltip");
+  overlay.classList.add("hidden");
+  tooltip.style.display = "none";
+
+  // 온보딩 완료 상태 저장
+  document.cookie = "onboarding_done_scrum=true; path=/; max-age=31536000"; // 1년 유지
+};
+
+document.addEventListener("DOMContentLoaded", function () {
+  startOnboarding();
+});

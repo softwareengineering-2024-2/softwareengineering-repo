@@ -421,6 +421,11 @@
   cursor: pointer;
 }
 
+.product-backlog-item.selected {
+  background-color: gray;
+  color: white;
+}
+
 /* Onboarding Overlay */
 .onboarding-overlay {
   position: fixed;
