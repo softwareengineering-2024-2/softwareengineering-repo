@@ -1,19 +1,22 @@
-  // 쿠키 읽기 함수
-  function getCookie(name) {
-    const cookies = document.cookie.split("; ").reduce((acc, cookie) => {
-      const [key, value] = cookie.split("=");
-      acc[key] = value;
-      return acc;
-    }, {});
-    return cookies[name];
-  }
+// 쿠키 읽기 함수
+function getCookie(name) {
+  const cookies = document.cookie.split("; ").reduce((acc, cookie) => {
+    const [key, value] = cookie.split("=");
+    acc[key] = value;
+    return acc;
+  }, {});
+  console.log(`모든 쿠키: ${JSON.stringify(cookies)}`); // 모든 쿠키 디버깅 로그
+  return cookies[name];
+}
 
-  // 쿠키 저장 함수
-  function setCookie(name, value, days = 7) {
-    const expires = new Date();
-    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-    document.cookie = `${name}=${value}; path=/; expires=${expires.toUTCString()}`;
-  }
+// 쿠키 저장 함수
+function setCookie(name, value, days = 7) {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  const cookieString = `${name}=${value}; path=/; expires=${expires.toUTCString()}`;
+  document.cookie = cookieString;
+  console.log(`쿠키 저장됨: ${cookieString}`); // 쿠키 저장 디버깅 로그
+}
 
   // 현재 스프린트와 프로젝트 정보를 쿠키에 저장
   function saveCurrentSprintAndProject(sprintId) {
@@ -33,19 +36,65 @@
     window.location.search = urlParams.toString(); // 페이지 새로고침
   }
 
-  // 페이지 로드 시 초기화 함수
-  document.addEventListener("DOMContentLoaded", () => {
-    const savedSprintId = getCookie(`currentSprintId_${projectId}`); // 쿠키에서 스프린트 ID 읽기
+// 페이지 로드 시 초기화
+document.addEventListener("DOMContentLoaded", () => {
+  const savedSprintId = getCookie(`currentSprintId_${projectId}`);
+  if (savedSprintId) {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (!urlParams.get("sprint_id")) {
+      urlParams.set("sprint_id", savedSprintId);
+      window.location.search = urlParams.toString();
+    }
+  }
+  restoreBacklogOrder(); // 순서 복원
+  updateCompletionPercentage(); // 완료율 업데이트
+});
 
-    if (savedSprintId) {
-      // 쿠키에 저장된 스프린트 ID가 있으면 해당 스프린트로 표시
-      const urlParams = new URLSearchParams(window.location.search);
-      if (!urlParams.get("sprint_id")) {
-        urlParams.set("sprint_id", savedSprintId);
-        window.location.search = urlParams.toString(); // 페이지 새로고침
-      }
+// 백로그 순서 저장 함수
+function saveBacklogOrder() {
+  const columns = document.querySelectorAll(".scrum-content");
+
+  const backlogOrder = Array.from(columns).reduce((order, column) => {
+    const columnId = column.id;
+    const backlogIds = Array.from(column.querySelectorAll(".scrum-sprint-item")).map(
+      (item) => item.getAttribute("data-backlog-id")
+    );
+    order[columnId] = backlogIds;
+    return order;
+  }, {});
+
+  const backlogOrderString = JSON.stringify(backlogOrder);
+  console.log(`저장할 백로그 순서: ${backlogOrderString}`); // 디버깅 로그
+
+  setCookie(`backlogOrder_${projectId}`, backlogOrderString, 7); // 7일간 유지
+}
+
+// 백로그 순서 복원 함수
+function restoreBacklogOrder() {
+  const savedOrder = getCookie(`backlogOrder_${projectId}`);
+  console.log(`복원할 백로그 순서: ${savedOrder}`); // 복원 디버깅 로그
+  if (!savedOrder) return;
+
+  const backlogOrder = JSON.parse(savedOrder);
+
+  Object.keys(backlogOrder).forEach((columnId) => {
+    const column = document.getElementById(columnId);
+    if (column) {
+      backlogOrder[columnId].forEach((backlogId) => {
+        const backlogItem = document.querySelector(
+          `.scrum-sprint-item[data-backlog-id="${backlogId}"]`
+        );
+        if (backlogItem) {
+          column.appendChild(backlogItem); // 순서대로 요소를 추가
+        } else {
+          console.warn(`백로그 ID ${backlogId}를 찾을 수 없습니다.`); // 디버깅 로그
+        }
+      });
+    } else {
+      console.warn(`컬럼 ID ${columnId}를 찾을 수 없습니다.`); // 디버깅 로그
     }
   });
+}
 
 // 스프린트 완료율 업데이트 함수
 function updateCompletionPercentage() {
@@ -124,20 +173,21 @@ function allowDrop(ev) {
 // 항목을 드롭했을 때 발생하는 이벤트
 function drop(ev) {
   ev.preventDefault();
-  var data = ev.dataTransfer.getData("text"); // 드래그된 항목의 ID 가져오기
-  var draggedItem = document.getElementById(data); // ID로 요소를 찾기
-  var dropTarget = ev.target; // 드롭된 위치를 찾기
+  var data = ev.dataTransfer.getData("text");
+  var draggedItem = document.getElementById(data);
+  var dropTarget = ev.target;
 
   // 드롭된 위치가 scrum-content 영역인지 확인
   while (dropTarget && !dropTarget.classList.contains("scrum-content")) {
-    dropTarget = dropTarget.parentNode; // 부모 요소로 이동하여 scrum-content 확인
+    dropTarget = dropTarget.parentNode;
   }
 
   // 드롭 대상이 scrum-content이고, 드래그된 항목이 해당 scrum-content의 자식이 아닐 경우 항목을 추가
   if (dropTarget && dropTarget !== draggedItem.parentNode) {
-    dropTarget.appendChild(draggedItem); // 드래그된 항목을 드롭된 scrum-content에 추가
-    autoSaveStatuses(); // 상태 저장 및 완료율 업데이트
+    dropTarget.appendChild(draggedItem);
   }
+  autoSaveStatuses(); // 상태 저장
+  saveBacklogOrder(); // 순서 저장
 }
 
 // 각 scrum-sprint-item 요소에 드래그 이벤트 핸들러 추가
