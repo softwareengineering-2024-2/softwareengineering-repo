@@ -30,33 +30,40 @@ function navigateSprints(direction) {
   // 스프린트 인덱스 업데이트
   currentSprintIndex += direction;
 
-  // 첫 번째와 마지막 스프린트에서 버튼 숨김 처리
-  if (currentSprintIndex <= 1) {
-    currentSprintIndex = 1;
-    navBtnLt.disabled = true; // 이전 버튼 비활성화
-  } else {
-    navBtnLt.disabled = false;
-  }
-
-  if (currentSprintIndex >= sprints.length) {
-    currentSprintIndex = sprints.length;
-    navBtnGt.disabled = true; // 다음 버튼 비활성화
-  } else {
-    navBtnGt.disabled = false;
-  }
-
   // 새로 선택된 스프린트 표시
   sprints[currentSprintIndex - 1].style.display = "block";
 
   // 현재 스프린트 인덱스를 프로젝트 ID와 함께 쿠키에 저장
   setCookie(`currentSprintIndex_${projectId}`, currentSprintIndex);
+
+  // 버튼 상태 업데이트
+  updateNavButtons();
+}
+
+// 네비게이션 버튼 상태 업데이트
+function updateNavButtons() {
+  const sprints = document.querySelectorAll(".sprint-container");
+  const navBtnLt = document.querySelector(".nav-btn-lt");
+  const navBtnGt = document.querySelector(".nav-btn-gt");
+
+  // 왼쪽 버튼 표시 여부
+  if (currentSprintIndex === 1) {
+    navBtnLt.style.display = "none"; // 첫 번째 스프린트에서는 숨김
+  } else {
+    navBtnLt.style.display = "inline-block"; // 첫 번째가 아니면 표시
+  }
+
+  // 오른쪽 버튼 표시 여부
+  if (currentSprintIndex === sprints.length) {
+    navBtnGt.style.display = "none"; // 마지막 스프린트에서는 숨김
+  } else {
+    navBtnGt.style.display = "inline-block"; // 마지막이 아니면 표시
+  }
 }
 
 // 초기화 함수
 document.addEventListener("DOMContentLoaded", function () {
   const sprints = document.querySelectorAll(".sprint-container");
-  const navBtnLt = document.querySelector(".nav-btn-lt");
-  const navBtnGt = document.querySelector(".nav-btn-gt");
 
   // 쿠키에서 저장된 인덱스를 불러옴
   let savedIndex = parseInt(getCookie(`currentSprintIndex_${projectId}`), 10);
@@ -75,8 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // 버튼 상태 초기화
-  navBtnLt.disabled = currentSprintIndex === 1;
-  navBtnGt.disabled = currentSprintIndex === sprints.length;
+  updateNavButtons();
 });
 
 // 스프린트 생성 모달 열기 함수
@@ -85,6 +91,14 @@ function openSprintCreateModal() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  const sprintForm = document.querySelector("#sprint_create_modal form");
+
+  // Enter 키 입력 방지
+  sprintForm.addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault(); // 기본 동작 방지
+    }
+  });
   const backlogContainer = document.getElementById("product-backlog-container");
   backlogContainer.addEventListener("click", function (event) {
     if (event.target.classList.contains("product-backlog-item")) {
