@@ -50,48 +50,5 @@ app.register_blueprint(guide_bp, url_prefix='/guide')
 def index():
     return render_template("login.html")
 
-#------------------------------------------------
-#view로 이동 요청
-# @app.route("/main")
-# def main():
-#     total_tasks = 100  # 전체 작업 수 (예시)
-#     completed_tasks = 25  # 완료된 작업 수 (예시)
-#     # 달성률 계산
-#     progress_percentage = (completed_tasks / total_tasks) * 100 if total_tasks > 0 else 0
-#     return render_template('main.html', progress_percentage=progress_percentage)
-
-# @app.route("/milestone")
-# def milestone():
-#     return render_template("milestone.html")
-
-# @app.route("/backlog")
-# def backlog():
-#     return render_template("backlog.html")
-
-# @app.route("/sprint")
-# def sprint():
-#     return render_template("sprint.html")
-
-#@app.route("/board")
-#def board():
-#    return render_template("board.html")
-
-# @app.route("/review")
-# def review():
-#     return render_template("review.html")
-
-# @app.route('/project')
-# def project():
-#     return render_template('manage_project.html')
-
-# @app.route('/calendar')
-# def calendar():
-#     return render_template('calendar.html')
-
-# @app.route('/guide')
-# def guide():
-#     return render_template('guide.html')
-#-------------------------------------------------
-
 if __name__ == "__main__":
     app.run(debug=True)  # HTTP로 실행
