@@ -302,7 +302,8 @@ function renderCalendar2() {
 
       if (date >= start && date <= end) {
         const scheduleDiv = document.createElement("div");
-        scheduleDiv.textContent = schedule.title;
+        const modifiedTitle = schedule.team ? `[팀] ${schedule.title} ` : schedule.title;
+        scheduleDiv.textContent = modifiedTitle;
         scheduleDiv.style.backgroundColor = schedule.color;
         scheduleDiv.style.color = "black";
         scheduleDiv.classList.add("schedule");
@@ -359,6 +360,7 @@ function fetchSchedules(projectId){
           due_date,
           color,
           calendar_id,
+          team,
         } = schedule;
 
         // 날짜만 사용하고 시간은 무시하도록 설정
@@ -376,6 +378,7 @@ function fetchSchedules(projectId){
             start_date,
             due_date,
             color: colorMap[color] || "#eeeeee",
+            team,
           });
         }
       });

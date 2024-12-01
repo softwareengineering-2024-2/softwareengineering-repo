@@ -59,11 +59,6 @@ document.getElementById("openMilestone").addEventListener("click", function () {
   openModal("createMilestoneModal");
 });
 
-// 마일스톤 수정 버튼 리스너
-// document.getElementById("openModifyButton").addEventListener("click", function () {
-//     openModal("modifyMilestoneModal");
-//   });
-
 // 초기 설정: 모달과 배경 숨기기
 modalBackground.style.display = "none";
 
