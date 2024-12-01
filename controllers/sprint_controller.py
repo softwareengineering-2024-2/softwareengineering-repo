@@ -234,7 +234,8 @@ def delete_backlog(backlog_id):
         db.session.delete(backlog)
         db.session.commit()
         return True, "Deleted Successfully", project_id
-    return False, "Backlog Not Found"
+    else:
+        return False, "Backlog Not Found", None
 
 # 스프린트 백로그 업데이트
 def update_backlog_details(backlog_id, content, user_id):
