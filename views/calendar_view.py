@@ -47,7 +47,7 @@ def create_schedule(project_id):
     content = request.json.get('content')
     important = request.json.get('important')
     create_schedules(user_id, project_id, title, place, start_date, due_date, team, color, content, important)
-    return jsonify({"message": "success"})
+    return jsonify({"message": "create success"})
 
 #일정 수정
 @calendar_bp.route('/update/<int:calendar_id>', methods=['POST'])
@@ -61,12 +61,12 @@ def update_schedule(calendar_id):
     content = request.json.get('content')
     important = request.json.get('important')
     update_schedules(calendar_id, title, place, start_date, due_date, team, color, content, important)
-    return jsonify({"message": "success"})
+    return jsonify({"message": "modify success"})
 
 # 일정 삭제
 @calendar_bp.route('/<int:calendar_id>', methods=['DELETE'])
 def delete_schedule(calendar_id):
     delete_schedules(calendar_id)
-    return jsonify({"message": "success"})
+    return jsonify({"message": "delete success"})
     
 
