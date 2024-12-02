@@ -12,4 +12,4 @@ views/__pycache__
 # 유저스토리 테이블에 테스트용 데이터 생성하는 파일 무시
 add_test_data.py
 
-google_drive_key.json
+drive/google_drive_key.json
