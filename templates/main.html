@@ -42,11 +42,11 @@
               <div class="progress-bar">
                 <div
                   class="progress"
-                  style="width: {{ progress_percentage }}%"
+                  style="width: {{ overall_progress_percentage }}%"
                 ></div>
               </div>
               <div class="progress-percentage">
-                {{ progress_percentage | round(1) }}%
+                {{ overall_progress_percentage | round(1) }}%
               </div>
             </div>
           </div>
@@ -54,8 +54,7 @@
           <div class="task-sections">
             <div class="task-box">
               <h2>내가 담당받은 작업 목록</h2>
-              {% if current_sprint_backlogs and current_sprint_backlogs.backlogs
-              %}
+              {% if sprint_backlogs %}
               <ul class="task-list">
                 {% for sprint in sprint_backlogs %} {% set has_pending_backlogs
                 = sprint.backlogs|selectattr('status', '!=', 'Done')|list %} {%
