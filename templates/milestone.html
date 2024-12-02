@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>milestone</title>
+    <title>A.T.M</title>
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
@@ -32,6 +36,7 @@
       <div class="content">
         {% block content %}
         <div class="milestone-line-container">
+          <h1>마일스톤 진척률</h1>
           <div class="line" id="line">
             <!-- 마일스톤 점들이 이곳에 추가됩니다 -->
           </div>
@@ -46,36 +51,44 @@
           </div>
           <ul class="milestone-lists-wrapper">
             {% for milestone in milestones %}
-              <li class="milestone-list">
-                <p>{{ milestone.milestone_content }}</p>
-                <div class="b2-regular">마감 날짜 : {{ milestone.due_date }}</div>
-                <div class="milestone-button-wrapper">
-                  <!-- <button class="modify-milestone-btn" id="openModifyButton">
-                    수정
-                  </button> -->
-                  <form action="{{ url_for('milestone.delete_milestone_view', project_id=project.project_id, milestone_id=milestone.milestone_id) }}" method="POST">
-                    <button type="submit" class="delete-milestone-btn">삭제</button>
-                  </form>
-                </div>
-              </li>
+            <li class="milestone-list">
+              <p>{{ milestone.milestone_content }}</p>
+              <div class="b2-regular">마감 날짜 : {{ milestone.due_date }}</div>
+              <div class="milestone-button-wrapper">
+                <form
+                  action="{{ url_for('milestone.delete_milestone_view', project_id=project.project_id, milestone_id=milestone.milestone_id) }}"
+                  method="POST"
+                >
+                  <button type="submit" class="delete-milestone-btn">
+                    삭제
+                  </button>
+                </form>
+              </div>
+            </li>
             {% else %}
-              <li class="milestone-list">마일스톤이 없습니다.</li>
+            <li class="milestone-list">
+              마일스톤이 없습니다. 마일스톤을 추가해주세요.
+            </li>
             {% endfor %}
           </ul>
 
           <!-- 모달 관련 코드 -->
-          <!-- 모달 생성 시 배경화면 어둡게(기본속성: none) -->
           <div class="modal-background" id="modalBackground"></div>
           <!-- 마일스톤 생성 모달창 -->
           <div class="milestone-modal" id="createMilestoneModal">
             <h1>마일스톤 생성</h1>
-            <form action="{{ url_for('milestone.create_milestone_view', project_id=project.project_id) }}" method="POST">
+            <form
+              action="{{ url_for('milestone.create_milestone_view', project_id=project.project_id) }}"
+              method="POST"
+            >
               <div class="milestone-input-wrapper">
                 <div class="b2-semibold">마일스톤 이름</div>
                 <input
                   class="input-box"
                   type="text"
-                  id="milestone_content" name="milestone_content" required
+                  id="milestone_content"
+                  name="milestone_content"
+                  required
                   placeholder="마일스톤을 입력하세요"
                 />
               </div>
@@ -84,12 +97,18 @@
                 <input
                   class="input-box"
                   type="date"
-                  id="due_date" name="due_date" required
+                  id="due_date"
+                  name="due_date"
+                  required
                   placeholder="마감기한을 선택하세요"
                 />
               </div>
               <div class="modal-buttons-wrapper">
-                <button class="create-button" type="submit" id="createProjectButton">
+                <button
+                  class="create-button"
+                  type="submit"
+                  id="createProjectButton"
+                >
                   <div class="b2-regular">마일스톤 추가</div>
                 </button>
                 <button
@@ -108,42 +127,10 @@
             <p id="onboarding-text"></p>
             <button id="onboarding-next-button">다음</button>
           </div>
-        </div>        
-        <!-- 마일스톤 수정 모달창
-        <div class="milestone-modal" id="modifyMilestoneModal">
-          <h1>마일스톤 수정</h1>
-          <div class="milestone-input-wrapper">
-            <div class="b2-semibold">마일스톤 이름</div>
-            <input
-              class="input-box"
-              type="text"
-              placeholder="마일스톤을 입력하세요"
-            />
-          </div>
-          <div class="milestone-input-wrapper">
-            <div class="b2-semibold">마감 기한</div>
-            <input
-              class="input-box"
-              type="date"
-              placeholder="마감기한을 선택하세요"
-            />
-          </div>
-          <div class="modal-buttons-wrapper">
-            <button class="create-button" id="modifyProjectButton">
-              <div class="b2-regular">마일스톤 수정</div>
-            </button>
-            <button
-              class="cancel-button"
-              id="cancelButton"
-              onclick="closeModal('modifyMilestoneModal');"
-            >
-              <div class="b2-regular">취소하기</div>
-            </button>
-          </div>
-        </div> -->
+        </div>
         {% endblock %}
       </div>
-    </div> 
+    </div>
     <script>
       const totalMilestones = "{{ total_count }}";
       const completedMilestones = "{{ completed_count }}";

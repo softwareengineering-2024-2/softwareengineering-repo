@@ -20,8 +20,17 @@
   height: 20vh;
   padding: 20px 40px;
   display: flex;
-  justify-content: center; /* 수평 가운데 정렬 */
+  flex-direction: column; /* 위에서 아래로 배치 */
   align-items: center; /* 수직 가운데 정렬 */
+}
+
+.milestone-line-container h1 {
+  margin-bottom: 10px; /* 제목과 라인 사이 여백 */
+  font-size: 1.5rem; /* 제목 크기 조정 */
+  font-weight: bold; /* 제목 두껍게 */
+  text-align: left; /* 가운데 정렬 */
+  align-self: flex-start; /* 부모 컨테이너에서 왼쪽으로 정렬 */
+
 }
 
 .line {
@@ -30,6 +39,7 @@
   height: 5px;
   background: var(--color-grey-300); /* 회색으로 변경 */
   border-radius: 2px;
+  margin-top: 30px; /* 선을 아래로 더 내리기 위해 추가 */
 }
 
 .completed-section {
@@ -110,11 +120,25 @@
   align-items: center;
   margin-top: 1vh;
   width: 100%;
+  position: relative; /* 위치를 조정할 수 있도록 설정 */
+}
+
+.milestone-list p {
+  flex: 1; /* 남은 공간을 채우도록 설정 */
+  text-align: left; /* 텍스트 왼쪽 정렬 */
+  margin-right: 20px; /* 마감 날짜와 간격 추가 */
+}
+
+.milestone-list .b2-regular {
+  text-align: right; /* 텍스트 오른쪽 정렬 */
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+  flex-shrink: 0; /* 크기가 줄어들지 않도록 설정 */
+  margin-right: 150px;
 }
 
 .milestone-button-wrapper {
-  display: flex;
-  gap: 3vh;
+  margin-left: 20px; /* 버튼과 날짜 간 간격 */
+  flex-shrink: 0; /* 크기가 줄어들지 않도록 설정 */
 }
 
 .milestone-list {

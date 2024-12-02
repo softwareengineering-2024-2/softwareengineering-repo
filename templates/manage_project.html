@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>manage_project</title>
+    <title>A.T.M</title>
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
@@ -50,7 +54,8 @@
               ><p>{{ userproject.project_name }}</p></a
             >
             <div class="project-list-options">
-              <button id="copyLinkButton"
+              <button
+                id="copyLinkButton"
                 class="normal-button"
                 onclick="copyToClipboard('{{ userproject.project_link }}')"
               >
@@ -60,14 +65,17 @@
                 action="{{ url_for('manage_project.set_profile_view', project_id=userproject.project_id) }}"
                 method="GET"
               >
-                <button id="setProfileButton" class="normal-button"><p>프로필설정</p></button>
+                <button id="setProfileButton" class="normal-button">
+                  <p>프로필설정</p>
+                </button>
               </form>
               <form
                 action="{{ url_for('manage_project.delete_project_view', project_id=userproject.project_id) }}"
                 method="POST"
                 id="exitProjectForm"
               >
-                <button id="exitProjectButton"
+                <button
+                  id="exitProjectButton"
                   class="exit-button"
                   type="button"
                   onclick="openExitProjectModal(event)"
@@ -147,10 +155,10 @@
     </div>
     <div id="onboarding-overlay" class="onboarding-overlay hidden">
       <div id="onboarding-tooltip" class="onboarding-tooltip">
-          <p id="onboarding-text">이 버튼은 프로젝트를 생성하는 버튼입니다.</p>
-          <button id="onboarding-next-button">확인</button>
+        <p id="onboarding-text">이 버튼은 프로젝트를 생성하는 버튼입니다.</p>
+        <button id="onboarding-next-button">확인</button>
       </div>
-    </div>  
+    </div>
     <script src="{{ url_for('static', filename='js/manage_project.js') }}"></script>
     <script>
       function copyToClipboard(text) {

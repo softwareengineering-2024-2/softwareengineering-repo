@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>profile</title>
+    <title>A.T.M</title>
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
@@ -32,7 +36,9 @@
       <div class="profile-box">
         <h1>사용자 프로필 설정</h1>
         <form method="POST" class="profile-form">
-          <div class="b2-regular">프로젝트 이름: {{ project.project_name }}</div>
+          <div class="b2-regular">
+            프로젝트 이름: {{ project.project_name }}
+          </div>
           <div class="name-input-wrapper">
             <div class="b2-regular">이름</div>
             <input
@@ -52,10 +58,16 @@
               </ul>
               <img src="/static/icons/chevron-down.svg" />
             </div>
-            <input type="hidden" class="roleSubmit" name="role" value="{{userproject.user_role}}">
+            <input
+              type="hidden"
+              class="roleSubmit"
+              name="role"
+              value="{{userproject.user_role}}"
+            />
             <div class="caption-wrapper">
               <div class="caption">
-                {% if pm_check == 1 %}프로젝트에 이미 PM이 존재합니다.{% endif %}
+                {% if pm_check == 1 %}프로젝트에 이미 PM이 존재합니다.{% endif
+                %}
               </div>
             </div>
           </div>

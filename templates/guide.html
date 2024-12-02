@@ -1,56 +1,82 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guide</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='topbar.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='guide.css') }}">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A.T.M</title>
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='global.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='topbar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='sidebar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='guide.css') }}"
+    />
+  </head>
+  <body>
     {% include 'topbar.html' %}
     <div class="main-container">
-        {% include 'sidebar.html' %}
-        <div class="content">
-            <!-- 가이드 콘텐츠 -->
-            <div class="guide-container">
-                <!-- 가이드 목차 (Sidebar) -->
-                <aside class="sidebar">
-                    <h2>가이드 목차</h2>
-                    <div class="exit-button">
-                        <a href="{{ url_for('project_main.project_main_view', project_id=project.project_id) }}">
-                            <img src="{{ url_for('static', filename='icons/home.svg') }}" alt="메인 아이콘" class="icon"> 메인으로 돌아가기
-                        </a>
-                    </div>
-                    <ul>
-                        <li><a href="#intro">애자일 소개</a></li>
-                        <li><a href="#scrum">스크럼</a></li>
-                        <li><a href="#project-management">프로젝트 관리</a></li>
-                        <li><a href="#backlog">백로그 관리</a></li>
-                        <li><a href="#sprint">스프린트 관리</a></li>
-                        <li><a href="#workflow">사용 흐름</a></li>
-                        <li><a href="#faq">FAQ</a></li>
-                    </ul>
-                </aside>
-
-                <!-- 가이드 내용 -->
-                <main class="guide-content">
-                    {% include 'guide_sections/intro.html' %}
-                    {% include 'guide_sections/scrum.html' %}
-                    {% include 'guide_sections/project_management.html' %}
-                    {% include 'guide_sections/backlog.html' %}
-                    {% include 'guide_sections/sprint.html' %}
-                    {% include 'guide_sections/workflow.html' %}
-                    {% include 'guide_sections/faq.html' %}
-                </main>
+      {% include 'sidebar.html' %}
+      <div class="content">
+        <!-- 가이드 콘텐츠 -->
+        <div class="guide-container">
+          <!-- 가이드 목차 (Sidebar) -->
+          <aside class="sidebar">
+            <h2>가이드 목차</h2>
+            <div class="exit-button">
+              <a
+                href="{{ url_for('project_main.project_main_view', project_id=project.project_id) }}"
+              >
+                <img
+                  src="{{ url_for('static', filename='icons/home.svg') }}"
+                  alt="메인 아이콘"
+                  class="icon"
+                />
+                메인으로
+              </a>
             </div>
+            <ul>
+              <li><a href="#intro">애자일 소개</a></li>
+              <li><a href="#scrum">스크럼</a></li>
+              <li><a href="#project-management">프로젝트 관리</a></li>
+              <li><a href="#backlog">백로그 관리</a></li>
+              <li><a href="#sprint">스프린트 관리</a></li>
+              <li><a href="#workflow">사용 흐름</a></li>
+              <li><a href="#faq">FAQ</a></li>
+            </ul>
+          </aside>
+
+          <!-- 가이드 내용 -->
+          <main class="guide-content">
+            {% include 'guide_sections/intro.html' %} {% include
+            'guide_sections/scrum.html' %} {% include
+            'guide_sections/project_management.html' %} {% include
+            'guide_sections/backlog.html' %} {% include
+            'guide_sections/sprint.html' %} {% include
+            'guide_sections/workflow.html' %} {% include
+            'guide_sections/faq.html' %}
+          </main>
         </div>
+      </div>
     </div>
 
     <!-- JavaScript 파일 -->
     <script src="{{ url_for('static', filename='js/guide.js') }}"></script>
-</body>
+  </body>
 </html>

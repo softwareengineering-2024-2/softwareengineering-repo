@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>burnup chart</title>
+    <title>A.T.M</title>
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
@@ -25,29 +29,29 @@
       href="{{ url_for('static', filename='burnup.css') }}"
     />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     {% include 'topbar.html' %}
     <div class="main-container">
-        {% include 'sidebar.html' %}
-        <div class="content">
-            {% block content %}
-            <div class="burnup-chart-container">
-                <h1>번업 차트</h1>
-                <div id="burnupChartContainer">
-                    <canvas id="burnupChart"></canvas>
-                </div>
-            </div>
-            {% endblock %}
+      {% include 'sidebar.html' %}
+      <div class="content">
+        {% block content %}
+        <div class="burnup-chart-container">
+          <h1>번업 차트</h1>
+          <div id="burnupChartContainer">
+            <canvas id="burnupChart"></canvas>
+          </div>
         </div>
+        {% endblock %}
+      </div>
     </div>
-<script>
-    const chartData = {
-        labels: {{ dates | tojson }},
-        totalTasks: {{ totals | tojson }},
-        completedTasks: {{ completeds | tojson }}
-    };
-</script>
-<script src="{{ url_for('static', filename='js/burnup.js') }}"></script>
-</body>
+    <script>
+      const chartData = {
+          labels: {{ dates | tojson }},
+          totalTasks: {{ totals | tojson }},
+          completedTasks: {{ completeds | tojson }}
+      };
+    </script>
+    <script src="{{ url_for('static', filename='js/burnup.js') }}"></script>
+  </body>
 </html>
