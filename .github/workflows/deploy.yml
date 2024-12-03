@@ -22,6 +22,7 @@ jobs:
     - name: Deploy to EC2
       run: |
         ssh -o StrictHostKeyChecking=no ubuntu@atmsoftware.site << EOF
+          # 프로젝트 클론 또는 업데이트
           if [ ! -d "~/softwareengineering-repo" ]; then
             git clone https://github.com/softwareengineering-2024-2/softwareengineering-repo.git ~/softwareengineering-repo
           else
@@ -30,17 +31,25 @@ jobs:
             git clean -fd
             git pull origin main
           fi
+
           cd ~/softwareengineering-repo
+
+          # .env 파일 생성
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" > .env
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
           echo "GOOGLE_DISCOVERY_URL=https://accounts.google.com/.well-known/openid-configuration" >> .env
           echo "SQLALCHEMY_DATABASE_URI=${{ secrets.SQLALCHEMY_DATABASE_URI }}" >> .env
           echo "GOOGLE_DRIVE_KEY_PATH=drive/google_drive_key.json" >> .env
           echo "GOOGLE_DRIVE_FOLDER_ID=${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}" >> .env
-          mkdir -p drive
+
+          # drive 폴더에 google_drive_key.json 파일 생성
           echo "${{ secrets.GOOGLE_DRIVE_KEY_JSON }}" > drive/google_drive_key.json
           chmod 600 drive/google_drive_key.json
+
+          # Docker Compose 실행
           docker-compose down
           docker-compose up -d --build
+
+          # Nginx 재시작
           sudo systemctl restart nginx
         EOF
