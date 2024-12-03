@@ -39,9 +39,9 @@ jobs:
           echo "GOOGLE_DRIVE_KEY_PATH=drive/google_drive_key.json" >> .env
           echo "GOOGLE_DRIVE_FOLDER_ID=${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}" >> .env
 
-          # drive 폴더 생성 및 키 파일 배치
+          # drive 폴더 생성 및 Base64로 저장된 Secret을 디코딩하여 JSON 파일로 저장
           mkdir -p drive
-          echo "${{ secrets.GOOGLE_DRIVE_KEY_JSON }}" > drive/google_drive_key.json
+          echo "${{ secrets.GOOGLE_DRIVE_KEY_JSON }}" | base64 -d > drive/google_drive_key.json
           chmod 600 drive/google_drive_key.json
 
           # Docker 작업 수행
