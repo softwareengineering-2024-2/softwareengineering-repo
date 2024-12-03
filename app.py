@@ -14,7 +14,7 @@ from views.scrum_view import scrum_bp
 from views.guide_view import guide_bp
 from dotenv import load_dotenv
 from database import init_db
-from werkzeug.middleware.proxy_fix import ProxyFix  # ProxyFix 미들웨어 추가
+# from werkzeug.middleware.proxy_fix import ProxyFix  # ProxyFix 미들웨어 추가
 # .env 파일 로드
 load_dotenv()
 
@@ -24,7 +24,7 @@ def create_app(test_config=None):
     app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 
     # ProxyFix를 사용하여 Nginx의 HTTPS 프록시 헤더 처리
-    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+    # app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
     
     if test_config:
         app.config.update(test_config)
@@ -61,4 +61,5 @@ def create_app(test_config=None):
 
 if __name__ == "__main__":
     app = create_app()
-    app.run(debug=False,host='0.0.0.0')
+    # app.run(debug=False,host='0.0.0.0')
+    app.run(debug=True)
