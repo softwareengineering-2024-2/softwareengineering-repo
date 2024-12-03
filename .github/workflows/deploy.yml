@@ -22,14 +22,14 @@ jobs:
     - name: Deploy to EC2
       run: |
         ssh -o StrictHostKeyChecking=no ubuntu@atmsoftware.site << EOF
-          # 프로젝트 디렉토리 확인 및 업데이트
-          if [ -d "~/softwareengineering-repo/.git" ]; then
-            cd ~/softwareengineering-repo && git pull origin main
-          else
+          # 기존 디렉토리가 있다면 삭제
+          if [ -d "~/softwareengineering-repo" ]; then
             rm -rf ~/softwareengineering-repo
-            git clone https://github.com/softwareengineering-2024-2/softwareengineering-repo.git ~/softwareengineering-repo
-            cd ~/softwareengineering-repo
           fi
+
+          # 리포지토리 클론
+          git clone https://github.com/softwareengineering-2024-2/softwareengineering-repo.git ~/softwareengineering-repo
+          cd ~/softwareengineering-repo
 
           # .env 파일 생성
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" > .env
@@ -39,17 +39,17 @@ jobs:
           echo "GOOGLE_DRIVE_KEY_PATH=drive/google_drive_key.json" >> .env
           echo "GOOGLE_DRIVE_FOLDER_ID=${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}" >> .env
 
-          # drive 폴더 생성 및 Base64 디코딩
+          # drive 폴더 생성 및 Base64로 저장된 Secret을 디코딩하여 JSON 파일로 저장
           mkdir -p drive
           echo "${{ secrets.GOOGLE_DRIVE_KEY_JSON }}" | base64 -d > drive/google_drive_key.json
           chmod 600 drive/google_drive_key.json
 
-          # Docker 네트워크 생성 여부 확인
-          docker network inspect flask-network >/dev/null 2>&1 || docker network create flask-network
-
-          # Docker Compose 실행
-          docker-compose down || true
-          docker-compose up -d --build
+          # Docker 작업 수행
+          docker build -t flask-app .
+          docker rm -f flask-app || true
+          docker network create flask-network || true
+          docker run -d --name flask-app --network flask-network -p 5000:5000 flask-app
+          docker ps
 
           # Nginx 재시작
           sudo systemctl restart nginx
