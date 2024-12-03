@@ -1,5 +1,4 @@
 version: "3.8"
-
 services:
   flask-app:
     build:
@@ -18,22 +17,6 @@ services:
     networks:
       - flask-network
     restart: always
-
-  nginx:
-    image: nginx
-    container_name: nginx
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/flask-app.conf:/etc/nginx/conf.d/default.conf  # 위 설정 파일 마운트
-      - /etc/letsencrypt:/etc/letsencrypt                      # 인증서 디렉토리 마운트
-    depends_on:
-      - flask-app
-    networks:
-      - flask-network
-    restart: always
-
 networks:
   flask-network:
     driver: bridge
