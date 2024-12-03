@@ -26,12 +26,12 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-    networks:
-      - flask-network
+      - ./nginx/flask-app.conf:/etc/nginx/conf.d/default.conf  # 위 설정 파일 마운트
+      - /etc/letsencrypt:/etc/letsencrypt                      # 인증서 디렉토리 마운트
     depends_on:
       - flask-app
+    networks:
+      - flask-network
     restart: always
 
 networks:
