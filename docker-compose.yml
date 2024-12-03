@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  flask-app:
+    build:
+      context: .
+    container_name: flask-app
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_DISCOVERY_URL=https://accounts.google.com/.well-known/openid-configuration
+      - SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI}
+      - GOOGLE_DRIVE_KEY_PATH=${GOOGLE_DRIVE_KEY_PATH}
+      - GOOGLE_DRIVE_FOLDER_ID=${GOOGLE_DRIVE_FOLDER_ID}
+    networks:
+      - flask-network
+    restart: always
+
+networks:
+  flask-network:
+    driver: bridge
