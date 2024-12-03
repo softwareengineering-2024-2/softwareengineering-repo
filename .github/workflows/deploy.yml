@@ -48,7 +48,7 @@ jobs:
           docker network inspect flask-network >/dev/null 2>&1 || docker network create flask-network
 
           # Docker Compose 실행
-          docker-compose down
+          docker-compose down || true
           docker-compose up -d --build
 
           # Nginx 재시작
