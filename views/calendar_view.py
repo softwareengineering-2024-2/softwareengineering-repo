@@ -16,16 +16,11 @@ calendar_bp = Blueprint('calendar', __name__)
 # 캘린더 페이지 렌더링
 @calendar_bp.route('/<int:project_id>', methods=['GET'])
 @login_required
-def calendar_view(project_id):
-    try:
-        userproject = UserProject.find_by_user_and_project(current_user.id, project_id)
-        if not userproject:
-            return redirect(url_for('project_main.project_main_view', project_id=project_id))
+def calendar_view(project_id):  
+    userproject = UserProject.find_by_user_and_project(current_user.id, project_id)
 
-        schedules = show_schedules(project_id, current_user.id)
-        return render_template('calendar.html', project=Project.find_by_id(project_id), userproject=userproject,schedules=schedules)
-    except Exception as e:
-        return "Internal Server Error", 500
+    schedules = show_schedules(project_id, current_user.id)
+    return render_template('calendar.html', project=Project.find_by_id(project_id), userproject=userproject,schedules=schedules)
 
 # 일정 조회
 @calendar_bp.route('/schedules/<int:project_id>/', methods=['GET'])
