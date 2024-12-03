@@ -22,16 +22,13 @@ jobs:
     - name: Deploy to EC2
       run: |
         ssh -o StrictHostKeyChecking=no ubuntu@atmsoftware.site << EOF
-          # 프로젝트 클론 또는 업데이트
-          if [ ! -d "~/softwareengineering-repo" ]; then
-            git clone https://github.com/softwareengineering-2024-2/softwareengineering-repo.git ~/softwareengineering-repo
-          else
-            cd ~/softwareengineering-repo
-            git reset --hard
-            git clean -fd
-            git pull origin main
+          # 기존 디렉토리가 있다면 삭제
+          if [ -d "~/softwareengineering-repo" ]; then
+            rm -rf ~/softwareengineering-repo
           fi
 
+          # 리포지토리 클론
+          git clone https://github.com/softwareengineering-2024-2/softwareengineering-repo.git ~/softwareengineering-repo
           cd ~/softwareengineering-repo
 
           # .env 파일 생성
@@ -42,7 +39,8 @@ jobs:
           echo "GOOGLE_DRIVE_KEY_PATH=drive/google_drive_key.json" >> .env
           echo "GOOGLE_DRIVE_FOLDER_ID=${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}" >> .env
 
-          # drive 폴더에 google_drive_key.json 파일 생성
+          # drive 폴더 생성 및 키 파일 배치
+          mkdir -p drive
           echo "${{ secrets.GOOGLE_DRIVE_KEY_JSON }}" > drive/google_drive_key.json
           chmod 600 drive/google_drive_key.json
 
