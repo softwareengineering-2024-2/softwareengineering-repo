@@ -1,0 +1,39 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+
+    - name: Deploy to EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no ubuntu@atmsoftware.site << EOF
+          cd ~/softwareengineering-repo
+          git pull origin main
+          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" > .env
+          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+          echo "GOOGLE_DISCOVERY_URL=https://accounts.google.com/.well-known/openid-configuration" >> .env
+          echo "SQLALCHEMY_DATABASE_URI=${{ secrets.SQLALCHEMY_DATABASE_URI }}" >> .env
+          echo "GOOGLE_DRIVE_KEY_PATH=drive/google_drive_key.json" >> .env
+          echo "GOOGLE_DRIVE_FOLDER_ID=${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}" >> .env
+          mkdir -p drive
+          echo "${{ secrets.GOOGLE_DRIVE_KEY_JSON }}" > drive/google_drive_key.json
+          chmod 600 drive/google_drive_key.json
+          docker-compose down
+          docker-compose up -d --build
+          sudo systemctl restart nginx
+        EOF
