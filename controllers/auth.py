@@ -22,7 +22,7 @@ load_dotenv()
 auth_bp = Blueprint("auth", __name__)
 
 #로컬환경에서 HTTP로 연결하기
-#os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 # OAuth2 클라이언트 설정
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
@@ -64,7 +64,7 @@ def login():
     
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
-        redirect_uri=url_for("auth.callback", _external=True, _scheme='https'),  # 콜백 URL
+        redirect_uri=url_for("auth.callback", _external=True),  # 콜백 URL
         scope=["openid", "email", "profile"],
     )
     return redirect(request_uri)
