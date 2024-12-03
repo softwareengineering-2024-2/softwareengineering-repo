@@ -152,7 +152,7 @@ function saveBacklogGroup() {
     }
   }
 
-  fetch("/productbacklog/product_backlog/save_groups", {
+  fetch("/productbacklog/save_groups", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ backlogGroups, unassignedStoryIds }),
@@ -169,7 +169,7 @@ function saveBacklogGroup() {
 }
 
 function deleteBacklog(backlogId, shouldReload = true) {
-  fetch(`/productbacklog/product_backlog/delete/${backlogId}`, {
+  fetch(`/productbacklog/delete/${backlogId}`, {
     method: "DELETE",
   })
     .then((response) => response.json())
@@ -305,11 +305,10 @@ const endOnboarding = () => {
   const tooltip = document.getElementById("onboarding-tooltip");
   overlay.classList.add("hidden");
   tooltip.style.display = "none";
-
-  // 온보딩이 끝난 상태를 저장 (쿠키 또는 로컬 스토리지)
-  document.cookie = "onboarding_done_backlog=true; path=/; max-age=31536000"; // 1년 유지
 };
 
 document.addEventListener("DOMContentLoaded", function () {
+  // 온보딩이 끝난 상태를 저장 (쿠키 또는 로컬 스토리지)
+  document.cookie = "onboarding_done_backlog=true; path=/; max-age=31536000"; // 1년 유지
   startOnboarding();
 });

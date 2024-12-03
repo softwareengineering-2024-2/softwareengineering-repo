@@ -59,11 +59,6 @@ document.getElementById("openMilestone").addEventListener("click", function () {
   openModal("createMilestoneModal");
 });
 
-// 마일스톤 수정 버튼 리스너
-// document.getElementById("openModifyButton").addEventListener("click", function () {
-//     openModal("modifyMilestoneModal");
-//   });
-
 // 초기 설정: 모달과 배경 숨기기
 modalBackground.style.display = "none";
 
@@ -160,6 +155,8 @@ function startOnboarding() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  // 온보딩이 끝난 상태를 저장 (쿠키 또는 로컬 스토리지)
+  document.cookie = "onboarding_done_milestone=true; path=/; max-age=31536000"; // 1년 유지
   startOnboarding();
 });
 
@@ -168,8 +165,5 @@ const endOnboarding = () => {
   const overlay = document.getElementById("onboarding-overlay");
   const tooltip = document.getElementById("onboarding-tooltip");
   overlay.classList.add("hidden");
-  tooltip.style.display = "none";
-
-  // 온보딩이 끝난 상태를 저장 (쿠키 또는 로컬 스토리지)
-  document.cookie = "onboarding_done_milestone=true; path=/; max-age=31536000"; // 1년 유지
+  tooltip.style.display = "none";  
 };

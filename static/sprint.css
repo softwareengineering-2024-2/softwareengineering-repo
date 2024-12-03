@@ -185,6 +185,11 @@
 .product-backlog-item.assigned {
   background-color: gray;
   color: white;
+  text-decoration: line-through; 
+}
+.product-backlog-item.selected {
+  background-color: gray;
+  color: white;
 }
 
 /* 모달 배경 */
@@ -414,6 +419,11 @@
   padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.product-backlog-item.selected {
+  background-color: gray;
+  color: white;
 }
 
 /* Onboarding Overlay */

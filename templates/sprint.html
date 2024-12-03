@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sprint</title>
+    <title>A.T.M</title>
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
@@ -147,9 +151,9 @@
 
         <div class="backlog-div">
           <div class="product-backlog">
-            <h3>프로덕트 백로그</h3>
+            <h3>할당되지 않은 프로덕트 백로그</h3>
             <div class="product-backlog-list">
-              {% for backlog in backlogs.all_backlogs %}
+              {% for backlog in backlogs.unassigned_backlogs %}
               <div class="product-backlog-item">
                 <p>{{ backlog.product_backlog_content }}</p>
               </div>
@@ -194,17 +198,26 @@
           </div>
 
           <label for="product-backlog">프로덕트 백로그</label>
-          <select id="product-backlog" name="backlogs" multiple size="3">
-            {% if backlogs %} {% for backlog in backlogs.unassigned_backlogs %}
-            <option value="{{ backlog.product_backlog_id }}">
+          <div id="product-backlog-container" class="product-backlog-list">
+            {% for backlog in backlogs.unassigned_backlogs %}
+            <div
+              class="product-backlog-item"
+              data-backlog-id="{{ backlog.product_backlog_id }}"
+            >
               {{ backlog.product_backlog_content }}
-            </option>
-            {% endfor %} {% else %}
-            <option disabled>백로그가 없습니다.</option>
-            {% endif %}
-          </select>
+            </div>
+            {% else %}
+            <p>백로그가 없습니다.</p>
+            {% endfor %}
+          </div>
 
           <div class="modal-buttons">
+            <input
+              type="hidden"
+              id="selected-backlog-ids"
+              name="backlogs"
+              value=""
+            />
             <input type="hidden" name="project_id" value="{{ project_id }}" />
             <button
               type="button"
@@ -408,14 +421,17 @@
     <div id="onboarding-overlay" class="onboarding-overlay hidden">
       <!-- 온보딩 툴팁 -->
       <div id="onboarding-tooltip" class="onboarding-tooltip">
-          <p id="onboarding-text">여기에 온보딩 설명 텍스트가 표시됩니다.</p>
-          <div class="onboarding-buttons">
-              <button id="onboarding-next-button" class="onboarding-next-button">다음</button>
-          </div>
+        <p id="onboarding-text">여기에 온보딩 설명 텍스트가 표시됩니다.</p>
+        <div class="onboarding-buttons">
+          <button id="onboarding-next-button" class="onboarding-next-button">
+            다음
+          </button>
+        </div>
       </div>
     </div>
   </body>
   <script>
+    const projectId = "{{ project_id }}";
     var sprintsData = {{ sprints|tojson }};
     var unassignedBacklogsData = {{ backlogs.unassigned_backlogs|tojson }};
   </script>

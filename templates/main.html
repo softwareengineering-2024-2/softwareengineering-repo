@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>메인 프레임</title>
+    <title>A.T.M</title>
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
@@ -33,16 +37,16 @@
         <div class="dashboard">
           <!-- 우리팀의 프로덕트 백로그 달성률 -->
           <div class="progress-section">
-            <h2>우리팀의 스프린트 백로그 달성률</h2>
+            <h2>우리팀의 총 프로젝트 달성률</h2>
             <div class="progress-bar-container">
               <div class="progress-bar">
                 <div
                   class="progress"
-                  style="width: {{ progress_percentage }}%"
+                  style="width: {{ overall_progress_percentage }}%"
                 ></div>
               </div>
               <div class="progress-percentage">
-                {{ progress_percentage | round(1) }}%
+                {{ overall_progress_percentage | round(1) }}%
               </div>
             </div>
           </div>
@@ -50,15 +54,32 @@
           <div class="task-sections">
             <div class="task-box">
               <h2>내가 담당받은 작업 목록</h2>
-              {% if current_sprint_backlogs and current_sprint_backlogs.backlogs
-              %}
+              {% if sprint_backlogs %}
               <ul class="task-list">
-                {% for backlog in current_sprint_backlogs.backlogs %}
+                {% for sprint in sprint_backlogs %} {% set has_pending_backlogs
+                = sprint.backlogs|selectattr('status', '!=', 'Done')|list %} {%
+                if has_pending_backlogs|length > 0 %}
                 <li>
-                  {{ backlog.sprint_backlog_content }} - 상태: {{ backlog.status
-                  }}
+                  <div class="sprint-name">
+                    스프린트: {{ sprint.sprint_name }}
+                  </div>
+                  <ul>
+                    {% for backlog in sprint.backlogs %} {% if backlog.status !=
+                    'Done' %}
+                    <li>
+                      <div
+                        class="backlog-container {% if backlog.status == 'To Do' %}todo-container{% elif backlog.status == 'In Progress' %}inprogress-container{% endif %}"
+                      >
+                        <p>
+                          {{ backlog.sprint_backlog_content }} - 상태: {{
+                          backlog.status }}
+                        </p>
+                      </div>
+                    </li>
+                    {% endif %} {% endfor %}
+                  </ul>
                 </li>
-                {% endfor %}
+                {% endif %} {% endfor %}
               </ul>
               {% else %}
               <p>현재 진행 중인 작업이 없습니다.</p>
@@ -80,12 +101,26 @@
 
           <!-- 2주 캘린더 -->
           <div class="calendar-box">
-            <a
-              class="calendar-title"
-              href="{{ url_for('calendar.calendar_view', project_id=project.project_id) }}"
-            >
-              <h2 id="two-week-calendar-title">2주 캘린더</h2>
-            </a>
+            <div class="calendar-nav">
+              <div class="nav-buttons">
+                <button id="prevBtn">
+                  <img src="../static/icons/nav-arrow-left.svg" />
+                </button>
+                <a
+                  class="calendar-title"
+                  href="{{ url_for('calendar.calendar_view', project_id=project.project_id) }}"
+                >
+                  <h2 id="two-week-calendar-title">2주 캘린더</h2>
+                </a>
+                <button id="nextBtn">
+                  <img src="../static/icons/nav-arrow-right.svg" />
+                </button>
+              </div>
+
+              <button id="todayBtn">
+                <span>TODAY</span>
+              </button>
+            </div>
 
             <div class="calendar-days">
               <div class="day" style="color: red">일요일</div>
@@ -104,10 +139,10 @@
     <div id="onboarding-overlay" class="onboarding-overlay hidden">
       <div id="onboarding-tooltip" class="onboarding-tooltip">
         <p id="onboarding-text"></p>
-        
+
         <button id="onboarding-next-button">확인</button>
       </div>
-    </div>    
+    </div>
     <!-- JavaScript 파일 추가 -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   </body>

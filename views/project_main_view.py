@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, render_template, request
 from flask_login import login_required, current_user
+from controllers.calendar_controller import show_schedules
 from controllers.todolist_controller import change_todo_status, delete_todos, show_todos, update_todos, write_todo
 from models.project_model import UserProject, Project
 from controllers.sprint_controller import get_current_sprint_backlogs
@@ -13,12 +14,14 @@ project_main_bp = Blueprint('project_main', __name__)
 def project_main_view(project_id):
     userproject=UserProject.find_by_user_and_project(current_user.id, project_id)
     project = Project.find_by_id(project_id)
-    # 현재 스프린트 백로그 데이터 가져오기
-    current_sprint_backlogs = get_current_sprint_backlogs(current_user.id, project_id)
+    # 전체 스프린트의 진행률과 백로그 데이터 가져오기
+    sprint_data = get_current_sprint_backlogs(current_user.id, project_id)
 
-    # `progress_percentage`가 존재하는지 확인하고 전달
-    progress_percentage = current_sprint_backlogs.get('progress_percentage', 0) if current_sprint_backlogs else 0
+    # `overall_progress_percentage`가 존재하는지 확인하고 전달
+    overall_progress_percentage = sprint_data.get('overall_progress_percentage', 0) if sprint_data else 0
 
+    # 개별 스프린트 데이터 전달
+    sprint_backlogs = sprint_data.get('sprints', []) if sprint_data else []
     # todo 리스트 전달하기
     todo_list = show_todos(project_id, current_user.id)
 
@@ -26,9 +29,9 @@ def project_main_view(project_id):
         'main.html',
         userproject=userproject,
         project=project,
-        progress_percentage=progress_percentage,
-        current_sprint_backlogs=current_sprint_backlogs,
-        todo_list = todo_list
+        overall_progress_percentage=overall_progress_percentage,
+        sprint_backlogs=sprint_backlogs,  # 개별 스프린트 데이터 전달
+        todo_list=todo_list
     )
 
 # 투두리스트 저장
@@ -63,3 +66,10 @@ def delete_todo(todo_id):
 def change_status(todo_id):
     todo = change_todo_status(todo_id)
     return jsonify(todo)
+
+# 2주 캘린더
+@project_main_bp.route('/calendar/<int:project_id>',methods=['GET'])
+def get_schedule(project_id):
+    user_id = current_user.id
+    schedule = show_schedules(project_id, user_id)
+    return schedule

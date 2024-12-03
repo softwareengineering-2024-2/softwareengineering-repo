@@ -1,6 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
   const projectId = document.getElementById("project-id").value; // 프로젝트 ID 가져오기
 
+  // Pretendard 폰트를 적용하기 위한 <link> 태그 추가
+  const linkElement = document.createElement("link");
+  linkElement.rel = "stylesheet";
+  linkElement.href = "https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css";
+
+  // <head> 요소에 추가
+  document.head.appendChild(linkElement);
+
   // 초기화
   initCalendar();
   fetchSchedules(projectId);
@@ -79,32 +87,30 @@ function fetchSchedules(projectId) {
           team,
         } = schedule;
 
-        // 날짜만 사용하고 시간은 무시하도록 설정
+        // 날짜 설정
         const start = new Date(start_date);
         const end = new Date(due_date);
+        start.setHours(0, 0, 0, 0);
+        end.setHours(23, 59, 59, 999);
 
-        // 시간 부분을 00:00:00으로 설정하여 날짜만 비교
-        start.setHours(0, 0, 0, 0); // 시작일의 시간을 00:00:00으로 설정
-        end.setHours(23, 59, 59, 999); // 종료일의 시간을 23:59:59.999으로 설정
-
-        // 팀 일정과 개인 일정 필터링
+        // 필터 조건
         if (
           (showTeamSchedules && team) ||
           (showPersonalSchedules && !team) ||
           (showTeamSchedules && showPersonalSchedules)
         ) {
           if (!isNaN(start) && !isNaN(end)) {
-            schedules.push({
-              calendar_id, // schedule_id 추가
-              title,
+              schedules.push({
+              calendar_id,
+              title, 
               start,
               end,
               color: colorMap[color] || "#eeeeee", // 색상 설정
               color_num: color,
-              place, // 장소 추가
-              content, // 내용 추가
-              important, // 중요 여부 추가
-              team, // team 속성 추가
+              place,
+              content,
+              important,
+              team,
             });
           }
         }
@@ -115,7 +121,6 @@ function fetchSchedules(projectId) {
     .catch((error) => console.error("Error fetching schedules:", error));
 }
 
-// 일정 보이게 하기
 function renderCalendar() {
   const calendarDates = document.getElementById("calendarDates");
   const currentMonthElement = document.getElementById("currentMonth");
@@ -130,11 +135,13 @@ function renderCalendar() {
   // 이전 달의 날짜 표시
   const prevMonthDays = new Date(currentYear, currentMonth, 0).getDate();
   for (let i = 0; i < startDayOfWeek; i++) {
-    const emptyDate = createCalendarDate(
-      prevMonthDays - startDayOfWeek + i + 1,
-      true
-    );
-    calendarDates.appendChild(emptyDate);
+    const date = new Date(currentYear, currentMonth - 1, prevMonthDays - startDayOfWeek + i + 1);
+    const dateElement = createCalendarDate(date.getDate(), true);
+
+    // 일정 렌더링
+    renderSchedulesForDate(date, dateElement);
+
+    calendarDates.appendChild(dateElement);
   }
 
   // 현재 달의 날짜 표시
@@ -143,32 +150,55 @@ function renderCalendar() {
     const dateElement = createCalendarDate(i, false);
 
     // 일정 렌더링
-    schedules.forEach((schedule) => {
-      if (date >= schedule.start && date <= schedule.end) {
-        const scheduleDiv = document.createElement("div");
-        scheduleDiv.textContent = schedule.title;
-        scheduleDiv.style.backgroundColor = schedule.color;
-        scheduleDiv.classList.add("schedule");
-
-        // 일정 클릭 시 해당 id 전달
-        scheduleDiv.addEventListener("click", function () {
-          showScheduleDetails(schedule); // 일정 상세보기 모달 표시
-        });
-
-        dateElement.appendChild(scheduleDiv);
-      }
-    });
+    renderSchedulesForDate(date, dateElement);
 
     calendarDates.appendChild(dateElement);
   }
 
   // 다음 달의 날짜 표시
-  const remainingDays =
-    6 - new Date(currentYear, currentMonth, daysInMonth).getDay();
+  const remainingDays = 6 - new Date(currentYear, currentMonth, daysInMonth).getDay();
   for (let i = 1; i <= remainingDays; i++) {
-    const emptyDate = createCalendarDate(i, true);
-    calendarDates.appendChild(emptyDate);
+    const date = new Date(currentYear, currentMonth + 1, i);
+    const dateElement = createCalendarDate(i, true);
+
+    // 일정 렌더링
+    renderSchedulesForDate(date, dateElement);
+
+    calendarDates.appendChild(dateElement);
   }
+}
+
+function renderSchedulesForDate(date, dateElement) {
+  schedules.forEach((schedule) => {
+    
+    if (date >= schedule.start && date <= schedule.end) {
+      const scheduleDiv = document.createElement("div");
+      const modifiedTitle = schedule.team ? `[팀] ${schedule.title} ` : schedule.title;
+      scheduleDiv.textContent = modifiedTitle;
+      scheduleDiv.style.backgroundColor = schedule.color;
+      scheduleDiv.classList.add("schedule");
+
+      // 일정 클릭 시 해당 id 전달
+      scheduleDiv.addEventListener("click", function () {
+        if (schedule.color === '#eeeeee') {
+          return; // 마일스톤과 스프린트는 클릭 불가
+        }
+        showScheduleDetails(schedule); // 일정 상세보기 모달 표시
+      });
+
+      dateElement.appendChild(scheduleDiv);
+    }
+  });
+}
+
+function createCalendarDate(day, isOtherMonth) {
+  const dateElement = document.createElement("div");
+  dateElement.classList.add("date");
+  if (isOtherMonth) {
+    dateElement.classList.add("other-month");
+  }
+  dateElement.textContent = day;
+  return dateElement;
 }
 
 // 달력 날짜 생성
@@ -271,7 +301,7 @@ function submitSchedule(event) {
   })
     .then((response) => response.json())
     .then((data) => {
-      if (data.message === "success") {
+      if (data.message === "create success") {
         alert("일정이 추가되었습니다!");
         // 폼 초기화 및 모달 닫기
         document.querySelector("#createForm").reset();
@@ -315,6 +345,13 @@ function showScheduleDetails(schedule) {
   };
 
   document.getElementById("deleteScheduleButton").onclick = function () {
+    // color 정보를 확인하여 삭제 가능 여부를 결정
+    console.log(schedule.color);
+    if (schedule.color === '#eeeeee') {
+      alert("마일스톤과 스프린트 일정은 지울 수 없습니다."); // color가 0일 경우 삭제 방지
+      return; // 함수 종료
+    }
+  
     deleteSchedule(schedule.calendar_id); // 일정 삭제
   };
 
@@ -361,6 +398,7 @@ function openEditModal(schedule) {
 
   // 수정 버튼 클릭 시 일정 수정 처리
   const editedButton = document.getElementById("editbutton");
+
   editedButton.addEventListener("click", function () {
     submitEditSchedule(event, schedule.calendar_id); // calendar_id를 넘겨서 수정 처리
   });
@@ -389,14 +427,21 @@ function submitEditSchedule(event, calendarId) {
   const category = document.querySelector(
     'input[name="editCategory"]:checked'
   ).value;
-  const color = document.querySelector("#editColor").value;
   const content = document.querySelector("#editDescription").value;
   const important = document.querySelector("#editImportant").checked;
 
   // 'team'이면 true, 'personal'이면 false
   const isTeam = category === "team"; // 'team'이 선택되면 true, 아니면 false
+  
+  // 색상 결정 로직
+  let color;
+  if (important) {
+    color = 1; // 중요 표시가 체크되었을 때 색상 1
+  } else {
+    // 중요 표시가 체크되지 않았을 때 사용자가 선택한 색상, 기본값은 2
+    color = document.querySelector("#editColor").value || 2;
+  }
 
-  // 수정된 일정 객체
   const updatedSchedule = {
     title,
     place,
@@ -418,7 +463,7 @@ function submitEditSchedule(event, calendarId) {
   })
     .then((response) => response.json())
     .then((data) => {
-      if (data.message === "success") {
+      if (data.message === "modify success") {
         alert("일정이 수정되었습니다!");
         closeModal("editScheduleModal");
         fetchSchedules(document.getElementById("project-id").value);
@@ -440,7 +485,7 @@ function deleteSchedule(scheduleId) {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.message === "success") {
+        if (data.message === "delete success") {
           alert("일정이 삭제되었습니다.");
           document.querySelector("#scheduleDetailModal").style.display = "none";
           fetchSchedules(document.getElementById("project-id").value); // 일정 새로고침
@@ -464,4 +509,11 @@ function openModal(modalId) {
 function closeModal(modalId) {
   const modal = document.getElementById(modalId);
   modal.style.display = "none";
+
+  // 버튼의 이벤트 리스너 제거
+  const buttons = modal.querySelectorAll("button");
+  buttons.forEach((button) => {
+    const oldButton = button.cloneNode(true); // 버튼 복제
+    button.parentNode.replaceChild(oldButton, button); // 기존 버튼 교체
+  });
 }
