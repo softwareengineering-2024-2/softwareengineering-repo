@@ -13,3 +13,5 @@ views/__pycache__
 add_test_data.py
 
 google_drive_key.json
+
+.coverage
