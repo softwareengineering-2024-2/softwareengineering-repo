@@ -1,7 +1,6 @@
 import pytest
 from app import create_app
 from database import db
-from flask_login import LoginManager
 from models.user_model import Users
 
 @pytest.fixture(scope="module")

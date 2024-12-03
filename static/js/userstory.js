@@ -258,13 +258,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const endOnboarding = () => {
         hideStep(currentStep);
         overlay.classList.add("hidden");
-        document.cookie = "onboarding_done_userstory=true; path=/; max-age=31536000"; // 1년 유지
+        
     };
 
     nextButton.addEventListener("click", nextStep);
 
     // 온보딩 초기화
     if (!document.cookie.includes("onboarding_done_userstory=true")) {
+        document.cookie = "onboarding_done_userstory=true; path=/; max-age=31536000"; // 1년 유지
         showStep(currentStep);
     }
 });
