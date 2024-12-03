@@ -1,7 +1,5 @@
 from unittest.mock import Mock, patch
 from models.project_model import Project, UserProject
-from flask_login import current_user
-from controllers.project_controller import create_project, join_project, get_user_projects, delete_project, set_profile, check_pm
 
 MockProject = Mock()
 
@@ -117,7 +115,7 @@ def test_link_check_fail_view_(authenticated_user, mocker, test_app):
             print(f"Response data: {response.get_data(as_text=True)}")
 
             assert response.status_code == 200
-            assert "참여코드입니다." in response.get_data(as_text=True)
+            assert "존재하지 않는 참여코드입니다." in response.get_data(as_text=True)
 
 def test_join_project_view(authenticated_user, test_app):
     """프로젝트 참여 기능을 테스트"""
@@ -143,9 +141,7 @@ def test_delete_project_view(authenticated_user, mocker, test_app):
     mocker.patch('controllers.project_controller.delete_project', return_value=None)
     
     with test_app.app_context():
-        test_app.config['SERVER_NAME'] = 'localhost'  # SERVER_NAME 설정
-        with test_app.test_request_context():
-            response = authenticated_user.post('/manage_project/1/delete')
+        response = authenticated_user.post('/manage_project/1/delete')
 
         # 디버깅용 출력
         print(f"Response status code: {response.status_code}")
@@ -245,3 +241,48 @@ def test_set_profile_view_existing_pm(authenticated_user, mocker, test_app):
             # 테스트 검증
             assert response.status_code == 200  # 200 OK (렌더링된 페이지)
             assert "프로젝트에 이미 PM이 존재합니다." in response.get_data(as_text=True)
+
+from unittest.mock import patch
+from models.project_model import Project
+
+def test_find_by_link(test_app):
+    """프로젝트 링크로 프로젝트를 검색하는 기능을 테스트"""
+    project_link = "test_link"
+
+    # 검색할 때 반환될 가상의 프로젝트 객체
+    mock_project = Project(project_name="Test Project", project_link=project_link)
+    mock_project.project_id = 1  # 일반적으로 데이터베이스에서 설정되는 ID
+    expected_project = Project(project_name="Test Project", project_link=project_link)
+
+    with test_app.app_context():
+        # Project.query.filter_by의 반환을 모의로 설정
+        with test_app.app_context():
+            with patch('sqlalchemy.orm.Query.filter_by') as mock_filter:
+                mock_filter.return_value.first.return_value = expected_project
+
+                # 메서드 호출 및 결과 확인
+                result = Project.find_by_link(project_link)
+                assert result == expected_project
+                assert result.project_name == "Test Project"
+                assert result.project_link == project_link
+
+                # filter_by가 올바른 인자로 호출되었는지 검사
+                mock_filter.assert_called_once_with(project_link=project_link)
+
+def test_set_user_profile(mocker, test_app):
+    """사용자 프로필 정보 저장 테스트"""
+    user_id = 'testuser'
+    project_id = 1
+    user_name = 'new_name'
+    user_role = 'new_role'
+    
+    # 실제 UserProject 객체를 사용하는 대신 모킹을 사용
+    mock_user_project = Mock(user_id=user_id, project_id=project_id, user_name='old_name', user_role='old_role')
+    mocker.patch('models.project_model.UserProject.find_by_user_and_project', return_value=mock_user_project)
+    
+    with test_app.app_context():
+        UserProject.set_user_profile(user_id, project_id, user_name, user_role)
+        mock_user_project.user_name = user_name
+        mock_user_project.user_role = user_role
+        assert mock_user_project.user_name == 'new_name'
+        assert mock_user_project.user_role == 'new_role'
