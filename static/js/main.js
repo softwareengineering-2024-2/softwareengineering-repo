@@ -528,7 +528,7 @@ function startOnboarding() {
   // 첫 방문 시 온보딩 시작
   if (!document.cookie.includes("onboarding_done_main=true")) {
       overlay.classList.remove("hidden");
-      showStep(currentStep);
       document.cookie = "onboarding_done_main=true; path=/; max-age=31536000"; // 1년 유지
+      showStep(currentStep);
   }
 }
