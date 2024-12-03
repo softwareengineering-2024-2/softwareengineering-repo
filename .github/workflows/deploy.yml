@@ -22,31 +22,27 @@ jobs:
     - name: Deploy to EC2
       run: |
         ssh -o StrictHostKeyChecking=no ubuntu@atmsoftware.site << EOF
-          # 기존 디렉토리가 있다면 삭제
-          if [ -d "~/softwareengineering-repo" ]; then
-            rm -rf ~/softwareengineering-repo
-          fi
-
-          # 리포지토리 클론
-          git clone https://github.com/softwareengineering-2024-2/softwareengineering-repo.git ~/softwareengineering-repo
           cd ~/softwareengineering-repo
-
-          # .env 파일 생성
+          git pull origin main
+          
+          # 환경 변수 설정
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" > .env
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
           echo "GOOGLE_DISCOVERY_URL=https://accounts.google.com/.well-known/openid-configuration" >> .env
           echo "SQLALCHEMY_DATABASE_URI=${{ secrets.SQLALCHEMY_DATABASE_URI }}" >> .env
           echo "GOOGLE_DRIVE_KEY_PATH=drive/google_drive_key.json" >> .env
           echo "GOOGLE_DRIVE_FOLDER_ID=${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}" >> .env
-
-          # drive 폴더 생성 및 키 파일 배치
+          
+          # drive 폴더 설정
           mkdir -p drive
           echo "${{ secrets.GOOGLE_DRIVE_KEY_JSON }}" > drive/google_drive_key.json
           chmod 600 drive/google_drive_key.json
-
-          # Docker Compose 실행
-          docker-compose down
-          docker-compose up -d --build
+          
+          # 도커 작업 수행
+          docker build -t flask-app .
+          docker rm -f flask-app || true
+          docker network create flask-network || true
+          docker run -d --name flask-app --network flask-network -p 5000:5000 flask-app
 
           # Nginx 재시작
           sudo systemctl restart nginx
