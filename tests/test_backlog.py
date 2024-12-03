@@ -3,7 +3,6 @@ from unittest.mock import patch, Mock
 from controllers.productbacklog_controller import (
     get_user_stories, 
     update_product_backlog, 
-    create_or_update_product_backlog_group, 
     save_all_backlog_groups, 
     delete_product_backlog, 
     save_backlog_order

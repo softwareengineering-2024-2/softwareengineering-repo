@@ -1,5 +1,4 @@
-from unittest.mock import patch, Mock, MagicMock
-
+from unittest.mock import Mock
 
 def mock_url_for(endpoint, **values):
     """특정 엔드포인트를 처리하기 위한 mock된 url_for 함수"""
