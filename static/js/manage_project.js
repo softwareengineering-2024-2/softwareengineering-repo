@@ -187,8 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 첫 방문 시 온보딩 시작
   if (!document.cookie.includes("onboarding_done_manage_project=true")) {
+    document.cookie = "onboarding_done_manage_project=true; path=/; max-age=31536000"; // 1년간 유지
     startOnboarding();
-    document.cookie =
-      "onboarding_done_manage_project=true; path=/; max-age=31536000"; // 1년간 유지
   }
 });
