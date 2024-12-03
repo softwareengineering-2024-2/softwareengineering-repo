@@ -1,5 +1,5 @@
-from unittest.mock import Mock
-import pytest
+from unittest.mock import patch, Mock
+from flask import json
 
 def assert_redirect_to_userstory(response, project_id):
     """리다이렉션 검증 헬퍼 함수"""
@@ -7,68 +7,101 @@ def assert_redirect_to_userstory(response, project_id):
     assert f'/userstory/{project_id}' in response.headers['Location']
 
 
-def test_create_story_route(authenticated_user, mocker, test_app):
-    """유저스토리 작성 기능 테스트"""
+
+def test_create_story_authenticated(authenticated_user, mocker, test_app):
+    """유저스토리 작성 테스트"""
+    project_id = 1
+    form_data = {"content": "New User Story"}
+
+    # Mock 설정
     mocker.patch('controllers.userstory_controller.create_story', return_value=None)
 
-    form_data = {'content': 'New User Story'}
+    with test_app.app_context():
+        response = authenticated_user.post(
+            f'/userstory/{project_id}', data=form_data
+        )
+        assert_redirect_to_userstory(response, project_id)
+
+def test_update_story_authenticated(authenticated_user, mocker, test_app):
+    """유저스토리 수정 테스트"""
+    project_id, story_id = 1, 1
+    form_data = {"content": "Updated Story"}
+
+    # Mock 설정
+    mocker.patch('controllers.userstory_controller.update_story', return_value=None)
+
+    with test_app.app_context():
+        response = authenticated_user.post(
+            f'/userstory/{project_id}/{story_id}', data=form_data
+        )
+        assert_redirect_to_userstory(response, project_id)
+
+def test_create_keyword_authenticated(authenticated_user, mocker, test_app):
+    """키워드 추가 테스트"""
+    project_id = 1
+    form_data = {"keyword": "New Keyword"}
+
+    # Mock 설정
+    mocker.patch('controllers.notlist_controller.create_keywords', return_value=None)
+
+    with test_app.app_context():
+        response = authenticated_user.post(
+            f'/userstory/notlist/{project_id}', data=form_data
+        )
+        assert_redirect_to_userstory(response, project_id)
+
+
+def test_view_stories_authenticated(authenticated_user, mocker, test_app):
+    """유저스토리 목록 보기 테스트"""
     project_id = 1
 
+    # Mock 데이터 설정
+    mock_stories = [{"id": 1, "content": "Story 1"}]
+    mock_notlist = [{"id": 1, "keyword": "Keyword 1"}]
+
+    # Mock 객체 생성 및 속성 설정
+    mock_project = Mock()
+    mock_project.project_id = project_id
+
+    mock_user_project = Mock()
+
+    # Mock 함수 패치
+    mocker.patch('controllers.userstory_controller.show_stories', return_value=mock_stories)
+    mocker.patch('controllers.notlist_controller.show_notlist', return_value=mock_notlist)
+    mocker.patch('models.project_model.Project.find_by_id', return_value=mock_project)
+    mocker.patch('models.project_model.UserProject.find_by_user_and_project', return_value=mock_user_project)
+
+    # 테스트 실행
     with test_app.app_context():
-        response = authenticated_user.post(f'/userstory/{project_id}', data=form_data)
-        assert_redirect_to_userstory(response, project_id)
+        response = authenticated_user.get(f'/userstory/{project_id}')
+        response_data =response.get_data(as_text=True)
+        print("response_data: ", response_data)
 
+        assert response.status_code == 200
+        assert "Updated Story" in response.get_data(as_text=True)
+        assert "New Keyword" in response.get_data(as_text=True)
 
-def test_update_story_route(authenticated_user, mocker, test_app):
-    """유저스토리 수정 기능 테스트"""
-
-    mock_userstory = Mock()
-    mock_userstory.story_id = 1
-    mock_userstory.user_story_content = 'Updated User Story'
-    mock_userstory.product_backlog_id = None
-
-    mocker.patch('controllers.userstory_controller.update_story', return_value=mock_userstory)
-
-    form_data = {'content': 'Updated User Story'}
-    project_id= 1
-    story_id = 1
-
-    with test_app.app_context():
-        response = authenticated_user.post(f'/userstory/{project_id}/{story_id}', data=form_data)
-        assert_redirect_to_userstory(response, project_id)
-
-
-def test_delete_story_route(authenticated_user, mocker, test_app):
-    """유저스토리 삭제 기능 테스트"""
-    mocker.patch('controllers.userstory_controller.delete_story', return_value=None)
-
+def test_delete_story_authenticated(authenticated_user, mocker, test_app):
+    """유저스토리 삭제 테스트"""
     project_id, story_id = 1, 1
+
+    # Mock 설정
+    mocker.patch('controllers.userstory_controller.delete_story', return_value=None)
 
     with test_app.app_context():
         response = authenticated_user.post(f'/userstory/{project_id}/{story_id}/delete')
         assert_redirect_to_userstory(response, project_id)
 
 
-def test_create_keywords_route(authenticated_user, mocker, test_app):
-    """키워드 추가 기능 테스트"""
-    mocker.patch('controllers.notlist_controller.create_keywords', return_value=None)
+def test_delete_keyword_authenticated(authenticated_user, mocker, test_app):
+    """키워드 삭제 테스트"""
+    project_id, keyword_id = 1, 1
 
-    form_data = {'keyword': 'test_keyword'}
-    project_id = 1
-
-    with test_app.app_context():
-        response = authenticated_user.post(f'/userstory/notlist/{project_id}', data=form_data)
-        assert_redirect_to_userstory(response, project_id)
-
-
-def test_delete_keyword_route(authenticated_user, mocker, test_app):
-    """키워드 삭제 기능 테스트"""
+    # Mock 설정
     mocker.patch('controllers.notlist_controller.delete_keyword', return_value=None)
 
-    project_id, not_list_id = 1, 1
-
     with test_app.app_context():
-        response = authenticated_user.post(f'/userstory/notlist/{project_id}/{not_list_id}/delete')
+        response = authenticated_user.post(f'/userstory/notlist/{project_id}/{keyword_id}/delete')
         assert_redirect_to_userstory(response, project_id)
 
 def test_save_alert_to_db(authenticated_user, mocker, test_app):
@@ -108,8 +141,6 @@ def test_save_alert_to_db(authenticated_user, mocker, test_app):
         assert response.status_code == 200
         assert response.json == expected_result
 
-
-# get_alerts 테스트
 def test_get_messages(authenticated_user, mocker, test_app):
     """알림 조회 기능 테스트"""
 
