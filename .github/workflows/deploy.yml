@@ -22,8 +22,15 @@ jobs:
     - name: Deploy to EC2
       run: |
         ssh -o StrictHostKeyChecking=no ubuntu@atmsoftware.site << EOF
+          if [ ! -d "~/softwareengineering-repo" ]; then
+            git clone https://github.com/softwareengineering-2024-2/softwareengineering-repo.git ~/softwareengineering-repo
+          else
+            cd ~/softwareengineering-repo
+            git reset --hard
+            git clean -fd
+            git pull origin main
+          fi
           cd ~/softwareengineering-repo
-          git pull origin main
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" > .env
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
           echo "GOOGLE_DISCOVERY_URL=https://accounts.google.com/.well-known/openid-configuration" >> .env
