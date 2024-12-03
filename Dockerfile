@@ -1,6 +1,5 @@
-#Dockerfile
-# Python 3.10 슬림 이미지 사용
-FROM python:3.10-slim
+# Python 3.8 슬림 이미지 사용
+FROM python:3.8-slim
 
 # 필수 패키지 설치
 RUN apt-get update && apt-get install -y \

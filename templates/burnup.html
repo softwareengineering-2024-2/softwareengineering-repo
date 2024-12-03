@@ -45,6 +45,13 @@
         {% endblock %}
       </div>
     </div>
+    <div id="onboarding-overlay" class="onboarding-overlay hidden">
+      <div id="onboarding-tooltip" class="onboarding-tooltip">
+        <p id="onboarding-text"></p>
+
+        <button id="onboarding-next-button">확인</button>
+      </div>
+    </div>
     <script>
       const chartData = {
           labels: {{ dates | tojson }},
