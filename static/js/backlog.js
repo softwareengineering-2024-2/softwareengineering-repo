@@ -305,11 +305,10 @@ const endOnboarding = () => {
   const tooltip = document.getElementById("onboarding-tooltip");
   overlay.classList.add("hidden");
   tooltip.style.display = "none";
-
-  // 온보딩이 끝난 상태를 저장 (쿠키 또는 로컬 스토리지)
-  document.cookie = "onboarding_done_backlog=true; path=/; max-age=31536000"; // 1년 유지
 };
 
 document.addEventListener("DOMContentLoaded", function () {
+  // 온보딩이 끝난 상태를 저장 (쿠키 또는 로컬 스토리지)
+  document.cookie = "onboarding_done_backlog=true; path=/; max-age=31536000"; // 1년 유지
   startOnboarding();
 });
