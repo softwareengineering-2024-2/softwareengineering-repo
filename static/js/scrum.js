@@ -405,11 +405,10 @@ const endOnboarding = () => {
   const tooltip = document.getElementById("onboarding-tooltip");
   overlay.classList.add("hidden");
   tooltip.style.display = "none";
-
-  // 온보딩 완료 상태 저장
-  document.cookie = "onboarding_done_scrum=true; path=/; max-age=31536000"; // 1년 유지
+  
 };
 
 document.addEventListener("DOMContentLoaded", function () {
+  document.cookie = "onboarding_done_scrum=true; path=/; max-age=31536000"; // 1년 유지
   startOnboarding();
 });
