@@ -2,10 +2,7 @@ from models.not_list_model import NotList
 
 # not list 보여주기
 def show_notlist(project_id):
-    
-    if not project_id:
-        return "Project ID is missing", 400
-    
+
     not_list_keywords = NotList.query.filter_by(project_id=project_id).all()
     return not_list_keywords
 
