@@ -28,6 +28,47 @@ def test_product_backlog_view_authenticated(authenticated_user, mocker, test_app
         assert 'backlog' in response.get_data(as_text=True)
 
 # 새로운 백로그 그룹 생성 또는 업데이트 테스트
+def test_create_or_update_backlog_group(authenticated_user, mocker, test_app):
+    """
+    새로운 백로그 그룹 생성 또는 업데이트 API 테스트: 성공적으로 백로그 그룹이 생성되거나 업데이트되는지 확인.
+    """
+    # 테스트용 데이터 설정
+    form_data = {
+        "group_name": "New Group",
+        "story_ids": ["1", "2", "3"],
+        "backlog_id": "5"  # 기존 백로그 ID (없으면 None)
+    }
+
+    # Mock create_or_update_product_backlog_group 함수
+    mock_create_or_update = mocker.patch(
+        'views.productbacklog_view.create_or_update_product_backlog_group',
+        return_value=10  # 새로운 product_backlog_id 반환
+    )
+
+    # Flask 애플리케이션 컨텍스트 내에서 테스트 실행
+    with test_app.app_context():
+        response = authenticated_user.post(
+            '/productbacklog/create_or_update_group',
+            data=form_data,
+            content_type='application/x-www-form-urlencoded'  # Form 데이터 전송
+        )
+
+        # 응답 데이터 확인
+        response_data = json.loads(response.get_data(as_text=True))
+
+        # 검증
+        assert response.status_code == 200
+        assert response_data['success'] is True
+        assert response_data['product_backlog_id'] == 10
+
+        # Mock 함수 호출 확인
+        mock_create_or_update.assert_called_once_with(
+            form_data["group_name"],
+            form_data["story_ids"],
+            int(form_data["backlog_id"])  # backlog_id는 int로 변환
+        )
+
+# 유저스토리 이동 테스트
 def test_move_user_story(authenticated_user, mocker, test_app):
     form_data = {"story_id": "1", "backlog_id": "2"}
     mock_update = mocker.patch('views.productbacklog_view.update_product_backlog', return_value=True)
