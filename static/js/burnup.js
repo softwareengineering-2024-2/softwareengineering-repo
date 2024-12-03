@@ -1,13 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
   const ctx = document.getElementById("burnupChart").getContext("2d");
   if (!ctx) {
-    console.error("Canvas element not found");
     return;
   }
 
   // 데이터 검증
   if (!chartData.labels || !chartData.totalTasks || !chartData.completedTasks) {
-    console.error("Chart data is incomplete or incorrectly formatted");
     return;
   }
 
