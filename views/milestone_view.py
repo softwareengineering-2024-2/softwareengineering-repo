@@ -33,9 +33,6 @@ def create_milestone_view(project_id):
 @milestone_bp.route('/<int:project_id>/<int:milestone_id>/delete', methods=['POST'])
 @login_required
 def delete_milestone_view(project_id, milestone_id):
-    userproject = UserProject.find_by_user_and_project(current_user.id, project_id)
-    if not userproject:
-        return redirect(url_for('project_main.project_main_view', project_id=project_id))
     delete_milestone_schedules(project_id, milestone_id)
     delete_milestone(milestone_id)
     return redirect(url_for('milestone.milestone_view', project_id=project_id))
