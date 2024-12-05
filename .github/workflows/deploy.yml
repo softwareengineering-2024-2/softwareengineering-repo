@@ -23,12 +23,15 @@ jobs: # 무엇을 할 것인지 정
       run: |
         #서버에 연결
         ssh -o StrictHostKeyChecking=no ubuntu@atmsoftware.site << EOF
-          # 기존에 있는 실행 중지된 도커 삭제
-          docker system prune -a -f
           # 기존 디렉토리가 있다면 삭제
-          if [ -d "~/softwareengineering-repo" ]; then
-            rm -rf ~/softwareengineering-repo
-          fi
+        echo "Checking if directory exists"
+        if [ -d "/home/ubuntu/softwareengineering-repo" ]; then
+          echo "Directory exists. Deleting..."
+          rm -rf /home/ubuntu/softwareengineering-repo || true
+          echo "Directory deleted."
+        else
+          echo "Directory does not exist."
+        fi
 
           # 리포지토리 클론
           git clone https://github.com/softwareengineering-2024-2/softwareengineering-repo.git ~/softwareengineering-repo
