@@ -1,27 +1,30 @@
 name: Deploy to EC2
 
-on:
-  push:
+on: # 언제 실행이 되는가?
+  push: # 푸쉬되었을때
     branches:
-      - main
+      - main # 메인 브랜치에
 
-jobs:
+jobs: # 무엇을 할 것인지 정
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # 우분투 최신버전에서 돌아감
 
-    steps:
+    steps: #액션을 사용해 현재 리포지토리의 코드를 체크아웃.
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up SSH
+    - name: Set up SSH # SSH 설정 ( EC2에 접속 )
       run: |
         mkdir -p ~/.ssh
         echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
 
-    - name: Deploy to EC2
+    - name: Deploy to EC2 
       run: |
+        #서버에 연결
         ssh -o StrictHostKeyChecking=no ubuntu@atmsoftware.site << EOF
+          # 기존에 있는 실행 중지된 도커 삭제
+          docker system prune -a -f
           # 기존 디렉토리가 있다면 삭제
           if [ -d "~/softwareengineering-repo" ]; then
             rm -rf ~/softwareengineering-repo
@@ -44,13 +47,15 @@ jobs:
           echo "${{ secrets.GOOGLE_DRIVE_KEY_JSON }}" | base64 -d > drive/google_drive_key.json
           chmod 600 drive/google_drive_key.json
 
-          # Docker 작업 수행
+          # 현재 디렉토리에서 Dockerfile을 사용해 Flask 애플리케이션 이미지를 빌드
           docker build -t flask-app .
+          # 기존 컨테이너 제거
           docker rm -f flask-app || true
+          # Docker 네트워크 생성
           docker network create flask-network || true
+          # Docker 컨테이너 실행
           docker run -d --name flask-app --network flask-network -p 5000:5000 flask-app
-          docker ps
 
-          # Nginx 재시작
+          # Nginx 재시작해 변경된 애플리케이션을 반영
           sudo systemctl restart nginx
         EOF
