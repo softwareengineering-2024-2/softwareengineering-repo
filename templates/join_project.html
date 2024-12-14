@@ -53,10 +53,10 @@
           <div>
             <div class="caption">
               {% if link_check == 1 %}발견된 프로젝트 : {{
-              session['project_name'] }} {% elif link_check == 0 %}존재하지 않는
-              참여코드입니다. 다시 입력해주세요. {% endif %}
+              session['project_name'] }} {% elif link_check == 0 %}존재하지 않는 참여코드입니다. 다시 입력해주세요. {% endif %}
             </div>
           </div>
+          <input type="hidden" id="linkCheckValue" value="{{ link_check }}">
         </form>
         <div class="modal-buttons-wrapper">
           <form
@@ -79,5 +79,6 @@
       </div>
       {% endblock %}
     </div>
+    <script src="{{ url_for('static', filename='js/join_project.js') }}"></script>
   </body>
 </html>

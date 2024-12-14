@@ -9,7 +9,7 @@ models/__pycache__
 views/__pycache__
 # mac os에서 자동 생성되는 속성 파일 무시
 *.DS_Store
-# 유저스토리 테이블에 테스트용 데이터 생성하는 파일 무시
-add_test_data.py
 
-drive/google_drive_key.json
+google_drive_key.json
+
+.coverage

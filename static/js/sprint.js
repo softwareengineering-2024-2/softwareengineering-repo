@@ -691,6 +691,8 @@ function startOnboarding() {
 
   // 첫 방문 시 온보딩 시작
   if (!document.cookie.includes("onboarding_done_sprint=true")) {
+    // 온보딩 완료 상태 저장
+    document.cookie = "onboarding_done_sprint=true; path=/; max-age=31536000"; // 1년 유지
     overlay.classList.remove("hidden");
     showStep(currentStep);
   }
@@ -701,9 +703,6 @@ const endOnboarding = () => {
   const tooltip = document.getElementById("onboarding-tooltip");
   overlay.classList.add("hidden");
   tooltip.style.display = "none";
-
-  // 온보딩 완료 상태 저장
-  document.cookie = "onboarding_done_sprint=true; path=/; max-age=31536000"; // 1년 유지
 };
 
 document.addEventListener("DOMContentLoaded", function () {

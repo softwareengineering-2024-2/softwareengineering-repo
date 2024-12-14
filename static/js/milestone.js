@@ -149,14 +149,13 @@ function startOnboarding() {
 
   // 첫 방문 시 온보딩 시작
   if (!document.cookie.includes("onboarding_done_milestone=true")) {
+    document.cookie = "onboarding_done_milestone=true; path=/; max-age=31536000"; // 1년 유지
     overlay.classList.remove("hidden");
     showStep(currentStep);
   }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  // 온보딩이 끝난 상태를 저장 (쿠키 또는 로컬 스토리지)
-  document.cookie = "onboarding_done_milestone=true; path=/; max-age=31536000"; // 1년 유지
   startOnboarding();
 });
 
